@@ -1265,6 +1265,3 @@ It should not feel like thirteen unrelated pages assembled together.
 10\. Wait for approval before proceeding.
 
 
-
-\*\*The product owner makes the final UX and design decisions. Implementation choices must support the approved CrewReady experience.\*\*
-
