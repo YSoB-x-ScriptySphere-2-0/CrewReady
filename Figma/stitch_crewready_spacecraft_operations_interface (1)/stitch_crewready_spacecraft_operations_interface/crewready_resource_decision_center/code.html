@@ -1,0 +1,812 @@
+<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-secondary-fixed-variant":"#004e5a","surface-container-low":"#0e1d29","on-primary":"#003918","tertiary-container":"#ffdb9a","surface-container-high":"#1d2b38","primary":"#f5fff2","on-surface":"#d5e4f6","error":"#ffb4ab","surface-container-lowest":"#020f1b","tertiary-fixed-dim":"#f4be4e","inverse-surface":"#d5e4f6","on-secondary-fixed":"#001f25","error-container":"#93000a","on-surface-variant":"#bacbb9","surface-dim":"#051521","secondary":"#43e1fd","inverse-on-surface":"#23323f","tertiary-fixed":"#ffdea4","on-primary-fixed-variant":"#005225","inverse-primary":"#006d34","background":"#051521","surface-container-highest":"#283644","tertiary":"#fffbff","primary-fixed":"#63ff95","on-secondary-container":"#004d58","on-tertiary":"#412d00","primary-fixed-dim":"#00e473","on-error":"#690005","on-primary-fixed":"#00210b","on-secondary":"#00363f","surface-tint":"#00e473","outline":"#849584","surface-variant":"#283644","outline-variant":"#3b4a3d","primary-container":"#39ff88","on-primary-container":"#007236","surface-bright":"#2c3b48","secondary-container":"#00c5e0","surface-container":"#12212d","secondary-fixed-dim":"#35d8f4","on-background":"#d5e4f6","secondary-fixed":"#a4eeff","on-error-container":"#ffdad6","on-tertiary-fixed":"#261900","surface":"#051521","on-tertiary-container":"#805d00","on-tertiary-fixed-variant":"#5d4200"},borderRadius:{DEFAULT:"0.125rem",lg:"0.25rem",xl:"0.5rem",full:"0.75rem"},spacing:{"space-xs":"0.25rem","gutter-desktop":"1.5rem","space-lg":"1.5rem","margin-desktop":"2rem",margin:"1rem","space-xl":"2rem",gutter:"1rem","space-sm":"0.5rem","space-2xl":"3rem","space-md":"1rem","margin-tablet":"1.5rem"},fontFamily:{"telemetry-md":["JetBrains Mono"],"headline-lg":["Space Grotesk"],"telemetry-lg":["JetBrains Mono"],"body-lg":["Inter"],"body-md":["Inter"],"headline-sm":["Space Grotesk"],"headline-md":["Space Grotesk"],"label-nav":["Inter"],"display-lg":["Space Grotesk"],"body-sm":["Inter"],"display-lg-mobile":["Space Grotesk"],"telemetry-sm":["JetBrains Mono"],"headline-lg-mobile":["Space Grotesk"]},fontSize:{"telemetry-md":["14px",{lineHeight:"18px",letterSpacing:"0.03em",fontWeight:"500"}],"headline-lg":["32px",{lineHeight:"40px",letterSpacing:"-0.01em",fontWeight:"600"}],"telemetry-lg":["24px",{lineHeight:"28px",letterSpacing:"0.02em",fontWeight:"700"}],"body-lg":["16px",{lineHeight:"24px",letterSpacing:"0em",fontWeight:"400"}],"body-md":["14px",{lineHeight:"20px",letterSpacing:"0.005em",fontWeight:"400"}],"headline-sm":["18px",{lineHeight:"24px",letterSpacing:"0.01em",fontWeight:"600"}],"headline-md":["22px",{lineHeight:"28px",letterSpacing:"0em",fontWeight:"600"}],"label-nav":["13px",{lineHeight:"16px",letterSpacing:"0.04em",fontWeight:"500"}],"display-lg":["48px",{lineHeight:"56px",letterSpacing:"-0.02em",fontWeight:"700"}],"body-sm":["12px",{lineHeight:"16px",letterSpacing:"0.01em",fontWeight:"400"}],"display-lg-mobile":["32px",{lineHeight:"40px",letterSpacing:"-0.01em",fontWeight:"700"}],"telemetry-sm":["11px",{lineHeight:"14px",letterSpacing:"0.06em",fontWeight:"400"}],"headline-lg-mobile":["24px",{lineHeight:"32px",letterSpacing:"0em",fontWeight:"600"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased min-h-screen"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-lowest z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col"><div class="h-16 px-space-md flex items-center gap-space-sm"><div class="w-2.5 h-2.5 rounded-full bg-primary-container shadow-[0_0_10px_rgba(57,255,136,0.25)] animate-pulse"></div><div><span class="font-headline-sm text-headline-sm uppercase tracking-wide text-primary block leading-none">CREWREADY</span><span class="font-telemetry-sm text-telemetry-sm text-outline tracking-wider block mt-space-xs">OPS-CMD // V4.1</span></div></div><div class="px-space-md pt-space-md pb-space-xs"><span class="font-telemetry-sm text-telemetry-sm uppercase tracking-widest text-outline">MISSION INTERFACES</span></div><nav class="px-space-sm space-y-space-xs" data-active-classes="bg-surface-container-high text-primary-container font-semibold"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-nav text-label-nav text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="welcome" href="#"><span class="material-symbols-outlined text-[18px]">home</span><span class="">Home</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-nav text-label-nav text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="dashboard" href="#"><span class="material-symbols-outlined text-[18px]">space_dashboard</span><span class="">Command Center</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-nav text-label-nav text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="planetary-hub" href="#"><span class="material-symbols-outlined text-[18px]">public</span><span class="">Planetary Hub</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-nav text-label-nav text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="campaign" href="#"><span class="material-symbols-outlined text-[18px]">flag</span><span class="">Campaign</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-nav text-label-nav text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="mission-operations" href="#"><span class="material-symbols-outlined text-[18px]">rocket_launch</span><span class="">Mission Operations</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg transition-all bg-surface-container-high text-primary-container font-semibold" data-path="resources" href="#"><span class="material-symbols-outlined text-[18px]">inventory_2</span><span class="">Resources</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-nav text-label-nav text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="training" href="#"><span class="material-symbols-outlined text-[18px]">model_training</span><span class="">Training</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-nav text-label-nav text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="leaderboard" href="#"><span class="material-symbols-outlined text-[18px]">military_tech</span><span class="">Leaderboard</span></a></nav><div class="px-space-md pt-space-lg pb-space-xs"><span class="font-telemetry-sm text-telemetry-sm uppercase tracking-widest text-outline">SYSTEM CONFIG</span></div><nav class="px-space-sm space-y-space-xs" data-active-classes="bg-surface-container-high text-primary-container font-semibold"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-nav text-label-nav text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="crew-profile" href="#"><span class="material-symbols-outlined text-[18px]">badge</span><span class="">Crew Profile</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-nav text-label-nav text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all" data-path="settings" href="#"><span class="material-symbols-outlined text-[18px]">settings</span><span class="">Settings</span></a></nav></div><div class="p-space-md"><div class="bg-surface-container-low p-space-sm rounded-lg flex items-center justify-between"><div class="flex items-center gap-space-xs"><div class="w-2 h-2 rounded-full bg-primary-container shadow-[0_0_10px_rgba(57,255,136,0.25)]"></div><span class="font-telemetry-sm text-telemetry-sm uppercase text-on-surface-variant">SYS STAT: NOMINAL</span></div><span class="font-telemetry-sm text-telemetry-sm text-secondary">ORBIT 1</span></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface-container-lowest/80 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-gutter-desktop flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-sm"><div class="flex items-center gap-space-xs bg-surface-container-low px-space-md py-space-xs rounded"><span class="w-1.5 h-1.5 rounded-full bg-primary-fixed-dim"></span><span class="font-telemetry-sm text-telemetry-sm text-primary">MET T+ 148:19:42:09</span></div><div class="flex items-center gap-space-xs bg-surface-container-low px-space-md py-space-xs rounded"><span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim animate-ping"></span><span class="font-telemetry-sm text-telemetry-sm text-secondary">DSN LINK ACTIVE // 4.8 GBPS</span></div></div><div class="flex items-center gap-space-md"><button class="relative p-space-xs text-on-surface-variant hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span></button><div class="flex items-center gap-space-sm bg-surface-container px-space-md py-space-xs rounded-full"><div class="text-right"><span class="font-telemetry-sm text-telemetry-sm text-primary block leading-tight font-bold">Totini</span><span class="font-telemetry-sm text-telemetry-sm text-outline block leading-tight">CALLSIGN: ARES-1</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></div></header><main class="w-full pt-16 bg-background"><div class="flex flex-col w-full">
+<!-- Command Header & Quick Operations Bar -->
+<div class="px-gutter-desktop py-space-lg bg-surface-container-lowest">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="space-y-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-primary-container shadow-[0_0_10px_rgba(57,255,136,0.25)]"></span>
+<span class="font-telemetry-sm text-telemetry-sm uppercase tracking-widest text-on-surface-variant">LEDGER-NODE // RES-ACT-884</span>
+<span class="text-outline-variant font-telemetry-sm text-telemetry-sm">/</span>
+<span class="font-telemetry-sm text-telemetry-sm text-secondary">MET: REV 1,492</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight uppercase">
+          RESOURCE &amp; DECISION CENTER // CONSUMABLE &amp; POWER LEDGER
+        </h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-4xl">
+          Real-time multi-system resource reconciliation, contingency expenditure modeling, and decision trade-off audit.
+        </p>
+</div>
+<!-- Action Group -->
+<div class="flex flex-wrap items-center gap-space-sm">
+<!-- Filter Dropdown Container -->
+<div class="relative">
+<button class="flex items-center gap-space-xs bg-surface-container-high px-space-md py-space-sm rounded font-label-nav text-label-nav text-on-surface hover:bg-surface-bright transition-colors shadow-sm" id="categoryFilterBtn">
+<span class="material-symbols-outlined text-[16px] text-secondary">tune</span>
+<span id="currentFilterLabel" class="">Filter: All Domains</span>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">arrow_drop_down</span>
+</button>
+<div class="hidden absolute right-0 mt-space-xs w-64 bg-surface-container-high rounded shadow-xl z-30 p-space-xs space-y-space-xs" id="filterDropdownMenu">
+<button class="w-full text-left px-space-sm py-space-xs rounded font-label-nav text-label-nav text-on-surface hover:bg-surface-bright" onclick="applyFilter('All Domains')">All Domains</button>
+<button class="w-full text-left px-space-sm py-space-xs rounded font-label-nav text-label-nav text-on-surface hover:bg-surface-bright" onclick="applyFilter('Life Support')">Life Support (ECLSS)</button>
+<button class="w-full text-left px-space-sm py-space-xs rounded font-label-nav text-label-nav text-on-surface hover:bg-surface-bright" onclick="applyFilter('Fuel/Propulsion')">Fuel &amp; Propulsion</button>
+<button class="w-full text-left px-space-sm py-space-xs rounded font-label-nav text-label-nav text-on-surface hover:bg-surface-bright" onclick="applyFilter('Electrical Bus')">Electrical Bus &amp; Storage</button>
+<button class="w-full text-left px-space-sm py-space-xs rounded font-label-nav text-label-nav text-on-surface hover:bg-surface-bright" onclick="applyFilter('Scientific Stores')">Scientific Stores</button>
+<button class="w-full text-left px-space-sm py-space-xs rounded font-label-nav text-label-nav text-on-surface hover:bg-surface-bright" onclick="applyFilter('Structural Spares')">Structural Spares</button>
+</div>
+</div>
+<!-- Export Report Button -->
+<button class="flex items-center gap-space-xs bg-surface-container-low px-space-md py-space-sm rounded font-label-nav text-label-nav text-secondary hover:bg-surface-container hover:text-primary transition-colors" onclick="triggerExportNotice()">
+<span class="material-symbols-outlined text-[16px]">file_download</span>
+<span class="">Export Report</span>
+</button>
+<!-- Compare Resources Button -->
+<button class="flex items-center gap-space-xs bg-secondary text-surface-container-lowest font-headline-sm text-label-nav font-semibold px-space-md py-space-sm rounded shadow-[0_0_10px_rgba(54,217,245,0.25)] hover:bg-secondary-fixed transition-all" onclick="toggleCompareDrawer()">
+<span class="material-symbols-outlined text-[18px]">compare_arrows</span>
+<span class="">Compare Resources</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Main Telemetry Body -->
+<div class="px-gutter-desktop py-space-lg space-y-space-xl">
+<!-- Primary 5-Card Telemetry Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-space-md">
+<!-- Card 1: Oxygen Reserves -->
+<div class="bg-surface-container rounded p-space-md flex flex-col justify-between shadow-md">
+<div class="flex items-start justify-between gap-space-xs pb-space-xs">
+<div>
+<span class="font-telemetry-sm text-telemetry-sm uppercase text-outline block">ECLSS // O2-PRI</span>
+<h2 class="font-headline-sm text-headline-sm text-primary">Oxygen Reserves</h2>
+</div>
+<span class="inline-flex items-center gap-1 font-telemetry-sm text-telemetry-sm uppercase px-2 py-0.5 rounded bg-primary-container/10 text-primary-container">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
+            NOMINAL
+          </span>
+</div>
+<div class="my-space-md">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-telemetry-lg text-telemetry-lg text-primary tracking-tight">450</span>
+<span class="font-telemetry-sm text-telemetry-sm text-on-surface-variant uppercase">Days Left</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">Cryogenic Liquid O2 Pod A/B</p>
+<!-- Gauge bar -->
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full mt-space-sm overflow-hidden">
+<div class="bg-primary-container h-full rounded-full" style="width: 88%;"></div>
+</div>
+</div>
+<div class="pt-space-xs bg-surface-container-low px-space-sm py-space-xs rounded flex items-center justify-between font-telemetry-sm text-telemetry-sm">
+<span class="text-outline">BURN RATE</span>
+<span class="text-primary font-semibold">0.82 kg/hr</span>
+</div>
+</div>
+<!-- Card 2: Hydrazine Monopropellant -->
+<div class="bg-surface-container rounded p-space-md flex flex-col justify-between shadow-md">
+<div class="flex items-start justify-between gap-space-xs pb-space-xs">
+<div>
+<span class="font-telemetry-sm text-telemetry-sm uppercase text-outline block">PROP // N2H4-MAIN</span>
+<h2 class="font-headline-sm text-headline-sm text-primary">Hydrazine Prop</h2>
+</div>
+<span class="inline-flex items-center gap-1 font-telemetry-sm text-telemetry-sm uppercase px-2 py-0.5 rounded bg-secondary/10 text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            STABLE
+          </span>
+</div>
+<div class="my-space-md">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-telemetry-lg text-telemetry-lg text-primary tracking-tight">12,400</span>
+<span class="font-telemetry-sm text-telemetry-sm text-on-surface-variant uppercase">/ 14K KG</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">RCS &amp; Auxiliary Delta-V</p>
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full mt-space-sm overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 88.5%;"></div>
+</div>
+</div>
+<div class="pt-space-xs bg-surface-container-low px-space-sm py-space-xs rounded flex items-center justify-between font-telemetry-sm text-telemetry-sm">
+<span class="text-outline">CONTINGENCY MARGIN</span>
+<span class="text-primary font-semibold">+1,250 kg</span>
+</div>
+</div>
+<!-- Card 3: Closed-Loop Water Recovery -->
+<div class="bg-surface-container rounded p-space-md flex flex-col justify-between shadow-md">
+<div class="flex items-start justify-between gap-space-xs pb-space-xs">
+<div>
+<span class="font-telemetry-sm text-telemetry-sm uppercase text-outline block">HYDR // WRS-REC</span>
+<h2 class="font-headline-sm text-headline-sm text-primary">Water Recovery</h2>
+</div>
+<span class="inline-flex items-center gap-1 font-telemetry-sm text-telemetry-sm uppercase px-2 py-0.5 rounded bg-primary-container/10 text-primary-container">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+            ACTIVE
+          </span>
+</div>
+<div class="my-space-md">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-telemetry-lg text-telemetry-lg text-primary tracking-tight">98.5%</span>
+<span class="font-telemetry-sm text-telemetry-sm text-on-surface-variant uppercase">Efficacy</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">Catalytic Core Online &amp; Tested</p>
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full mt-space-sm overflow-hidden">
+<div class="bg-primary-container h-full rounded-full" style="width: 98.5%;"></div>
+</div>
+</div>
+<div class="pt-space-xs bg-surface-container-low px-space-sm py-space-xs rounded flex items-center justify-between font-telemetry-sm text-telemetry-sm">
+<span class="text-outline">DAILY YIELD</span>
+<span class="text-primary font-semibold">42.6 L/day</span>
+</div>
+</div>
+<!-- Card 4: Electrical Power & Fuel Cells -->
+<div class="bg-surface-container rounded p-space-md flex flex-col justify-between shadow-md">
+<div class="flex items-start justify-between gap-space-xs pb-space-xs">
+<div>
+<span class="font-telemetry-sm text-telemetry-sm uppercase text-outline block">PWR // BUS-ALPHA</span>
+<h2 class="font-headline-sm text-headline-sm text-primary">Power &amp; Cells</h2>
+</div>
+<span class="inline-flex items-center gap-1 font-telemetry-sm text-telemetry-sm uppercase px-2 py-0.5 rounded bg-primary-container/10 text-primary-container">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+            BALANCED
+          </span>
+</div>
+<div class="my-space-md">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-telemetry-lg text-telemetry-lg text-primary tracking-tight">28.4</span>
+<span class="font-telemetry-sm text-telemetry-sm text-on-surface-variant uppercase">kW Load</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">Array Eff: 91.2% | Bat: 88.5%</p>
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full mt-space-sm overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 88.5%;"></div>
+</div>
+</div>
+<div class="pt-space-xs bg-surface-container-low px-space-sm py-space-xs rounded flex items-center justify-between font-telemetry-sm text-telemetry-sm">
+<span class="text-outline">BATTERY RESERVE</span>
+<span class="text-primary font-semibold">88.5% SOC</span>
+</div>
+</div>
+<!-- Card 5: Thermal Control Coolant -->
+<div class="bg-surface-container rounded p-space-md flex flex-col justify-between shadow-md">
+<div class="flex items-start justify-between gap-space-xs pb-space-xs">
+<div>
+<span class="font-telemetry-sm text-telemetry-sm uppercase text-outline block">THRM // ATCS-NH3</span>
+<h2 class="font-headline-sm text-headline-sm text-primary">Thermal Loop</h2>
+</div>
+<span class="inline-flex items-center gap-1 font-telemetry-sm text-telemetry-sm uppercase px-2 py-0.5 rounded bg-secondary/10 text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            REGULATED
+          </span>
+</div>
+<div class="my-space-md">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-telemetry-lg text-telemetry-lg text-primary tracking-tight">18.2</span>
+<span class="font-telemetry-sm text-telemetry-sm text-on-surface-variant uppercase">Bar NH3</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">Ammonia Loop Primary Circulation</p>
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full mt-space-sm overflow-hidden">
+<div class="bg-secondary-fixed-dim h-full rounded-full" style="width: 72%;"></div>
+</div>
+</div>
+<div class="pt-space-xs bg-surface-container-low px-space-sm py-space-xs rounded flex items-center justify-between font-telemetry-sm text-telemetry-sm">
+<span class="text-outline">TEMP GRADIENT</span>
+<span class="text-primary font-semibold">-12°C → +38°C</span>
+</div>
+</div>
+</div>
+<!-- Middle Split Section: Consumable Inventory Table + Operational Telemetry Graph -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-space-md">
+<!-- Consumable Inventory Table (8 Cols) -->
+<div class="xl:col-span-8 bg-surface-container rounded shadow-md overflow-hidden flex flex-col">
+<div class="px-space-md py-space-sm bg-surface-container-high flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="font-telemetry-sm text-telemetry-sm text-secondary">SEC.INV // 01</span>
+<span class="font-headline-sm text-headline-sm text-primary uppercase">Detailed Consumable Inventory</span>
+</div>
+<span class="font-telemetry-sm text-telemetry-sm text-outline">AUTO-POLL INTERVAL: 500MS</span>
+</div>
+<div class="overflow-x-auto w-full">
+<table class="w-full text-left font-body-sm text-body-sm">
+<thead class="bg-surface-container-lowest text-outline font-telemetry-sm text-telemetry-sm uppercase">
+<tr>
+<th class="py-space-sm px-space-md">Resource Name</th>
+<th class="py-space-sm px-space-md">Sub-Node</th>
+<th class="py-space-sm px-space-md">Current Level</th>
+<th class="py-space-sm px-space-md">Est. Depletion</th>
+<th class="py-space-sm px-space-md">Burn Delta</th>
+<th class="py-space-sm px-space-md">Operational Status</th>
+<th class="py-space-sm px-space-md text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y-0 text-on-surface" id="inventoryTableBody">
+<!-- Row 1 -->
+<tr class="bg-surface-container hover:bg-surface-container-high transition-colors">
+<td class="py-space-sm px-space-md font-semibold text-primary flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-primary-container">air</span>
+<span class="">Cryo-O2 Primary Pod</span>
+</td>
+<td class="py-space-sm px-space-md font-telemetry-sm text-telemetry-sm text-outline">ECLSS-O2-T1</td>
+<td class="py-space-sm px-space-md font-telemetry-md text-telemetry-md text-primary">3,690 kg (88%)</td>
+<td class="py-space-sm px-space-md font-telemetry-sm text-telemetry-sm text-on-surface-variant">T+ 450 d</td>
+<td class="py-space-sm px-space-md font-telemetry-sm text-telemetry-sm text-primary-container">-0.82 kg/h (Norm)</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1 font-telemetry-sm text-telemetry-sm px-2 py-0.5 rounded bg-primary-container/10 text-primary-container">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+                    Nominal
+                  </span>
+</td>
+<td class="py-space-sm px-space-md text-right">
+<button class="px-space-sm py-space-xs bg-surface-container-low text-secondary hover:text-primary rounded font-telemetry-sm text-telemetry-sm transition-colors" onclick="openDeepDive('Cryo-O2 Primary Pod', 'ECLSS-O2-T1', '3,690 kg', '0.82 kg/h', '88%')">
+                    View Details
+                  </button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="bg-surface-container-low hover:bg-surface-container-high transition-colors">
+<td class="py-space-sm px-space-md font-semibold text-primary flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">local_gas_station</span>
+<span class="">Hydrazine RCS Feed</span>
+</td>
+<td class="py-space-sm px-space-md font-telemetry-sm text-telemetry-sm text-outline">PROP-HYD-A</td>
+<td class="py-space-sm px-space-md font-telemetry-md text-telemetry-md text-primary">12,400 kg (89%)</td>
+<td class="py-space-sm px-space-md font-telemetry-sm text-telemetry-sm text-on-surface-variant">T+ 320 d</td>
+<td class="py-space-sm px-space-md font-telemetry-sm text-telemetry-sm text-tertiary-fixed-dim">-4.2 kg/burn</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1 font-telemetry-sm text-telemetry-sm px-2 py-0.5 rounded bg-secondary/10 text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                    Stable
+                  </span>
+</td>
+<td class="py-space-sm px-space-md text-right">
+<button class="px-space-sm py-space-xs bg-surface-container-low text-secondary hover:text-primary rounded font-telemetry-sm text-telemetry-sm transition-colors" onclick="openDeepDive('Hydrazine RCS Feed', 'PROP-HYD-A', '12,400 kg', '4.2 kg/burn', '89%')">
+                    View Details
+                  </button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="bg-surface-container hover:bg-surface-container-high transition-colors">
+<td class="py-space-sm px-space-md font-semibold text-primary flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-primary-container">water_drop</span>
+<span class="">Potable Water Reserves</span>
+</td>
+<td class="py-space-sm px-space-md font-telemetry-sm text-telemetry-sm text-outline">ECLSS-H2O-M</td>
+<td class="py-space-sm px-space-md font-telemetry-md text-telemetry-md text-primary">1,120 L (92%)</td>
+<td class="py-space-sm px-space-md font-telemetry-sm text-telemetry-sm text-on-surface-variant">Indefinite (Loop)</td>
+<td class="py-space-sm px-space-md font-telemetry-sm text-telemetry-sm text-secondary">+1.2 L/h (Net)</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1 font-telemetry-sm text-telemetry-sm px-2 py-0.5 rounded bg-secondary/10 text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                    Replenishing
+                  </span>
+</td>
+<td class="py-space-sm px-space-md text-right">
+<button class="px-space-sm py-space-xs bg-surface-container-low text-secondary hover:text-primary rounded font-telemetry-sm text-telemetry-sm transition-colors" onclick="openDeepDive('Potable Water Reserves', 'ECLSS-H2O-M', '1,120 L', '+1.2 L/h', '92%')">
+                    View Details
+                  </button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="bg-surface-container-low hover:bg-surface-container-high transition-colors">
+<td class="py-space-sm px-space-md font-semibold text-primary flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-tertiary-fixed-dim">thermostat</span>
+<span class="">Liquid Nitrogen Buffer</span>
+</td>
+<td class="py-space-sm px-space-md font-telemetry-sm text-telemetry-sm text-outline">ATMO-LN2-C</td>
+<td class="py-space-sm px-space-md font-telemetry-md text-telemetry-md text-tertiary-fixed-dim">420 kg (46%)</td>
+<td class="py-space-sm px-space-md font-telemetry-sm text-telemetry-sm text-tertiary-fixed-dim">T+ 68 d</td>
+<td class="py-space-sm px-space-md font-telemetry-sm text-telemetry-sm text-tertiary-fixed-dim">-0.26 kg/h</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1 font-telemetry-sm text-telemetry-sm px-2 py-0.5 rounded bg-tertiary-container/10 text-tertiary-fixed-dim">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+                    Depleting
+                  </span>
+</td>
+<td class="py-space-sm px-space-md text-right">
+<button class="px-space-sm py-space-xs bg-surface-container-low text-secondary hover:text-primary rounded font-telemetry-sm text-telemetry-sm transition-colors" onclick="openDeepDive('Liquid Nitrogen Buffer', 'ATMO-LN2-C', '420 kg', '0.26 kg/h', '46%')">
+                    View Details
+                  </button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="bg-surface-container hover:bg-surface-container-high transition-colors">
+<td class="py-space-sm px-space-md font-semibold text-primary flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-primary-container">battery_charging_full</span>
+<span class="">Li-Ion Cell Pack Array</span>
+</td>
+<td class="py-space-sm px-space-md font-telemetry-sm text-telemetry-sm text-outline">PWR-BAT-4</td>
+<td class="py-space-sm px-space-md font-telemetry-md text-telemetry-md text-primary">185 kWh (88%)</td>
+<td class="py-space-sm px-space-md font-telemetry-sm text-telemetry-sm text-on-surface-variant">Cyclic (Solar Sync)</td>
+<td class="py-space-sm px-space-md font-telemetry-sm text-telemetry-sm text-primary-container">+3.4 kW (Net)</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1 font-telemetry-sm text-telemetry-sm px-2 py-0.5 rounded bg-primary-container/10 text-primary-container">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+                    Nominal
+                  </span>
+</td>
+<td class="py-space-sm px-space-md text-right">
+<button class="px-space-sm py-space-xs bg-surface-container-low text-secondary hover:text-primary rounded font-telemetry-sm text-telemetry-sm transition-colors" onclick="openDeepDive('Li-Ion Cell Pack Array', 'PWR-BAT-4', '185 kWh', '+3.4 kW', '88%')">
+                    View Details
+                  </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Tactical Visual Asset & Telemetry Trend Sparkline (4 Cols) -->
+<div class="xl:col-span-4 bg-surface-container rounded shadow-md flex flex-col justify-between overflow-hidden">
+<div class="px-space-md py-space-sm bg-surface-container-high flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-primary uppercase">Cryo Storage Bay Status</span>
+<span class="font-telemetry-sm text-telemetry-sm text-primary-container">OPTICAL FEED // CAM-4</span>
+</div>
+<!-- Embedded Photo Module with HUD Overlay -->
+<div class="relative h-48 bg-surface-container-lowest overflow-hidden">
+<div class="bg-cover bg-center w-full h-full opacity-60" data-alt="High tech cryogenic tank storage compartment inside an orbital spacecraft, gleaming stainless steel pipes, cyan and green telemetry indicator LED strips, dark aerospace interior with visible insulation blankets and mechanical pressure valves, cinematic moody lighting, hyper-realistic, 8k resolution" style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuC0pUBkD6oQ84OEXLTzffXK35hONy4gPaCBxjFKW0yxqf_56JjgQ3GTf8JUriqfsv3xzh8UU_VlVPO2VVEpaNPfS0RjOgULFOHU0YPwzBhSw6IQWK1HxaE9j5oWIuWaNgJt6C1gBEAPryS54c8fOQXP4NvDA7Jcd0P7vTur76nqftf00ppElCuTGtRZECtxd9oOtbOi8m3nUX3g3tvOctG0oFeVj7o8BsoI66YCViM&quot;);"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container via-transparent to-transparent"></div>
+<div class="absolute top-2 left-2 flex items-center gap-1 bg-surface-container-lowest/80 px-2 py-1 rounded font-telemetry-sm text-telemetry-sm text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-ping"></span>
+            PRESSURIZED COMPARTMENT 03B
+          </div>
+<div class="absolute bottom-2 left-2 font-telemetry-sm text-telemetry-sm text-on-surface">
+            TEMPERATURE: <span class="text-secondary">-182.4°C</span> | ISOLATION VALVE: <span class="text-primary-container">LOCKED</span>
+</div>
+</div>
+<!-- Telemetry Sparkline SVG -->
+<div class="p-space-md space-y-space-xs">
+<div class="flex items-center justify-between font-telemetry-sm text-telemetry-sm">
+<span class="text-outline uppercase">O2 Depletion Velocity Curve (Past 24h)</span>
+<span class="text-primary font-bold">0.82 kg/h Avg</span>
+</div>
+<div class="h-20 w-full pt-1">
+<svg class="w-full h-full text-secondary" fill="none" preserveAspectRatio="none" viewBox="0 0 400 80">
+<path d="M0,45 Q50,40 100,48 T200,42 T300,44 T400,38" fill="none" stroke="currentColor" stroke-width="2"></path>
+<path d="M0,45 Q50,40 100,48 T200,42 T300,44 T400,38 L400,80 L0,80 Z" fill="currentColor" fill-opacity="0.1"></path>
+<!-- Reference guide lines -->
+<line stroke="currentColor" stroke-dasharray="2 4" stroke-opacity="0.2" x1="0" x2="400" y1="20" y2="20"></line>
+<line stroke="currentColor" stroke-dasharray="2 4" stroke-opacity="0.2" x1="0" x2="400" y1="60" y2="60"></line>
+<!-- Real-time ping -->
+<circle class="fill-primary-container animate-pulse" cx="400" cy="38" r="4"></circle>
+</svg>
+</div>
+<div class="flex items-center justify-between font-telemetry-sm text-telemetry-sm text-outline">
+<span class="">T-24H</span>
+<span class="">T-12H</span>
+<span class="">REAL-TIME</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Situational Decision Ledger & Contingency Trade-Off Panel -->
+<div class="bg-surface-container rounded shadow-md overflow-hidden">
+<!-- Header & Tab Navigation -->
+<div class="px-space-md py-space-sm bg-surface-container-high flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
+<div>
+<span class="font-telemetry-sm text-telemetry-sm text-secondary block uppercase">SIMULATION &amp; TRADE-OFF DISPATCH</span>
+<h2 class="font-headline-md text-headline-md text-primary uppercase">
+            DECISION IMPACT AUDIT // REALLOCATION ENGINE
+          </h2>
+</div>
+<!-- Toggle Tabs -->
+<div class="flex items-center gap-space-xs bg-surface-container-lowest p-space-xs rounded">
+<button class="px-space-md py-space-xs rounded font-label-nav text-label-nav text-on-primary bg-primary-container font-semibold transition-all shadow-sm" id="tabContingency" onclick="switchDecisionTab('contingency')">
+            Active Contingency Model
+          </button>
+<button class="px-space-md py-space-xs rounded font-label-nav text-label-nav text-on-surface-variant hover:text-on-surface transition-all" id="tabHistory" onclick="switchDecisionTab('history')">
+            Resource History
+          </button>
+</div>
+</div>
+<!-- Contingency Tab View -->
+<div class="p-space-lg space-y-space-md" id="contingencyView">
+<!-- Interactive Contingency Proposal Banner -->
+<div class="bg-surface-container-high p-space-md rounded shadow-md">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="space-y-space-xs max-w-2xl">
+<div class="flex items-center gap-space-xs">
+<span class="inline-block px-2 py-0.5 rounded font-telemetry-sm text-telemetry-sm bg-tertiary-container/10 text-tertiary-fixed-dim uppercase font-semibold">
+                  PROPOSAL REF: REALLOC-HYD-04
+                </span>
+<span class="font-telemetry-sm text-telemetry-sm text-outline">PRIORITY: HIGH-ORBIT MANEUVER</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary">
+                Transfer 250 kg Hydrazine from Primary Tank to RCS Auxiliary Manifold
+              </h3>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                Compensates for upcoming orbital alignment burn vector delta without exceeding thermal safety thresholds on auxiliary propulsion feed line.
+              </p>
+</div>
+<!-- Projected Metrics Delta Card -->
+<div class="grid grid-cols-2 gap-space-sm bg-surface-container-lowest p-space-md rounded">
+<div>
+<span class="font-telemetry-sm text-telemetry-sm uppercase text-outline block">RCS Endurance</span>
+<span class="font-telemetry-lg text-telemetry-lg text-primary-container font-bold">+14.0 hrs</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mt-1">Expanded attitude window</span>
+</div>
+<div>
+<span class="font-telemetry-sm text-telemetry-sm uppercase text-outline block">Delta-V Margin</span>
+<span class="font-telemetry-lg text-telemetry-lg text-tertiary-fixed-dim font-bold">-35 m/s</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mt-1">Within flight tolerance</span>
+</div>
+</div>
+<!-- Action Trigger CTAs -->
+<div class="flex flex-col sm:flex-row lg:flex-col gap-space-xs shrink-0">
+<button class="flex items-center justify-center gap-space-xs bg-primary-container text-on-primary-container hover:bg-primary font-headline-sm text-label-nav font-bold px-space-lg py-space-sm rounded shadow-[0_0_12px_rgba(57,255,136,0.35)] transition-all" onclick="commitDecisionAction()">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span class="">Confirm Action</span>
+</button>
+<button class="flex items-center justify-center gap-space-xs bg-surface-container-low text-on-surface hover:bg-surface-bright font-label-nav text-label-nav px-space-md py-space-sm rounded transition-colors" onclick="openDecisionDetailsModal()">
+<span class="material-symbols-outlined text-[16px]">analytics</span>
+<span class="">Decision Details</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Comparative Multi-Variable Matrix -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md pt-space-xs">
+<!-- Metric 1 -->
+<div class="bg-surface-container-low p-space-md rounded">
+<span class="font-telemetry-sm text-telemetry-sm uppercase text-outline">Structural Integrity Load</span>
+<div class="flex items-baseline justify-between mt-space-xs">
+<span class="font-headline-sm text-headline-sm text-primary">0.14 G</span>
+<span class="font-telemetry-sm text-telemetry-sm text-primary-container">SAFE (&lt;0.80 G)</span>
+</div>
+<div class="w-full bg-surface-container-lowest h-1 rounded mt-space-xs overflow-hidden">
+<div class="bg-primary-container h-full" style="width: 17.5%;"></div>
+</div>
+</div>
+<!-- Metric 2 -->
+<div class="bg-surface-container-low p-space-md rounded">
+<span class="font-telemetry-sm text-telemetry-sm uppercase text-outline">Thermal Radiator Flux</span>
+<div class="flex items-baseline justify-between mt-space-xs">
+<span class="font-headline-sm text-headline-sm text-primary">+2.4 kW</span>
+<span class="font-telemetry-sm text-telemetry-sm text-secondary">NOMINAL</span>
+</div>
+<div class="w-full bg-surface-container-lowest h-1 rounded mt-space-xs overflow-hidden">
+<div class="bg-secondary h-full" style="width: 48%;"></div>
+</div>
+</div>
+<!-- Metric 3 -->
+<div class="bg-surface-container-low p-space-md rounded">
+<span class="font-telemetry-sm text-telemetry-sm uppercase text-outline">Mission Criticality Index</span>
+<div class="flex items-baseline justify-between mt-space-xs">
+<span class="font-headline-sm text-headline-sm text-primary">Tier II</span>
+<span class="font-telemetry-sm text-telemetry-sm text-outline">CMD-VANCE SIGN-OFF</span>
+</div>
+<div class="w-full bg-surface-container-lowest h-1 rounded mt-space-xs overflow-hidden">
+<div class="bg-secondary-fixed h-full" style="width: 65%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Resource History Tab View (Initially Hidden) -->
+<div class="hidden p-space-lg" id="historyView">
+<div class="space-y-space-sm">
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-headline-sm text-headline-sm text-primary">Chronological Ledger of Past Reallocations</span>
+<span class="font-telemetry-sm text-telemetry-sm text-outline">LOG HASH // 0x48FA9</span>
+</div>
+<!-- History items -->
+<div class="space-y-space-xs">
+<div class="bg-surface-container-low p-space-md rounded flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<span class="font-telemetry-sm text-telemetry-sm text-secondary bg-surface-container px-2 py-1 rounded">MET 146:12:00</span>
+<div>
+<h4 class="font-headline-sm text-label-nav text-primary">Reallocated 15 kWh Battery Reserve to ECLSS CO2 Scrubbers</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Approved by CDR Vance // Contingency carbon filtration test run completed.</p>
+</div>
+</div>
+<span class="font-telemetry-sm text-telemetry-sm text-primary-container uppercase font-semibold">EXECUTED</span>
+</div>
+<div class="bg-surface-container-low p-space-md rounded flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<span class="font-telemetry-sm text-telemetry-sm text-secondary bg-surface-container px-2 py-1 rounded">MET 138:04:19</span>
+<div>
+<h4 class="font-headline-sm text-label-nav text-primary">Purged 12 kg Coolant Loop NH3 into Secondary Heat Exchanger</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Pressure balance maintained; delta stabilized at +22°C nominal.</p>
+</div>
+</div>
+<span class="font-telemetry-sm text-telemetry-sm text-primary-container uppercase font-semibold">EXECUTED</span>
+</div>
+<div class="bg-surface-container-low p-space-md rounded flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<span class="font-telemetry-sm text-telemetry-sm text-secondary bg-surface-container px-2 py-1 rounded">MET 122:18:44</span>
+<div>
+<h4 class="font-headline-sm text-label-nav text-primary">Cross-feed O2 Tank 2 to Crew Module Airlock</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">EVA-1 Pre-breathe protocols complete. 18.4 kg liquid O2 consumed.</p>
+</div>
+</div>
+<span class="font-telemetry-sm text-telemetry-sm text-primary-container uppercase font-semibold">VERIFIED</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Resource Deep Dive Modal / Side Sheet -->
+<div class="hidden fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex justify-end" id="resourceDeepDiveModal">
+<div class="w-full max-w-xl bg-surface-container-high h-full shadow-2xl p-space-xl flex flex-col justify-between overflow-y-auto">
+<div class="space-y-space-lg">
+<!-- Drawer Header -->
+<div class="flex items-start justify-between pb-space-md bg-surface-container-high">
+<div>
+<span class="font-telemetry-sm text-telemetry-sm text-secondary uppercase block" id="modalSubNode">SUB-NODE // ECLSS-O2-T1</span>
+<h3 class="font-headline-lg text-headline-lg text-primary" id="modalResourceTitle">Oxygen Reserves</h3>
+</div>
+<button class="p-space-xs bg-surface-container-low hover:bg-surface-bright text-on-surface rounded transition-colors" onclick="closeDeepDive()">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Telemetry Gauges -->
+<div class="grid grid-cols-2 gap-space-md">
+<div class="bg-surface-container-lowest p-space-md rounded">
+<span class="font-telemetry-sm text-telemetry-sm text-outline uppercase block">Current Quantity</span>
+<span class="font-telemetry-lg text-telemetry-lg text-primary" id="modalQuantity">3,690 kg</span>
+<span class="font-body-sm text-body-sm text-primary-container block mt-1" id="modalPercentage">88% Capacity</span>
+</div>
+<div class="bg-surface-container-lowest p-space-md rounded">
+<span class="font-telemetry-sm text-telemetry-sm text-outline uppercase block">Velocity of Burn</span>
+<span class="font-telemetry-lg text-telemetry-lg text-secondary" id="modalBurnRate">0.82 kg/h</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mt-1">Within Nominal Range</span>
+</div>
+</div>
+<!-- Visual Sensor Spec Graphic -->
+<div class="relative rounded overflow-hidden h-36 bg-surface-container-lowest">
+<div class="bg-cover bg-center w-full h-full opacity-40" data-alt="Close up technical sensor monitoring station in aerospace cockpit, digital dials showing liquid levels, deep cyan and dark navy palette, ultra fine telemetry readouts, realistic 3d render" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAZQ9mg85puhE8syrzcZGAG4jzSH1eaI6b4AwZJNFGZYDNhcu10giw2FSgSIhBVelOYnAKDwvudZLWqOG3HcCrmh17UVr-zMjMEvU8JqWwddVicuCbuQMmXY6X_diwDHzEkPJJM4H7CY-tXkIWE_yBZrAO6Orw5DXjbmStC3WiN1mQw9_Qyy67OJv-lBe-oTUk47v7i9knZakwLTBBccQWabxqkF7B9Jk0qNBfeiow')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent"></div>
+<div class="absolute bottom-3 left-3">
+<span class="font-telemetry-sm text-telemetry-sm text-secondary uppercase">Cryogenic Line Pressure</span>
+<span class="font-telemetry-md text-telemetry-md text-primary block">142.8 kPa (Regulated ±0.4%)</span>
+</div>
+</div>
+<!-- Temperature / Pressure Curve Vector -->
+<div class="bg-surface-container-lowest p-space-md rounded space-y-space-xs">
+<span class="font-telemetry-sm text-telemetry-sm text-outline uppercase">Internal Manifold Pressure Curve (MET 148:00 - NOW)</span>
+<div class="h-28 w-full pt-2">
+<svg class="w-full h-full text-primary-container" fill="none" viewBox="0 0 300 70">
+<path d="M0,50 C60,45 120,55 180,35 C240,15 280,25 300,20" fill="none" stroke="currentColor" stroke-width="2.5"></path>
+<path d="M0,50 C60,45 120,55 180,35 C240,15 280,25 300,20 L300,70 L0,70 Z" fill="currentColor" fill-opacity="0.08"></path>
+<circle class="fill-primary-container" cx="300" cy="20" r="3.5"></circle>
+</svg>
+</div>
+<div class="flex justify-between font-telemetry-sm text-telemetry-sm text-outline">
+<span class="">139 kPa</span>
+<span class="">142.8 kPa</span>
+<span class="">145 kPa</span>
+</div>
+</div>
+<!-- Replenishment Checklist -->
+<div class="space-y-space-xs">
+<span class="font-telemetry-sm text-telemetry-sm text-outline uppercase block">Replenishment &amp; Inspection Checklist</span>
+<div class="space-y-space-xs">
+<label class="flex items-center gap-space-sm bg-surface-container-low p-space-sm rounded cursor-pointer">
+<input checked="" class="accent-primary-container w-4 h-4 rounded" type="checkbox">
+<span class="font-body-sm text-body-sm text-on-surface">Primary solenoid valves continuity check: PASS</span>
+</label>
+<label class="flex items-center gap-space-sm bg-surface-container-low p-space-sm rounded cursor-pointer">
+<input checked="" class="accent-primary-container w-4 h-4 rounded" type="checkbox">
+<span class="font-body-sm text-body-sm text-on-surface">Secondary expansion relief valve calibrated: PASS</span>
+</label>
+<label class="flex items-center gap-space-sm bg-surface-container-low p-space-sm rounded cursor-pointer">
+<input class="accent-primary-container w-4 h-4 rounded" type="checkbox">
+<span class="font-body-sm text-body-sm text-on-surface">Cargo supply ship transfer interface seal check: PENDING</span>
+</label>
+</div>
+</div>
+</div>
+<!-- Drawer Footer Action -->
+<div class="pt-space-md flex items-center justify-end gap-space-sm">
+<button class="px-space-md py-space-sm rounded font-label-nav text-label-nav text-on-surface hover:bg-surface-container transition-colors" onclick="closeDeepDive()">
+          Close Window
+        </button>
+<button class="px-space-md py-space-sm rounded font-label-nav text-label-nav font-semibold bg-primary-container text-on-primary-container hover:bg-primary transition-all shadow-[0_0_10px_rgba(57,255,136,0.25)]" onclick="closeDeepDive(); showCommitAlert('Sub-node telemetry synchronized to MCC Houston.')">
+          Sync Diagnostics
+        </button>
+</div>
+</div>
+</div>
+<!-- Resource Comparison Overlay / Drawer -->
+<div class="hidden fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex justify-center items-center p-space-md" id="resourceCompareDrawer">
+<div class="w-full max-w-4xl bg-surface-container-high rounded shadow-2xl p-space-lg space-y-space-md">
+<div class="flex items-center justify-between pb-space-xs">
+<div>
+<span class="font-telemetry-sm text-telemetry-sm text-secondary uppercase">CROSS-SYSTEM COMPARATIVE AUDIT</span>
+<h3 class="font-headline-md text-headline-md text-primary">Baseline vs. Projected vs. Current Allocations</h3>
+</div>
+<button class="p-space-xs bg-surface-container-low hover:bg-surface-bright rounded text-on-surface" onclick="toggleCompareDrawer()">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Multi-Resource Comparison Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Col 1: Baseline -->
+<div class="bg-surface-container-lowest p-space-md rounded space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-label-nav text-primary uppercase">Flight Plan Baseline</span>
+<span class="font-telemetry-sm text-telemetry-sm text-outline">T-0 NOMINAL</span>
+</div>
+<div class="space-y-space-xs font-telemetry-sm text-telemetry-sm">
+<div class="flex justify-between py-1 bg-surface-container-low px-2 rounded">
+<span class="text-on-surface-variant">Liquid O2</span>
+<span class="text-primary">4,200 kg</span>
+</div>
+<div class="flex justify-between py-1 bg-surface-container-low px-2 rounded">
+<span class="text-on-surface-variant">Hydrazine N2H4</span>
+<span class="text-primary">14,000 kg</span>
+</div>
+<div class="flex justify-between py-1 bg-surface-container-low px-2 rounded">
+<span class="text-on-surface-variant">Electrical Bus</span>
+<span class="text-primary">26.5 kW</span>
+</div>
+<div class="flex justify-between py-1 bg-surface-container-low px-2 rounded">
+<span class="text-on-surface-variant">Water Loop Eff.</span>
+<span class="text-primary">95.0%</span>
+</div>
+</div>
+</div>
+<!-- Col 2: Current Actual -->
+<div class="bg-surface-container-low p-space-md rounded space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-label-nav text-secondary uppercase">Current Actual</span>
+<span class="font-telemetry-sm text-telemetry-sm text-secondary">REAL-TIME REV</span>
+</div>
+<div class="space-y-space-xs font-telemetry-sm text-telemetry-sm">
+<div class="flex justify-between py-1 bg-surface-container-high px-2 rounded">
+<span class="text-on-surface-variant">Liquid O2</span>
+<span class="text-secondary font-bold">3,690 kg</span>
+</div>
+<div class="flex justify-between py-1 bg-surface-container-high px-2 rounded">
+<span class="text-on-surface-variant">Hydrazine N2H4</span>
+<span class="text-secondary font-bold">12,400 kg</span>
+</div>
+<div class="flex justify-between py-1 bg-surface-container-high px-2 rounded">
+<span class="text-on-surface-variant">Electrical Bus</span>
+<span class="text-secondary font-bold">28.4 kW</span>
+</div>
+<div class="flex justify-between py-1 bg-surface-container-high px-2 rounded">
+<span class="text-on-surface-variant">Water Loop Eff.</span>
+<span class="text-secondary font-bold">98.5%</span>
+</div>
+</div>
+</div>
+<!-- Col 3: Projected EOM -->
+<div class="bg-surface-container-lowest p-space-md rounded space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-label-nav text-primary-container uppercase">Projected EOM</span>
+<span class="font-telemetry-sm text-telemetry-sm text-primary-container">WITH CONTINGENCY</span>
+</div>
+<div class="space-y-space-xs font-telemetry-sm text-telemetry-sm">
+<div class="flex justify-between py-1 bg-surface-container-low px-2 rounded">
+<span class="text-on-surface-variant">Liquid O2</span>
+<span class="text-primary-container font-bold">+850 kg (Margin)</span>
+</div>
+<div class="flex justify-between py-1 bg-surface-container-low px-2 rounded">
+<span class="text-on-surface-variant">Hydrazine N2H4</span>
+<span class="text-primary-container font-bold">+1,250 kg (Surplus)</span>
+</div>
+<div class="flex justify-between py-1 bg-surface-container-low px-2 rounded">
+<span class="text-on-surface-variant">Electrical Bus</span>
+<span class="text-primary-container font-bold">Nominal Reserve</span>
+</div>
+<div class="flex justify-between py-1 bg-surface-container-low px-2 rounded">
+<span class="text-on-surface-variant">Water Loop Eff.</span>
+<span class="text-primary-container font-bold">Continuous Yield</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="font-telemetry-sm text-telemetry-sm text-on-surface-variant">CONFIDENCE INTERVAL: 99.4% // MONTE CARLO (N=10,000)</span>
+<button class="px-space-md py-space-sm bg-secondary text-surface-container-lowest font-headline-sm text-label-nav font-bold rounded" onclick="toggleCompareDrawer()">
+          Acknowledge Comparison
+        </button>
+</div>
+</div>
+</div>
+<!-- Notification Toast Container -->
+<div class="fixed bottom-6 right-6 hidden bg-surface-container-high text-primary px-space-md py-space-sm rounded shadow-2xl z-50 flex items-center gap-space-sm" id="toastNotification">
+<span class="material-symbols-outlined text-primary-container text-[20px]" id="toastIcon">check_circle</span>
+<span class="font-telemetry-sm text-telemetry-sm" id="toastMessage">Action Committed.</span>
+</div>
+<script>
+    // Category Filter Dropdown Logic
+    const filterBtn = document.getElementById('categoryFilterBtn');
+    const filterMenu = document.getElementById('filterDropdownMenu');
+    const filterLabel = document.getElementById('currentFilterLabel');
+
+    if (filterBtn && filterMenu) {
+      filterBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        filterMenu.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!filterMenu.contains(e.target)) {
+          filterMenu.classList.add('hidden');
+        }
+      });
+    }
+
+    function applyFilter(category) {
+      filterLabel.textContent = `Filter: ${category}`;
+      filterMenu.classList.add('hidden');
+      showToast(`Filter updated: ${category}`, 'tune');
+    }
+
+    // Modal Deep-Dive Window Controls
+    const deepDiveModal = document.getElementById('resourceDeepDiveModal');
+    const modalTitle = document.getElementById('modalResourceTitle');
+    const modalSubNode = document.getElementById('modalSubNode');
+    const modalQuantity = document.getElementById('modalQuantity');
+    const modalBurnRate = document.getElementById('modalBurnRate');
+    const modalPercentage = document.getElementById('modalPercentage');
+
+    function openDeepDive(title, subnode, qty, burn, pct) {
+      if (modalTitle) modalTitle.textContent = title;
+      if (modalSubNode) modalSubNode.textContent = `SUB-NODE // ${subnode}`;
+      if (modalQuantity) modalQuantity.textContent = qty;
+      if (modalBurnRate) modalBurnRate.textContent = burn;
+      if (modalPercentage) modalPercentage.textContent = `${pct} Capacity`;
+      if (deepDiveModal) deepDiveModal.classList.remove('hidden');
+    }
+
+    function closeDeepDive() {
+      if (deepDiveModal) deepDiveModal.classList.add('hidden');
+    }
+
+    // Decision Tab Switcher
+    function switchDecisionTab(tabName) {
+      const contingencyView = document.getElementById('contingencyView');
+      const historyView = document.getElementById('historyView');
+      const tabContingency = document.getElementById('tabContingency');
+      const tabHistory = document.getElementById('tabHistory');
+
+      if (tabName === 'contingency') {
+        contingencyView.classList.remove('hidden');
+        historyView.classList.add('hidden');
+        tabContingency.className = "px-space-md py-space-xs rounded font-label-nav text-label-nav text-on-primary bg-primary-container font-semibold transition-all shadow-sm";
+        tabHistory.className = "px-space-md py-space-xs rounded font-label-nav text-label-nav text-on-surface-variant hover:text-on-surface transition-all";
+      } else {
+        contingencyView.classList.add('hidden');
+        historyView.classList.remove('hidden');
+        tabHistory.className = "px-space-md py-space-xs rounded font-label-nav text-label-nav text-on-primary bg-primary-container font-semibold transition-all shadow-sm";
+        tabContingency.className = "px-space-md py-space-xs rounded font-label-nav text-label-nav text-on-surface-variant hover:text-on-surface transition-all";
+      }
+    }
+
+    // Compare Drawer Controls
+    function toggleCompareDrawer() {
+      const drawer = document.getElementById('resourceCompareDrawer');
+      if (drawer) drawer.classList.toggle('hidden');
+    }
+
+    // Commit Decision Action
+    function commitDecisionAction() {
+      showToast('Hydrazine transfer committed: 250 kg reallocated to RCS Auxiliary Manifold.', 'check_circle');
+    }
+
+    function openDecisionDetailsModal() {
+      showToast('Loading trade-off vector simulation report...', 'analytics');
+    }
+
+    function triggerExportNotice() {
+      showToast('Generating consumable ledger CSV/PDF telemetry export...', 'file_download');
+    }
+
+    function showCommitAlert(msg) {
+      showToast(msg, 'verified');
+    }
+
+    // Toast Utility
+    function showToast(message, iconName = 'check_circle') {
+      const toast = document.getElementById('toastNotification');
+      const toastText = document.getElementById('toastMessage');
+      const toastIcon = document.getElementById('toastIcon');
+
+      if (toast && toastText) {
+        toastText.textContent = message;
+        if (toastIcon) toastIcon.textContent = iconName;
+        toast.classList.remove('hidden');
+        setTimeout(() => {
+          toast.classList.add('hidden');
+        }, 4000);
+      }
+    }
+  </script>
+</div></main></div>
+
+</body></html>
