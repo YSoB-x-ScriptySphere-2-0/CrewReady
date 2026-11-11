@@ -1,3 +1,5 @@
+> **Superseded in part by plan.md v7 (mentor pivot).** The game is now one Earth-to-Mars mission with six levels and four meters; base building, training deck, Moon mission, 3D runner and PWA are cut. Where this file disagrees with `plan.md`, `docs/00`, `docs/06` or `docs/08`, those win. Kept for reference only.
+
 # Detailed Design Specification: UI/UX & 3D Visual Architecture (DDS-UIUX-3D)
 ## CrewReady: Beyond Us | NASA Space Apps Challenge 2026
 ### Document Identifier: DOCS-04-DDS-UIUX-3D-V1.0

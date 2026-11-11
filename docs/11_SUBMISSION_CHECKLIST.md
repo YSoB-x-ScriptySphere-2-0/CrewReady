@@ -1,3 +1,5 @@
+> **Superseded in part by plan.md v7 (mentor pivot).** The game is now one Earth-to-Mars mission with six levels and four meters; base building, training deck, Moon mission, 3D runner and PWA are cut. Where this file disagrees with `plan.md`, `docs/00`, `docs/06` or `docs/08`, those win. Kept for reference only.
+
 # NASA Space Apps Challenge 2026: Official Submission Checklist & Compliance Audit
 ## Project: CrewReady: Beyond Us | Challenge: Build a Junior Astronaut Mission Trainer
 ### Document Identifier: DOCS-11-SUBMISSION-CHECKLIST-V1.0

@@ -16,3 +16,10 @@ dist-ssr/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Word lock files, local tool settings
+~$*
+.claude/settings.local.json
+
+# Third-party reference PDFs and guides (not ours to republish)
+nasa guidelines/
