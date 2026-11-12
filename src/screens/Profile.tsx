@@ -122,25 +122,25 @@ export function Profile() {
       </header>
 
       {/* Main Content Grid: Left Podiums, Right Trophies & Toggles */}
-      <div className="mt-3 grid flex-grow grid-cols-1 gap-4 lg:grid-cols-12">
+      <div className="mt-2 grid flex-grow grid-cols-1 sm:grid-cols-12 gap-3 min-h-0">
         {/* Left Column: Astronaut Selection Podiums (5 cols) */}
-        <div className="flex flex-col rounded-2xl border-2 border-line bg-panel/70 p-3 sm:p-4 lg:col-span-5">
+        <div className="flex flex-col justify-between rounded-2xl border-2 border-line bg-panel/70 p-2.5 sm:p-3 sm:col-span-5">
           <div className="flex items-center justify-between">
             <span className="font-display text-xs sm:text-sm font-extrabold uppercase tracking-wide text-text">
               Choose Astronaut
             </span>
             <button
               onClick={handleShuffle}
-              className="inline-flex items-center gap-1 rounded-lg border border-line bg-panel-up px-2 py-1 text-xs font-bold text-muted hover:text-text"
+              className="inline-flex items-center gap-1 rounded-lg border border-line bg-panel-up px-2 py-0.5 text-xs font-bold text-muted hover:text-text"
               title="Shuffle Call-sign"
             >
-              <Shuffle className="h-3.5 w-3.5" />
-              <span>Shuffle Name: <strong>{profile.callsign}</strong></span>
+              <Shuffle className="h-3 w-3" />
+              <span>Name: <strong>{profile.callsign}</strong></span>
             </button>
           </div>
 
           {/* Podiums Row */}
-          <div className="mt-4 flex flex-grow items-end justify-center gap-4 sm:gap-8 pb-2">
+          <div className="my-auto flex items-end justify-center gap-3 sm:gap-6 py-1">
             {/* Orbit Podium (Teal) */}
             <div
               onClick={() => handlePickAstronaut('orbit')}
@@ -151,21 +151,21 @@ export function Profile() {
               <Kid
                 who="orbit"
                 pose={profile.astronaut === 'orbit' ? 'cheer' : 'stand'}
-                height={120}
+                height={95}
                 label="Orbit Astronaut"
               />
               <div
-                className={`mt-2 flex h-14 w-28 sm:w-32 flex-col items-center justify-center rounded-2xl border-3 shadow-md transition ${
+                className={`mt-1.5 flex h-11 w-24 sm:w-28 flex-col items-center justify-center rounded-xl border-2 shadow-sm transition ${
                   profile.astronaut === 'orbit'
-                    ? 'border-go bg-[#19A7B8]/30 shadow-[0_0_1rem_rgba(25,167,184,0.4)]'
+                    ? 'border-go bg-[#19A7B8]/30 shadow-[0_0_0.75rem_rgba(25,167,184,0.4)]'
                     : 'border-line/60 bg-panel'
                 }`}
                 style={{ borderColor: '#19A7B8' }}
               >
-                <span className="font-display text-sm font-extrabold tracking-wide text-[#19A7B8]">
+                <span className="font-display text-xs font-extrabold tracking-wide text-[#19A7B8]">
                   ORBIT
                 </span>
-                <span className="text-[10px] font-bold text-muted">Teal Suit</span>
+                <span className="text-[9px] font-bold text-muted">Teal Suit</span>
               </div>
             </div>
 
@@ -179,32 +179,32 @@ export function Profile() {
               <Kid
                 who="nova"
                 pose={profile.astronaut === 'nova' ? 'cheer' : 'stand'}
-                height={120}
+                height={95}
                 label="Nova Astronaut"
               />
               <div
-                className={`mt-2 flex h-14 w-28 sm:w-32 flex-col items-center justify-center rounded-2xl border-3 shadow-md transition ${
+                className={`mt-1.5 flex h-11 w-24 sm:w-28 flex-col items-center justify-center rounded-xl border-2 shadow-sm transition ${
                   profile.astronaut === 'nova'
-                    ? 'border-[#E8338B] bg-[#E8338B]/30 shadow-[0_0_1rem_rgba(232,51,139,0.4)]'
+                    ? 'border-[#E8338B] bg-[#E8338B]/30 shadow-[0_0_0.75rem_rgba(232,51,139,0.4)]'
                     : 'border-line/60 bg-panel'
                 }`}
                 style={{ borderColor: '#E8338B' }}
               >
-                <span className="font-display text-sm font-extrabold tracking-wide text-[#E8338B]">
+                <span className="font-display text-xs font-extrabold tracking-wide text-[#E8338B]">
                   NOVA
                 </span>
-                <span className="text-[10px] font-bold text-muted">Pink Suit</span>
+                <span className="text-[9px] font-bold text-muted">Pink Suit</span>
               </div>
             </div>
           </div>
 
-          <p className="mt-2 text-center text-xs text-muted">
-            Tap a podium to pick your astronaut. Active pilot represents you in every mission and Fly run.
+          <p className="text-center text-[10px] text-muted">
+            Tap podium to choose active pilot. Represents you in missions and Fly.
           </p>
         </div>
 
         {/* Right Column: Trophies, Space Book, Settings (7 cols) */}
-        <div className="flex flex-col gap-3 lg:col-span-7">
+        <div className="flex flex-col gap-2.5 sm:col-span-7 overflow-y-auto pr-1">
           {/* Trophies & Badges Section */}
           <div className="rounded-2xl border-2 border-line bg-panel/70 p-3 sm:p-4">
             <div className="flex items-center justify-between">
