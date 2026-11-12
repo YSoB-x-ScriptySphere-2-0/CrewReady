@@ -1,0 +1,39 @@
+{
+  "fetchedAt": "2026-11-11T20:19:34.264Z",
+  "source": "https://api.nasa.gov/neo/rest/v1/feed?start_date=2026-11-11&end_date=2026-11-17",
+  "startDate": "2026-11-11",
+  "endDate": "2026-11-17",
+  "count": 33,
+  "closest": [
+    {
+      "name": "363790 (2005 JE46)",
+      "hazardous": true,
+      "date": "2026-11-13",
+      "missKm": 7696629
+    },
+    {
+      "name": "(2019 VL5)",
+      "hazardous": false,
+      "date": "2026-11-13",
+      "missKm": 9547284
+    },
+    {
+      "name": "(2019 XL)",
+      "hazardous": false,
+      "date": "2026-11-17",
+      "missKm": 15309843
+    },
+    {
+      "name": "218017 (2001 XV266)",
+      "hazardous": false,
+      "date": "2026-11-14",
+      "missKm": 15974992
+    },
+    {
+      "name": "(2018 LQ2)",
+      "hazardous": false,
+      "date": "2026-11-13",
+      "missKm": 17258672
+    }
+  ]
+}

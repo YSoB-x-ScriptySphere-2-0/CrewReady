@@ -92,13 +92,15 @@ The other draft proposed: an asteroid hits Earth, humanity fails to stop it, mil
 
 Shown as three short cards with pictures, after the opening hook (section 7). The whole thing takes about 20 seconds and can be skipped.
 
-1. **"The Near Miss."** "Astronomers spotted a small asteroid heading for Earth. Space agencies nudged most of it away — but one piece landed in the ocean. Its dust dimmed the sunlight for a year, and farms and power grids everywhere struggled."
-2. **"The Lesson."** "Earth is healing. But the world learned something: one planet is not enough. We need to know how to live somewhere else."
-3. **"Your Mission."** "Mission Control has started the **Mars Continuity Programme**. A small crew will fly to Mars, build an outpost and keep it running for 500 sols. You are the commander."
+1. **"The Near Miss."** "An asteroid flew at Earth. Most of it was pushed away. One piece hit the ocean. Its dust dimmed the Sun for a year."
+2. **"The Lesson."** "Earth is healing. But we learned that one planet is not enough."
+3. **"Your Mission."** "Mission Control starts the **Mars Continuity Programme**. Fly to Mars and build a base. Keep it going for 500 sols — Mars days. You are the commander."
 
-Under card 1, a **real data card**: "Real asteroids passing Earth this week — NASA is tracking N of them. None will hit us." (NASA NeoWs, live.) This is the honest bridge between fiction and fact.
+(Shortened on 12 Nov 2026 so all three cards read aloud in about 25 seconds.)
 
-**Why the dust detail matters:** the player is told that dust dimmed Earth's sunlight and hurt farms and power. In level 4 the same thing happens to them on Mars. The story and the hardest level teach the same idea twice.
+Under card 1, a **real data card**: "Real asteroids passing Earth this week — NASA is tracking N. None will hit us." (NASA NeoWs, live.) This is the honest bridge between fiction and fact.
+
+**Why the dust detail matters:** the player is told that dust dimmed the Sun on Earth. In level 4 the same thing happens to them on Mars. The story and the hardest level teach the same idea twice.
 
 ### 4.3 The honesty note (shown on the Sources page and the project page)
 
@@ -140,9 +142,9 @@ Why four and not six: the challenge says two or three core resources work better
 
 | Result | Needed | What the player is told |
 |---|---|---|
-| **Outpost Survives** — Cadet | Finished, fewer than 3 healthy systems | "You made it. The outpost is fragile — the next crew has work to do." |
-| **Outpost Stable** — Pilot | 3 healthy systems, or 4+ stars | "The outpost can hold until the next rocket." |
-| **Outpost Thriving** — Commander | All 4 healthy **and** 6+ stars | "Earth is cheering. Humanity has a second foothold." |
+| **Outpost Survives** — Cadet | Finished, fewer than 3 healthy systems | "You made it! The base is weak. The next crew has work to do." |
+| **Outpost Stable** — Pilot | 3 healthy systems, or 4+ stars | "The base can hold on until the next rocket comes." |
+| **Outpost Thriving** — Commander | All 4 healthy **and** 6+ stars | "Earth is cheering. People now have a second home." |
 
 The success screen then lists the six things the player learned (section 6.8), each with its source, and NASA's picture of the day as the reward.
 

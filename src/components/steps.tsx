@@ -101,7 +101,7 @@ function Crates({ step, game, onDone }: { step: CratesStep; game: GameState; onD
       </div>
       <div className="mt-5">
         <PrimaryButton disabled={left !== 0} onClick={() => onDone(packCrates(game, step, counts))}>
-          Close the cargo bay
+          Close the rocket door
         </PrimaryButton>
       </div>
     </div>
@@ -203,7 +203,7 @@ function Sliders({ step, game, level, onDone }: { step: SlidersStep; game: GameS
       </div>
       <div className="mt-5">
         <PrimaryButton disabled={left !== 0} onClick={() => onDone(setSliders(game, step, alloc, mods))}>
-          Lock in the power split
+          Done sharing power
         </PrimaryButton>
       </div>
     </div>

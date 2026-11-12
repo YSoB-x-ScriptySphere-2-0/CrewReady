@@ -1,69 +1,19 @@
 import { useState } from 'react';
 import { Award, Home as HomeIcon, Lock } from 'lucide-react';
-import { BottomNav } from './components/BottomNav';
 import { StepView } from './components/steps';
 import { Kid, Twinkle, TwinkleSays } from './components/Twinkle';
-import { MeterIcon, Meters, MissionCard, OutcomePanel, PrimaryButton, QuietButton, Sky, SourceLine, StarIcon, type Place } from './components/ui';
+import { MeterIcon, Meters, MissionCard, OutcomePanel, PrimaryButton, QuietButton, Sky, SourceLine, Stars, type Place } from './components/ui';
 import { LEVELS } from './content/levels';
 import { outpostCheck } from './engine/engine';
 import { METERS, METER_NAMES } from './engine/types';
+import { Home } from './screens/Home';
+import { Hook } from './screens/Hook';
+import { MissionMap } from './screens/MissionMap';
+import { Story } from './screens/Story';
 import { useGame } from './store/game';
 
 /** Sky colour for each level — BUILD_SEQUENCE.md §4.2. */
 const LEVEL_PLACE: Record<number, Place> = { 1: 'earth', 2: 'space', 3: 'mars', 4: 'dust', 5: 'mars', 6: 'mars' };
-
-function Stars({ n }: { n: number }) {
-  return (
-    <span className="inline-flex items-center gap-1 font-display text-xl font-bold" aria-label={`${n} stars`}>
-      <StarIcon size={22} />
-      {n}
-    </span>
-  );
-}
-
-function Home() {
-  const { startMission, levelIndex, badges, go, game } = useGame();
-  const resume = useGame((s) => s.entered !== null && s.badges.length < LEVELS.length && s.levelIndex + s.stepIndex > 0);
-  return (
-    <Sky place="earth" nav={<BottomNav />}>
-      <header className="flex items-start justify-between gap-3">
-        <div>
-          <h1 className="font-display text-4xl leading-tight font-extrabold">CrewReady</h1>
-          <p className="text-lg font-bold">Command a Mars mission.</p>
-        </div>
-        <span className="rounded-btn bg-paper px-3 py-1 text-ink">
-          <Stars n={game.stars} />
-        </span>
-      </header>
-      <TwinkleSays>Ready when you are, Commander.</TwinkleSays>
-      <div className="relative z-10 -mb-8 flex items-end justify-center gap-6 sm:gap-12" aria-hidden>
-        <Kid who="nova" pose="wave" height={190} className="sm:!h-[230px]" />
-        <Kid who="orbit" pose="wave" height={190} className="sm:!h-[230px]" />
-      </div>
-      <MissionCard className="pt-10 sm:pt-12">
-        <div className="flex flex-wrap gap-3">
-          {resume ? (
-            <>
-              <PrimaryButton onClick={() => go('level')}>Continue — Level {levelIndex + 1}</PrimaryButton>
-              <QuietButton onClick={() => startMission()}>Start over</QuietButton>
-            </>
-          ) : (
-            <PrimaryButton onClick={() => startMission()}>Start mission</PrimaryButton>
-          )}
-        </div>
-        <h2 className="mt-6 font-display text-xl font-bold">Your route</h2>
-        <ol className="mt-2 grid gap-1.5 sm:grid-cols-2">
-          {LEVELS.map((l) => (
-            <li key={l.id} className="flex items-center gap-2">
-              {badges.includes(l.id) ? <Award size={20} strokeWidth={2} aria-label="Badge earned" /> : <span className="inline-block w-5 text-center text-muted">{l.id}</span>}
-              <span className="font-bold">{l.title}</span>
-            </li>
-          ))}
-        </ol>
-      </MissionCard>
-    </Sky>
-  );
-}
 
 function TopBar() {
   const { game, levelIndex, goHome } = useGame();
@@ -152,7 +102,7 @@ function Play() {
               next();
             }}
           >
-            {retryStep ? 'Try the checklist again' : last ? (levelIndex + 1 >= LEVELS.length ? 'Finish the mission' : 'Next level') : 'Next'}
+            {retryStep ? 'Try the landing again' : last ? (levelIndex + 1 >= LEVELS.length ? 'Finish the mission' : 'Next level') : 'Next'}
           </PrimaryButton>
         </OutcomePanel>
       ) : null}
@@ -194,9 +144,9 @@ function Replay() {
 }
 
 const RESULT_TEXT = {
-  survives: { title: 'Outpost Survives', rank: 'Cadet', line: 'You made it. The outpost is fragile — the next crew has work to do.' },
-  stable: { title: 'Outpost Stable', rank: 'Pilot', line: 'The outpost can hold until the next rocket.' },
-  thriving: { title: 'Outpost Thriving', rank: 'Commander', line: 'Earth is cheering. Humanity has a second foothold.' },
+  survives: { title: 'Outpost Survives', rank: 'Cadet', line: 'You made it! The base is weak. The next crew has work to do.' },
+  stable: { title: 'Outpost Stable', rank: 'Pilot', line: 'The base can hold on until the next rocket comes.' },
+  thriving: { title: 'Outpost Thriving', rank: 'Commander', line: 'Earth is cheering. People now have a second home.' },
 };
 
 function Success() {
@@ -259,6 +209,9 @@ function Success() {
 
 export default function App() {
   const screen = useGame((s) => s.screen);
+  if (screen === 'hook') return <Hook />;
+  if (screen === 'story') return <Story />;
+  if (screen === 'map') return <MissionMap />;
   if (screen === 'level') return <LevelOpening />;
   if (screen === 'play') return <Play />;
   if (screen === 'replay') return <Replay />;

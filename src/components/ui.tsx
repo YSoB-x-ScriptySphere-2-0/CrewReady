@@ -26,6 +26,16 @@ export function StarIcon({ size = 20 }: { size?: number }) {
   return <Star size={size} strokeWidth={2} aria-hidden className="shrink-0 text-ink" fill="var(--color-star)" />;
 }
 
+/** Star count: gold star and number. */
+export function Stars({ n }: { n: number }) {
+  return (
+    <span className="inline-flex items-center gap-1 font-display text-xl font-bold" aria-label={`${n} stars`}>
+      <StarIcon size={22} />
+      {n}
+    </span>
+  );
+}
+
 // ---------- sky and cards ----------
 
 export type Place = 'earth' | 'space' | 'mars' | 'dust' | 'alarm' | 'success';
@@ -43,7 +53,8 @@ const OnSky = createContext(false);
 
 /** Full-screen background in the colour of where the player is. */
 export function Sky({ place, children, nav }: { place: Place; children: ReactNode; nav?: ReactNode }) {
-  const dark = place !== 'success';
+  // Ink reads better than paper on the light skies (dust ochre 4.8:1, dawn gradient).
+  const dark = place !== 'success' && place !== 'dust';
   return (
     <OnSky.Provider value={dark}>
       <div className={`flex min-h-screen flex-col ${SKY[place]} ${dark ? 'on-sky text-paper' : 'text-ink'}`}>

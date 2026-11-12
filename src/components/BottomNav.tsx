@@ -4,7 +4,7 @@ import { BookOpen, Dumbbell, Lock, Map as MapIcon, Rocket, UserRound, type Lucid
 import { BUILT_SCREENS, useGame, type Screen } from '../store/game';
 
 const ITEMS: { label: string; icon: LucideIcon; screen: Screen; alsoActive?: Screen[] }[] = [
-  { label: 'Missions', icon: MapIcon, screen: 'home', alsoActive: ['map'] },
+  { label: 'Missions', icon: MapIcon, screen: 'map', alsoActive: ['home'] },
   { label: 'Quick Run', icon: Rocket, screen: 'quickrun' },
   { label: 'Resources', icon: BookOpen, screen: 'resources' },
   { label: 'Training', icon: Dumbbell, screen: 'training' },

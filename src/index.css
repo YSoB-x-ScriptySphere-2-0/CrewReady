@@ -95,6 +95,24 @@ button:disabled {
 .delta-flash {
   animation: delta-flash 3s ease-out forwards;
 }
+/* The hook shakes once when the storm hits. */
+@keyframes shake {
+  0%,
+  100% {
+    transform: none;
+  }
+  15%,
+  55% {
+    transform: translateX(-8px) rotate(-0.5deg);
+  }
+  35%,
+  75% {
+    transform: translateX(8px) rotate(0.5deg);
+  }
+}
+.shake {
+  animation: shake 0.5s ease-in-out 1;
+}
 @keyframes earth-fill {
   from {
     width: 0%;

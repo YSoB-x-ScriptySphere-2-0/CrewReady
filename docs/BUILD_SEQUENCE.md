@@ -64,6 +64,7 @@ Both are judged from the project page and the video. So the game must **show** i
 **Commands.**
 - Run: `npm run dev`. Port 5173 is set in `.claude/launch.json`. If 5173 is busy, the preview moves to the next free port.
 - Test: `npm test`.
+- If a new file's Tailwind classes don't show up in the dev preview (the layout looks unstyled), restart the dev server. The production build is not affected.
 - Build: `npm run build`.
 
 **Known problems to fix along the way**
@@ -86,7 +87,7 @@ Both are judged from the project page and the video. So the game must **show** i
    - The browser console shows no errors.
 4. **No dead ends.** Every button does something or is clearly locked. When a step builds a new screen, add it to `BUILT_SCREENS` in `src/store/game.ts`. That unlocks its bottom-nav item and source lines automatically. Never show placeholder text as real content.
 5. **No invented facts.** Every factual sentence a player sees comes from the plan or `docs/06_SCIENCE_AND_NASA_DATA.md` §4. If a fact is needed and missing, leave it out and say so in the report.
-6. **Words are for a 7-year-old.** Sentences under 15 words. One idea per screen. The first time a science word appears, it gets a five-word explanation ("a sol — a Mars day").
+6. **Words are for a 7-year-old.** Sentences under 15 words. One idea per screen. The first time a science word appears, it gets a five-word explanation ("a sol — a Mars day"). All level text was simplified on 12 Nov 2026; keep new text at that level.
 7. **Do not add features that are not in this file.** If something seems missing, say so; do not build it unasked.
 8. **The API key never appears** in code, logs, screenshots or replies. Only `src/services/nasa.ts` and `scripts/nasa-snapshot.mjs` read it.
 9. **Report the same way every time** (template in §9.3): what was built, the files changed, the checks and their results, two screenshots, and anything not verified.
@@ -207,7 +208,7 @@ Tokens, fonts, icons, shared parts, screen switching, no emoji. The existing mis
 
 ---
 
-### A1 — The hook (about 1.5 h)
+### A1 — The hook (about 1.5 h) ✅ done 12 Nov 2026 — `src/screens/Hook.tsx`
 **Why.** Creativity and Presentation. The first five seconds of the app and of both videos.
 
 **Build.**
@@ -240,7 +241,7 @@ Tokens, fonts, icons, shared parts, screen switching, no emoji. The existing mis
 
 ---
 
-### A2 — The story cards (about 1 h)
+### A2 — The story cards (about 1 h) ✅ done 12 Nov 2026 — `src/screens/Story.tsx`
 **Why.** Best Storytelling: the honest bridge from fiction (the asteroid) to fact (real NeoWs data).
 
 **Build.**
@@ -252,7 +253,7 @@ Tokens, fonts, icons, shared parts, screen switching, no emoji. The existing mis
 - Every card carries the `FICTION` badge at the top.
 - Progress dots (three) under the card. Next is the primary button, Skip is quiet. Swipe left and right on touch. Left and right arrow keys on the keyboard.
 - Under card 1, a `DataCard` with badge `NASA ARCHIVE`: "Real asteroids passing Earth this week — NASA is tracking N. None will hit us."
-  - N is a fixed sample until B4. Take it from a real NeoWs answer saved in `public/data/neows.sample.json`, and show that answer's date. If no real answer is at hand, show the sentence without N and say so in the report.
+  - N is a fixed sample until B4. Take it from a real NeoWs answer saved in `src/content/samples/neows.json` (bundled, so it works offline), and show that answer's date. If no real answer is at hand, show the sentence without N and say so in the report.
 - Characters: card 2 shows Nova `think`; card 3 shows Orbit `arms` and Nova `arms` (§4.3).
 - Card 3 ends with the primary button **"Accept the mission"** → Home.
 
@@ -267,7 +268,7 @@ Tokens, fonts, icons, shared parts, screen switching, no emoji. The existing mis
 
 ---
 
-### A3 — Home (about 1.5 h)
+### A3 — Home (about 1.5 h) ✅ done 12 Nov 2026 — `src/screens/Home.tsx`
 **Why.** User experience: a child must know what to press without reading.
 
 **Build.** Home exists; finish it.
@@ -286,7 +287,7 @@ Tokens, fonts, icons, shared parts, screen switching, no emoji. The existing mis
 
 ---
 
-### A4 — Mission map (about 1 h)
+### A4 — Mission map (about 1 h) ✅ done 12 Nov 2026 — `src/screens/MissionMap.tsx`
 **Why.** Presentation: progress obvious at a glance, and a good video shot.
 
 **Build.**
