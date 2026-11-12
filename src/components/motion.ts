@@ -3,6 +3,8 @@
 // in-game setting that A11 adds) keeps every change and colour flash but drops all movement.
 import { useEffect, useRef, useState, useSyncExternalStore, type KeyboardEvent, type PointerEvent } from 'react';
 
+import { isStageTurned } from './stageMath';
+
 const MQ = '(prefers-reduced-motion: reduce)';
 const EVENT = 'crewready:motion';
 
@@ -109,7 +111,8 @@ const STAR_SVG =
  */
 export function flyToHud(from: Element, target = 'stars'): Promise<void> {
   const to = document.querySelector(`[data-hud-target="${target}"]`);
-  if (!to || reducedMotion()) return Promise.resolve();
+  // The turned stage rotates `fixed` children too, so a flying star would land in the wrong place: skip it.
+  if (!to || reducedMotion() || isStageTurned()) return Promise.resolve();
   const a = from.getBoundingClientRect();
   const b = to.getBoundingClientRect();
   const el = document.createElement('div');

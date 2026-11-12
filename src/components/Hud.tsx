@@ -35,8 +35,8 @@ export function FloatChip({ d }: { d: number }) {
   return (
     <span
       aria-hidden
-      className={`anim-float-chip pointer-events-none absolute -top-3 left-1/2 z-20 -translate-x-1/2 rounded-full border-[3px] border-ink px-2.5 font-display text-xl leading-snug font-extrabold whitespace-nowrap text-white tabular-nums ${
-        up ? 'bg-good' : 'bg-danger'
+      className={`anim-float-chip pointer-events-none absolute -top-3 left-1/2 z-20 -translate-x-1/2 rounded-full border-2 border-line px-2.5 font-display text-xl leading-snug font-extrabold whitespace-nowrap tabular-nums ${
+        up ? 'bg-[#3ddc84] text-go-text' : 'bg-[#d93a3a] text-white'
       }`}
     >
       {up ? `+${d}` : `−${-d}`}
@@ -44,34 +44,49 @@ export function FloatChip({ d }: { d: number }) {
   );
 }
 
-export function MeterPill({ meter, value }: { meter: Meter; value: number }) {
+/** How many arrows a change draws (§4.3a): one for 5–10, two for 15–20, three for 25 or more. */
+export const arrowCount = (amount: number) => (Math.abs(amount) >= 25 ? 3 : Math.abs(amount) >= 15 ? 2 : 1);
+
+/**
+ * `look` is "Look first": the signed change a selected card would make to this meter.
+ * The pill wiggles once and shows ▲ or ▼ (no numbers).
+ */
+export function MeterPill({ meter, value, look }: { meter: Meter; value: number; look?: number }) {
   const shown = useCountTo(value, 500);
   const { fx, chips } = useChangeFx(value);
   const low = value <= 20;
-  const flash = fx?.dir === 'down' ? 'bg-danger text-white' : fx?.dir === 'up' ? 'bg-[#d8f3e1] text-ink' : 'bg-paper text-ink';
-  const motion = fx?.dir === 'down' ? 'anim-shake-x' : fx?.dir === 'up' ? 'anim-pop' : '';
+  const flash = fx?.dir === 'down' ? 'bg-danger text-white' : fx?.dir === 'up' ? 'bg-[#3ddc84] text-go-text' : 'bg-panel text-text';
+  const motion = fx?.dir === 'down' ? 'anim-shake-x' : fx?.dir === 'up' ? 'anim-pop' : look ? 'anim-wiggle' : '';
   return (
     <div className="relative min-w-0" data-hud-target={meter}>
+      {look ? (
+        <span
+          aria-hidden
+          className={`absolute -top-[0.25rem] -right-[0.125rem] z-10 rounded-full px-1 font-display text-[0.75rem] leading-snug font-extrabold ${look > 0 ? 'bg-[#3ddc84] text-go-text' : 'bg-[#d93a3a] text-white'}`}
+        >
+          {(look > 0 ? '▲' : '▼').repeat(arrowCount(look))}
+        </span>
+      ) : null}
       <div
-        key={fx?.id ?? 0}
+        key={`${fx?.id ?? 0}-${look ?? 0}`}
         role="meter"
         aria-valuenow={value}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-label={`${METER_NAMES[meter]}${low ? ', low' : ''}`}
-        className={`flex items-center gap-2 rounded-full border-[3px] border-ink py-1 pr-3 pl-1 shadow-[0_3px_0_var(--color-ink)] ${flash} ${motion}`}
+        className={`flex items-center gap-[0.375rem] rounded-full border-2 border-line py-[0.125rem] pr-[0.625rem] pl-[0.125rem] shadow-[0_0.15rem_0_var(--color-lip)] ${flash} ${motion}`}
       >
-        <MeterBadge meter={meter} size={36} />
+        <MeterBadge meter={meter} size={30} />
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-1">
-            <span className="font-display text-[22px] leading-none font-extrabold tabular-nums">{shown}</span>
+            <span className="font-display text-[1.125rem] leading-none font-extrabold tabular-nums">{shown}</span>
             {low ? (
-              <span className="rounded-full border-2 border-ink bg-danger px-1.5 font-display text-[13px] leading-tight font-extrabold tracking-wider text-white">
+              <span className="rounded-full bg-danger px-1.5 font-display text-[0.8125rem] leading-tight font-extrabold tracking-wider text-white">
                 LOW
               </span>
             ) : null}
           </div>
-          <div className="mt-1 h-2.5 overflow-hidden rounded-full border-2 border-ink bg-white" aria-hidden>
+          <div className="mt-[0.125rem] h-[0.5rem] overflow-hidden rounded-full border border-line bg-space-deep" aria-hidden>
             <div className="h-full rounded-r-full transition-[width] duration-500 ease-out" style={{ width: `${Math.max(0, Math.min(100, value))}%`, background: METER_COLOR[meter] }} />
           </div>
         </div>
@@ -91,14 +106,14 @@ export function StarCounter({ n }: { n: number }) {
     <div className="relative" data-hud-target="stars">
       <div
         key={fx?.id ?? 0}
-        className={`flex items-center gap-1.5 rounded-full border-[3px] border-ink bg-paper py-1 pr-3.5 pl-1 text-ink shadow-[0_3px_0_var(--color-ink)] ${fx ? 'anim-pop' : ''}`}
+        className={`flex items-center gap-1.5 rounded-full border-2 border-line bg-panel py-[0.125rem] pr-[0.75rem] pl-[0.125rem] text-text shadow-[0_0.15rem_0_var(--color-lip)] ${fx ? 'anim-pop' : ''}`}
         aria-label={`${n} science stars`}
         role="status"
       >
-        <span className="grid h-9 w-9 place-items-center rounded-full border-[3px] border-ink bg-star" aria-hidden>
-          <StarIcon size={20} />
+        <span className="grid h-[1.875rem] w-[1.875rem] place-items-center rounded-full bg-star" aria-hidden>
+          <StarIcon size={18} />
         </span>
-        <span className="font-display text-[22px] leading-none font-extrabold tabular-nums" aria-hidden>
+        <span className="font-display text-[1.125rem] leading-none font-extrabold tabular-nums" aria-hidden>
           {shown}
         </span>
       </div>
@@ -110,22 +125,19 @@ export function StarCounter({ n }: { n: number }) {
 }
 
 /**
- * Sticky top bar inside levels. `lead` is the left slot (Home button, level number).
- * Phone: lead and stars on one row, the four meters 2×2 below. Laptop: all on one row.
+ * The top strip, about 3 rem tall, always one row: `lead` (Home button, level chip), the four meter pills, the stars.
  */
-export function Hud({ meters, stars, lead }: { meters: Record<Meter, number>; stars: number; lead?: ReactNode }) {
+export function Hud({ meters, stars, lead, look }: { meters: Record<Meter, number>; stars: number; lead?: ReactNode; look?: Partial<Record<Meter, number>> }) {
   return (
-    <header className="sticky top-0 z-30 border-b-[3px] border-ink bg-ink text-paper px-3 pt-2 pb-2.5 sm:px-4" aria-label="Outpost meters">
-      <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-3 gap-y-2.5 lg:flex-nowrap">
-        <div className="order-1 flex min-w-0 flex-1 items-center gap-2 lg:flex-none">{lead}</div>
-        <div className="order-3 grid w-full grid-cols-2 gap-x-2.5 gap-y-2 sm:grid-cols-4 lg:order-2 lg:flex-1">
+    <header className="sticky top-0 z-30 border-b-2 border-line bg-space-deep/90 px-[0.75rem] pt-[0.25rem] pb-[0.5rem] text-text" aria-label="Outpost meters">
+      <div className="flex flex-nowrap items-center gap-[0.5rem]">
+        <div className="flex min-w-0 shrink-0 items-center gap-2">{lead}</div>
+        <div className="grid min-w-0 flex-1 grid-cols-4 gap-[0.5rem]">
           {METERS.map((m) => (
-            <MeterPill key={m} meter={m} value={meters[m]} />
+            <MeterPill key={m} meter={m} value={meters[m]} look={look?.[m]} />
           ))}
         </div>
-        <div className="order-2 lg:order-3">
-          <StarCounter n={stars} />
-        </div>
+        <StarCounter n={stars} />
       </div>
     </header>
   );

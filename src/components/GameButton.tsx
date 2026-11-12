@@ -8,17 +8,19 @@ import { reducedMotion, usePress } from './motion';
 
 type Variant = 'go' | 'plain' | 'small';
 
-const SIZE: Record<Variant, string> = { go: 'min-h-14 px-7 text-[22px]', plain: 'min-h-13 px-5 text-xl', small: 'min-h-12 px-4 text-[19px]' };
-/** Locked look for any variant: grey with a grey lip, so it never looks like a live main action. */
+const SIZE: Record<Variant, string> = { go: 'min-h-[3.5rem] px-7 text-[1.375rem]', plain: 'min-h-[3rem] px-5 text-xl', small: 'min-h-[3rem] px-4 text-[1.1875rem]' };
+/** Locked look for any variant: dark and flat, so it never looks like a live main action. */
 const LOCKED = 'bg-locked text-muted [--lip:var(--color-locked-lip)]';
 
 const LOOK: Record<Variant, string> = {
-  // go: the one main action per screen. 56 px tall, 22 px bold (large text, so white on pink passes 3:1).
-  go: 'min-h-14 px-7 text-[22px] bg-go text-white [--lip:var(--color-go-lip)]',
-  plain: 'min-h-13 px-5 text-xl bg-paper text-ink',
-  // 19 px bold counts as large text.
-  small: 'min-h-12 px-4 text-[19px] bg-paper text-ink',
+  // go: the one main action per screen. Cyan, a gentle top-to-bottom gradient, its lip, one soft halo.
+  go: 'min-h-[3.5rem] px-7 text-[1.375rem] bg-gradient-to-b from-[#4fe6f2] to-go text-go-text border-go-lip [--lip:var(--color-go-lip)] halo',
+  // second: an outlined pill, dark fill, white text.
+  plain: 'min-h-[3rem] px-5 text-xl bg-panel/70 text-text border-text/30',
+  small: 'min-h-[3rem] px-4 text-[1.1875rem] bg-panel/70 text-text border-text/30',
 };
+/** `go` is a rounded rectangle; the other two are pills. */
+const SHAPE: Record<Variant, string> = { go: 'rounded-tile', plain: 'rounded-full', small: 'rounded-full' };
 
 export function GameButton({
   children,
@@ -49,7 +51,7 @@ export function GameButton({
       disabled={disabled}
       aria-label={ariaLabel}
       {...press}
-      className={`toy shine inline-flex items-center justify-center gap-2 rounded-tile font-display leading-none font-extrabold tracking-wide ${disabled ? `${SIZE[variant]} ${LOCKED}` : LOOK[variant]} ${full ? 'w-full' : ''} ${className}`}
+      className={`toy shine inline-flex items-center justify-center gap-2 ${SHAPE[variant]} font-display leading-none font-extrabold tracking-wide ${disabled ? `${SIZE[variant]} ${LOCKED}` : LOOK[variant]} ${full ? 'w-full' : ''} ${className}`}
     >
       {Icon ? <Icon size={variant === 'small' ? 20 : 24} strokeWidth={2.5} aria-hidden /> : null}
       <span className="pt-0.5">{children}</span>
@@ -60,7 +62,7 @@ export function GameButton({
 /** One change to a meter or to the stars. */
 export type Change = { meter: Meter | 'stars'; amount: number };
 
-/** "−15" or "+10" with the meter's badge. Ink text on a light red or green tint, so it reads anywhere. */
+/** "−15" or "+10" with the meter's badge. Loss: white on red. Gain: dark on green (§4.3). */
 export function ChangeChip({ change, size = 'md' }: { change: Change; size?: 'sm' | 'md' }) {
   const { meter, amount } = change;
   const up = amount > 0;
@@ -68,13 +70,13 @@ export function ChangeChip({ change, size = 'md' }: { change: Change; size?: 'sm
   const text = up ? `+${amount}` : `−${-amount}`;
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full border-2 border-ink font-display font-extrabold text-ink tabular-nums ${
-        up ? 'bg-[#d8f3e1]' : 'bg-[#ffe0dc]'
+      className={`inline-flex items-center gap-1 rounded-full border-2 border-line font-display font-extrabold tabular-nums ${
+        up ? 'bg-[#3ddc84] text-go-text' : 'bg-[#d93a3a] text-white'
       } ${size === 'sm' ? 'py-0.5 pr-2.5 pl-0.5 text-base' : 'py-0.5 pr-3 pl-0.5 text-lg'}`}
       aria-label={`${name} ${up ? 'plus' : 'minus'} ${Math.abs(amount)}`}
     >
       {meter === 'stars' ? (
-        <span className="grid h-6 w-6 place-items-center rounded-full border-2 border-ink bg-paper" aria-hidden>
+        <span className="grid h-6 w-6 place-items-center rounded-full border-2 border-line bg-panel" aria-hidden>
           <StarIcon size={15} />
         </span>
       ) : (
@@ -134,12 +136,12 @@ export function ChoiceTile({
       aria-hidden={state === 'gone' ? true : undefined}
       tabIndex={state === 'gone' ? -1 : undefined}
       {...press}
-      className={`toy flex w-full items-center gap-3 rounded-tile p-3 text-left text-ink sm:p-4 ${
-        disabled ? LOCKED : marked ? 'bg-[#ffe3ec] [--lip:#e9a3bb]' : 'bg-white'
+      className={`toy flex w-full items-center gap-3 rounded-tile p-3 text-left text-text sm:p-4 ${
+        disabled ? LOCKED : marked ? 'bg-panel-up border-go [--lip:var(--color-go-lip)]' : 'bg-panel'
       } ${state === 'chosen' ? 'anim-stamp' : ''} ${state === 'gone' ? 'is-gone' : ''} ${state !== 'idle' ? 'cursor-default' : ''} ${className}`}
     >
       {picture ?? (Icon ? (
-        <span className="grid h-14 w-14 shrink-0 place-items-center rounded-[12px] border-[3px] border-ink bg-edge" aria-hidden>
+        <span className="grid h-14 w-14 shrink-0 place-items-center rounded-[0.75rem] border-2 border-line bg-space" aria-hidden>
           <Icon size={30} strokeWidth={2.25} />
         </span>
       ) : null)}
@@ -155,10 +157,71 @@ export function ChoiceTile({
         ) : null}
       </span>
       {marked ? (
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border-[3px] border-ink bg-go text-white" aria-hidden>
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-go text-go-text" aria-hidden>
           <Check size={20} strokeWidth={3.5} />
         </span>
       ) : null}
+    </button>
+  );
+}
+
+/**
+ * One option as an upright card (§4.6): a big icon or picture on top, a short label under it, three in a row.
+ * `selected` is "Look first": a 3 px `go` border, lifted. `arrows` shows ▲/▼ per meter it will touch
+ * (one for 5–10, two for 15–20, three for 25+); R3 fills them in. `state` stamps or slides the card away.
+ */
+export function ChoiceCard({
+  label,
+  icon: Icon,
+  picture,
+  selected,
+  state = 'idle',
+  onClick,
+  disabled,
+  children,
+  className = '',
+}: {
+  label: ReactNode;
+  icon?: LucideIcon;
+  picture?: ReactNode;
+  selected?: boolean;
+  state?: TileState;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  disabled?: boolean;
+  /** The arrows row (Look first). */
+  children?: ReactNode;
+  className?: string;
+}) {
+  const locked = disabled || state !== 'idle';
+  const press = usePress(locked);
+  const [collapsed, setCollapsed] = useState(false);
+  useEffect(() => {
+    if (state !== 'gone') return setCollapsed(false);
+    const t = setTimeout(() => setCollapsed(true), reducedMotion() ? 0 : 320);
+    return () => clearTimeout(t);
+  }, [state]);
+  if (collapsed) return null;
+  const marked = selected || state === 'chosen';
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-pressed={selected}
+      aria-hidden={state === 'gone' ? true : undefined}
+      tabIndex={state === 'gone' ? -1 : undefined}
+      {...press}
+      className={`toy flex min-h-[8rem] min-w-0 flex-1 flex-col items-center justify-center gap-[0.5rem] rounded-tile p-[0.75rem] text-center text-text ${
+        disabled ? LOCKED : marked ? '-translate-y-1 border-[3px] border-go bg-panel-up [--lip:var(--color-go-lip)]' : 'bg-panel'
+      } ${state === 'chosen' ? 'anim-stamp' : ''} ${state === 'gone' ? 'is-gone' : ''} ${state !== 'idle' ? 'cursor-default' : ''} ${className}`}
+    >
+      {picture ?? (Icon ? (
+        <span className="grid h-[4rem] w-[4rem] shrink-0 place-items-center rounded-full bg-space" aria-hidden>
+          <Icon size={34} strokeWidth={2.25} />
+        </span>
+      ) : null)}
+      <span className="block font-display text-[1.125rem] leading-tight font-extrabold">{label}</span>
+      {children}
     </button>
   );
 }
@@ -187,8 +250,8 @@ export function RoundButton({
       aria-label={label}
       aria-pressed={pressed}
       {...press}
-      className={`toy !mb-[7px] grid h-[52px] w-[52px] shrink-0 place-items-center rounded-full ${
-        tone === 'go' || pressed ? 'bg-go text-white [--lip:var(--color-go-lip)]' : 'bg-paper text-ink'
+      className={`toy !mb-[0.45rem] grid h-[3.25rem] w-[3.25rem] shrink-0 place-items-center rounded-full ${
+        tone === 'go' || pressed ? 'bg-go text-go-text border-go-lip [--lip:var(--color-go-lip)]' : 'bg-panel/70 text-text border-text/30'
       } ${className}`}
     >
       <Icon size={26} strokeWidth={2.75} aria-hidden />

@@ -137,6 +137,7 @@ export function Scene({
   children,
   top,
   bottom,
+  rail,
   fill = true,
   className = '',
   bare = false,
@@ -145,6 +146,8 @@ export function Scene({
   children?: ReactNode;
   top?: ReactNode;
   bottom?: ReactNode;
+  /** The Dock: a rail down the left edge, outside levels. */
+  rail?: ReactNode;
   fill?: boolean;
   className?: string;
   /** Skip the centred content column. */
@@ -154,23 +157,27 @@ export function Scene({
   return (
     <div
       data-scene={place}
-      className={`relative isolate flex flex-col overflow-x-clip ${fill ? 'min-h-dvh' : ''} ${dark ? 'on-sky text-paper' : 'text-ink'} ${className}`}
+      className={`relative isolate flex overflow-x-clip ${fill ? 'min-h-full' : ''} ${dark ? 'on-sky text-paper' : 'text-ink'} ${className}`}
       style={{ background: SKY[place] }}
     >
-      <svg aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[45%] max-h-[360px] w-full" viewBox="0 0 800 220" preserveAspectRatio="xMidYMin slice">
+      <svg aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[45%] w-full" viewBox="0 0 800 220" preserveAspectRatio="xMidYMin slice">
         <SkyArt place={place} />
       </svg>
+      {/* Wide stage: the horizon sits in the lower third. */}
       <svg
         aria-hidden
-        className={`pointer-events-none absolute inset-x-0 bottom-0 -z-10 w-full ${fill ? 'h-[34vh] max-h-[300px] min-h-[170px]' : 'h-1/2'}`}
+        className={`pointer-events-none absolute inset-x-0 bottom-0 -z-10 w-full ${fill ? 'h-1/3 min-h-[8rem]' : 'h-1/2'}`}
         viewBox="0 0 800 300"
         preserveAspectRatio="xMidYMax slice"
       >
         <GroundArt place={place} />
       </svg>
-      {top}
-      {bare ? children : <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-4 pt-5 pb-10">{children}</main>}
-      {bottom}
+      {rail ? <div className="sticky top-0 z-30 h-[var(--stage-h,100%)] shrink-0 self-start">{rail}</div> : null}
+      <div className="flex min-w-0 flex-1 flex-col">
+        {top}
+        {bare ? children : <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-4 pt-5 pb-10">{children}</main>}
+        {bottom}
+      </div>
     </div>
   );
 }

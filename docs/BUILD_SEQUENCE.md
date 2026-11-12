@@ -29,7 +29,7 @@ Goes with `plan.md` v10. The plan says **what** the game is. This file says **ho
 | Strings | `t()` helper with English and Bangla for the welcome screen only | `src/content/i18n.ts`, `strings.en.ts`, `strings.bn.ts` |
 | Antigravity extras | Home: Kp gauge with NOAA G-scale labels. Story: asteroid "radar". LevelChrome: sol and place badge. Decision: shaded planets in the level-3 clock. Dock: frosted glass | see R0 |
 | Welcome art | `welcome-1.webp`, `welcome-2.webp`: cleaned in Antigravity (mock-up letters and language pill removed). Usable. A dark frame corner remains top right; R2 hides it with the backdrop fade. Upright crops (704 × 818); a 16:9 version is nice to have (§7) | `public/art/welcome-*` |
-| Not built | Landscape stage, real NASA data, Sources, learning layer, Quick Run, Me, Resources, Training, Bangla beyond the welcome screen, offline, publishing | — |
+| Not built | Real NASA data, Sources, learning layer, Fly (endless runner), Me, Resources, Training, Bangla beyond the welcome screen, offline, publishing | — |
 
 Stack: Vite 8, React 19, TypeScript, Tailwind 4, Zustand 5, Vitest, `lucide-react`, Baloo Da 2 + Nunito. `npm run dev` (port 5173, in `.claude/launch.json`) · `npm test` · `npm run build`. If new Tailwind classes don't show in the preview, restart the dev server.
 
@@ -248,7 +248,70 @@ Names in `src/components/` may differ a little; keep the existing ones.
 
 Order: **R0 → R1 → R2 → R3 → R4 → R5 → F1 → D1 → D2 → S1** reaches the **film line** (everything the 240-second video shows). Then **L1 → L2 → S2 → S3 → S4 → F2 → F3 → F4 → F5**.
 
-After R1, two people can run in parallel: one on R2 → R3 → R4, one on D1 → D2 → S1. They meet in `src/store/game.ts` and the IntelCard; merge those by hand.
+**Two tools at once: use §5a.** It splits the steps into two lanes that never wait for each other, with a prompt for each. The single-step prompts below still apply; §5a only adds a lane preface and says when to merge.
+
+### 5a. Two lanes at once (Claude Code + Antigravity)
+
+R0 and R1 are done, so both lanes start from that. Each lane works in **its own folder and branch** (a git worktree), so neither overwrites the other's files mid-step. The lanes are split by **which files they own**, not by how important the step is.
+
+**Set up once (you, 5 minutes)**
+```bash
+git add -A && git commit -m "R0+R1: clean-up, stage, v10 tokens"      # after you've looked at it
+git branch lane-b
+git worktree add ../crewready-lane-b lane-b
+```
+Claude Code stays in the main folder (branch `game-kit-g1-g2`, **Lane A**). Open `../crewready-lane-b` in Antigravity (**Lane B**). Run `npm install` in the second folder. Each lane runs its own dev server (Lane B: `npm run dev -- --port 5174`).
+
+**Who owns what**
+
+| | Lane A: screens (Claude Code) | Lane B: data and new screens (Antigravity) |
+|---|---|---|
+| Steps, in order | R2 → R3 → R4 → **M1** → R5 → D2b → L1 → L2 | D1 → D2a → S1 → S2 (Fly) → S4 → S3 → F1 docs |
+| Owns | `src/screens/*` that exist today, `src/components/*` (Decision, steps, Hud, Scene…), `src/content/icons.ts`, `strings.*` | `scripts/`, `public/data/`, `src/services/`, `src/engine/` (new files only), and the **new** screens `Sources`, `Fly`, `Resources`, `Profile`, `Training` plus `src/fly/` |
+| May touch, one line only | | `BUILT_SCREENS` in `store/game.ts` and the screen routes in `App.tsx`: add your own line, change nothing else there |
+| Never touches | `scripts/`, `src/services/`, new-screen files | Any existing screen, any file in `src/components/` (if a part is missing, ask Lane A or add a **new** file) |
+
+**Merge points** (you run them; nothing is merged without you)
+- **M0 — now.** The commit above. Both lanes start.
+- **M1 — after Lane A finishes R4 *and* Lane B finishes D2a.** Merge `lane-b` into the main branch: `git merge lane-b`. Conflicts should only be `store/game.ts` and `App.tsx`. Then both lanes carry on from the merged result: Lane A needs `stormSize()` from D2a before R5 (event moments read the real storm size). If Lane B is slower, Lane A does D2b-free work first (see "While you wait" below).
+- **M2 — after Lane B finishes S1 and S2** (or when Lane A finishes R5). Merge again. Lane B then does S4 and S3 on the merged base, and re-pulls: `git merge game-kit-g1-g2` in its folder.
+- After each merge: `npm test`, `npm run build`, and click through Home → map → a level → Sources → Fly.
+
+**While you wait.** If one lane runs out of steps it can do, it does the next one on its list below, in order. If one is truly blocked (Lane A on R5 before M1), take **L1** (Try-it toys: new files in `src/components/toys/`) instead.
+
+**The film line moves.** The 240-second video needs R2–R5, D1, D2 and S1. Fly and Resources are shown for about five seconds each, so S2 is nice to have on film but not blocking.
+
+**Lane prefaces: paste one at the top of every prompt in that lane**
+
+> **Lane A preface (Claude Code).** You are Lane A in `docs/BUILD_SEQUENCE.md` §5a, on branch `game-kit-g1-g2` in the main folder. Touch only the files Lane A owns. Do not create or edit anything in `scripts/`, `src/services/`, or the new screens Sources, Fly, Resources, Profile, Training. If you need data from the services, import the function and use it as is. Commit only when I say yes.
+
+> **Lane B preface (Antigravity).** You are Lane B in `docs/BUILD_SEQUENCE.md` §5a, on branch `lane-b` in `crewready-lane-b`. Touch only the files Lane B owns. Do **not** edit any existing screen or anything in `src/components/`; build new screens from the shared parts as they are. In `store/game.ts` and `App.tsx` change only your own one line. Obey §3 and §4.3 strictly: no invented facts or numbers, no `backdrop-blur`, no glow except the one halo on the main button, no looping animation, no emoji, no NASA logo. The API key never appears in any file, log or reply. Commit only when I say yes.
+
+**The prompts, lane by lane**
+
+*Lane A, in this order, each in a fresh chat:*
+
+| Order | Prompt |
+|---|---|
+| A1 | Lane A preface + the **R2** prompt below. |
+| A2 | Lane A preface + the **R3** prompt. |
+| A3 | Lane A preface + the **R4** prompt. Then you run **M1**. |
+| A4 | Lane A preface + the **R5** prompt. Needs `stormSize()` from M1. |
+| A5 | Lane A preface + "Do step D2 in `docs/BUILD_SEQUENCE.md`, **part b only**: put the real data (from `src/services/nasa.ts`) with the right badge and date on every card, and level 2's alarm and IntelCard show the real event. `stormSize()` and the offline worker are already done in part a. Check, report, stop." |
+| A6 | Lane A preface + the **L1** prompt, then **L2**. |
+
+*Lane B, in this order, each in a fresh chat:*
+
+| Order | Prompt |
+|---|---|
+| B1 | Lane B preface + the **D1** prompt below. |
+| B2 | Lane B preface + "Do step D2 in `docs/BUILD_SEQUENCE.md`, **part a only**: the pure `stormSize()` in `src/engine/` with a test per table row of `docs/06` §3, fed at mission start, and the offline web-app manifest and service worker. Do **not** change any card or screen; Lane A does that in part b. Check, report, stop." |
+| B3 | Lane B preface + the **S1** prompt. It builds the Sources page; the `SourceLine` part already opens it, so you only add the screen and its two lines. |
+| B4 | Lane B preface + the **S2** prompt (Fly). |
+| B5 | Lane B preface + the **S4** prompt (Resources), then **S3** (Me and Training). Sound stays off (no files with unchecked licences). |
+| B6 | Lane B preface + the **F1** prompt, **docs only** (LICENSE, README, `docs/AI_USE.md`, the key check). It must not push or deploy: you decide that yourself. |
+
+After both lanes finish: **F2** (Bangla, with a Bangla speaker) → **F3** → **F4** → **F5**, one lane at a time, because they touch everything.
 
 ### Phase R — rework what's built
 
@@ -375,6 +438,8 @@ Endpoint notes (tested): DONKI ranges 60 days or less · `DONKI/FLR` is 404, use
 > **Prompt — D1.** Do step D1 in `docs/BUILD_SEQUENCE.md`. Read §3 and D1, then only its Read line. Write the snapshot script and `src/services/nasa.ts` with timeout, cache and archive fallback, plus the mocked-fetch tests. Run the snapshot, prove the key is in no output without printing it. Check, report, stop.
 
 #### D2 — Storms drive the game; real cards; offline (about 2.5 h)
+*Split for §5a: **part a** (Lane B) is `stormSize()` and its tests, plus the offline manifest and worker. **Part b** (Lane A, after merge M1) is every card and screen showing real data.*
+
 **Read:** `docs/06` §3–§4, `src/services/nasa.ts`, `src/store/game.ts` (mission start), `src/screens/LevelOpening.tsx`, `src/screens/Home.tsx`, `src/screens/Story.tsx`, `src/screens/Success.tsx`.
 
 **Build**
@@ -427,14 +492,20 @@ Endpoint notes (tested): DONKI ranges 60 days or less · `DONKI/FLR` is 404, use
 
 ### Phase S — the side screens
 
-#### S2 — Quick Run (about 3 h)
-**Read:** `plan.md` §7 row 2; `src/services/nasa.ts` (Kp); `src/store/game.ts`; the `Stage` helper.
+#### S2 — Fly, the endless runner (about 4 h)
+**Read:** `plan.md` §7 row 2; `src/services/nasa.ts` (Kp); `src/store/game.ts`; `src/components/stageMath.ts`.
 
-**Build** `src/screens/QuickRun.tsx`, a `<canvas>` on the stage. Seen from behind Orbit (or Nova): three lanes running into the distance. **Tap the left or right half of the screen** (or arrow keys) to hop a lane; two thumbs, no swiping needed. Rocks to dodge, stardust to grab with a "+1" pop. A hit costs 3 seconds and a stumble; no game over. 60 seconds. Speed from today's Kp: slow 0–3, medium 4–6, fast 7–9, shown as "Space weather today: Kp N" with its badge. A delta-time loop that pauses when the tab is hidden. End: stardust bursts into the saved total; **Play again**.
+**Build** `src/screens/Fly.tsx` and `src/fly/` (game logic, kept apart from drawing so it can be tested), a `<canvas>` on the stage. Seen from behind Orbit (or Nova): three lanes running into the distance, forever.
+- **Controls (all four work):** tap the **left or right half** of the screen to change lane · swipe **up** (read through `stageDelta`) or tap the round **Hop** button, or ↑ / Space, to hop low rocks · ← / → keys. Two thumbs, no reading.
+- **Things:** tall rocks (change lane), low rocks (hop over), debris, stardust in lines and arcs with a "+1" pop.
+- **Powers** (glowing pickups, switch on by themselves, about 6 s, one at a time, a shrinking ring around the pilot and one icon with its ring in the corner): **Shield** (takes one hit) · **Magnet** (pulls stardust in) · **Boost** (fast, can't be hit, stardust worth double). Each has an icon and a name, never colour alone.
+- **Run:** three hull pips; a hit costs one and a stumble; at zero the run ends. It speeds up with distance. Starting speed and speed-up from today's Kp: slow 0–3, medium 4–6, fast 7–9, shown as "Space weather today: Kp N" with its badge (docs/06 §4).
+- **End:** a card with distance and stardust, the best distance on this device, the stardust bursting into the saved total, **Fly again**. The first screen is one **Fly** button, not a menu.
+- **Engine:** a fixed-step update with a delta-time loop that pauses when the tab is hidden. The spawn, hit and power rules are pure functions with tests; the same seed gives the same run. Our own Mars look; copy no existing game's art, names or sounds.
 
-**Done when** it holds a steady frame rate at 4× CPU slowdown, pauses when hidden, works upright (turned stage) and stardust survives a reload.
+**Done when** it holds a steady frame rate at 4× CPU slowdown, pauses when hidden, works upright (turned stage), the rule tests pass, and stardust and best distance survive a reload.
 
-> **Prompt — S2.** Do step S2 in `docs/BUILD_SEQUENCE.md`. Read §3, §4 and S2, then only its Read line. Build the 60-second three-lane canvas runner, tap-left / tap-right, speed from real Kp. Our own Mars look; copy no existing game. Check at 4× slowdown, report, stop.
+> **Prompt — S2.** Do step S2 in `docs/BUILD_SEQUENCE.md`. Read §3, §4 and S2, then only its Read line. Build Fly: an endless three-lane canvas runner (tap left/right half, swipe up or Hop to hop, three auto-powers Shield / Magnet / Boost, three hull pips, speeds up, start speed from real Kp). Pure tested rules. Our own Mars look; copy no existing game. Check at 4× slowdown, report, stop.
 
 #### S3 — Me, and Training locked (about 2 h)
 **Read:** `plan.md` §7 rows 3 and 5; `src/store/game.ts`; `src/store/leaderboard.ts`; `src/components/Twinkle.tsx`.
@@ -493,10 +564,10 @@ A keyboard-only run, a reduced-motion run, an upright-phone run, an offline run.
 | S1 | 1 |
 | **To the film line** | **about 20** (about 12 with two people after R1) |
 | L1–L2 | 4 |
-| S2–S4 | 6.5 |
+| S2–S4 | 7.5 |
 | F2–F5 | 5.5 |
 
-**If time runs short, cut in this order:** sound → Bangla level text (keep the switch and buttons) → Resources upgrades → Space Words → Try-it toys → leaderboard (keep badges) → Quick Run → the welcome picture change (keep the screen).
+**If time runs short, cut in this order:** sound → Bangla level text (keep the switch and buttons) → Resources upgrades → Space Words → Try-it toys → leaderboard (keep badges) → Fly → the welcome picture change (keep the screen).
 
 **Never cut:** the six levels · the four meters and the HUD · landscape · the hook · Look first · the level-2 storm and level-4 dust event moments · the chain reaction · Mission Replay · source lines · live DONKI in level 2 · the Sources page · the crew reacting.
 

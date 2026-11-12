@@ -136,7 +136,7 @@ export function MissionMap() {
 
   // Rows are listed in DOM order from Earth upward (good tab order), then shown bottom-to-top.
   return (
-    <Scene place="mars" bottom={<Dock />}>
+    <Scene place="mars" rail={<Dock />}>
       <header className="flex items-center justify-between gap-3">
         <RoundButton icon={House} label="Home" onClick={() => go('home')} />
         <StarCounter n={game.stars} />

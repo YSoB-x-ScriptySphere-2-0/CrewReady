@@ -14,24 +14,21 @@ import { BUILT_SCREENS, missionInProgress, useGame } from '../store/game';
 /** Sample until B4 wires live data. Confirmed in DONKI: Kp reached 9.0 on 11 May 2024 (docs/06 §4). */
 const SPACE_WEATHER_SAMPLE = { kp: 9, date: '11 May 2024' };
 
-function getNoaaStormTier(kp: number): { scale: string; label: string; tone: 'calm' | 'active' | 'storm' | 'extreme'; barColor: string } {
-  if (kp >= 9) return { scale: 'NOAA G5', label: 'Extreme Solar Storm', tone: 'extreme', barColor: 'bg-danger' };
-  if (kp >= 8) return { scale: 'NOAA G4', label: 'Severe Solar Storm', tone: 'extreme', barColor: 'bg-danger' };
-  if (kp >= 7) return { scale: 'NOAA G3', label: 'Strong Solar Storm', tone: 'storm', barColor: 'bg-[#e85d04]' };
-  if (kp >= 6) return { scale: 'NOAA G2', label: 'Moderate Storm', tone: 'storm', barColor: 'bg-power' };
-  if (kp >= 5) return { scale: 'NOAA G1', label: 'Minor Storm', tone: 'active', barColor: 'bg-power' };
-  if (kp >= 4) return { scale: 'Active Sun', label: 'Elevated Activity', tone: 'active', barColor: 'bg-power' };
-  return { scale: 'Quiet Sun', label: 'Calm Space Weather', tone: 'calm', barColor: 'bg-good' };
+/** Bands follow docs/06 §4 (Kp 0–3 slow, 4–6 medium, 7–9 fast). No NOAA G-scale: it isn't sourced in docs/06. */
+function getStormTier(kp: number): { scale: string; label: string; tone: 'calm' | 'active' | 'storm' | 'extreme'; barColor: string } {
+  if (kp >= 7) return { scale: 'Stormy Sun', label: 'Big storm', tone: 'extreme', barColor: 'bg-danger' };
+  if (kp >= 4) return { scale: 'Busy Sun', label: 'Some storms', tone: 'active', barColor: 'bg-power' };
+  return { scale: 'Calm Sun', label: 'Quiet', tone: 'calm', barColor: 'bg-good' };
 }
 
 /** Sun storm level as nine graduated blocks with NOAA classification and live pulse. */
 function KpGauge({ kp }: { kp: number }) {
-  const tier = getNoaaStormTier(kp);
+  const tier = getStormTier(kp);
   return (
     <div className="flex w-full flex-col items-center gap-2.5 py-1">
       <div className="flex items-center gap-2 rounded-full border-2 border-ink bg-paper px-3 py-1 text-ink shadow-[0_2px_0_var(--color-ink)]">
         <span
-          className={`h-2.5 w-2.5 rounded-full ${tier.tone === 'extreme' ? 'anim-pop bg-danger shadow-[0_0_8px_var(--color-danger)]' : tier.tone === 'storm' ? 'bg-[#e85d04]' : 'bg-good'}`}
+          className={`h-2.5 w-2.5 rounded-full ${tier.tone === 'extreme' ? 'bg-danger' : tier.tone === 'storm' ? 'bg-[#e85d04]' : 'bg-good'}`}
           aria-hidden
         />
         <span className="font-display text-sm font-extrabold uppercase tracking-wider">{tier.scale}</span>
@@ -48,7 +45,7 @@ function KpGauge({ kp }: { kp: number }) {
               className={`w-5 rounded-[6px] border-[3px] border-ink transition-all sm:w-7 ${
                 active
                   ? isHigh
-                    ? 'bg-danger shadow-[0_0_6px_rgba(217,58,58,0.4)]'
+                    ? 'bg-danger'
                     : tier.barColor
                   : 'bg-sky-space opacity-40'
               }`}
@@ -69,10 +66,10 @@ export function Home() {
   const { startMission, levelIndex, go, game } = useGame();
   const inProgress = useGame(missionInProgress);
   const [confirming, setConfirming] = useState(false);
-  const quickRunOpen = BUILT_SCREENS.has('quickrun');
+  const flyOpen = BUILT_SCREENS.has('fly');
 
   return (
-    <Scene place="earth" bottom={<Dock />}>
+    <Scene place="earth" rail={<Dock />}>
       <header className="flex items-start justify-between gap-3">
         <div>
           <h1 className="font-display text-[40px] leading-none font-extrabold">CrewReady</h1>
@@ -132,9 +129,9 @@ export function Home() {
                 Start over
               </GameButton>
             ) : null}
-            <GameButton variant="small" icon={quickRunOpen ? Rocket : Lock} disabled={!quickRunOpen} onClick={() => go('quickrun')}>
-              Quick Run — 60 seconds
-              {quickRunOpen ? null : <span className="sr-only"> (locked)</span>}
+            <GameButton variant="small" icon={flyOpen ? Rocket : Lock} disabled={!flyOpen} onClick={() => go('fly')}>
+              Fly
+              {flyOpen ? null : <span className="sr-only"> (locked)</span>}
             </GameButton>
           </div>
         </div>
@@ -145,7 +142,7 @@ export function Home() {
         badge="NASA ARCHIVE"
         date={SPACE_WEATHER_SAMPLE.date}
         figure={<KpGauge kp={SPACE_WEATHER_SAMPLE.kp} />}
-        sentence={`Sun storm level: Kp ${SPACE_WEATHER_SAMPLE.kp} (NOAA G5 Extreme). In deep space, solar storms blast radiation — crews must shelter behind water tanks.`}
+        sentence="Solar storms blast radiation. Crews shelter behind water."
         source={`NASA DONKI + NOAA SWPC · ARCHIVE · ${SPACE_WEATHER_SAMPLE.date}`}
       />
     </Scene>

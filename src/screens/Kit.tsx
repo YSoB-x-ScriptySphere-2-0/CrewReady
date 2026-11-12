@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { FlaskConical, House, Play, RotateCw, Rocket, Award, Star as StarLucide, Zap } from 'lucide-react';
 import { AlarmBanner } from '../components/AlarmBanner';
 import { Dock } from '../components/Dock';
-import { ChangeChip, ChoiceTile, GameButton, type TileState } from '../components/GameButton';
+import { ChangeChip, ChoiceCard, ChoiceTile, GameButton, type TileState } from '../components/GameButton';
+import { stageGeometry } from '../components/stageMath';
 import { FloatChip, Hud, MeterPill, StarCounter } from '../components/Hud';
 import { flyToHud, setReducedMotion, useReducedMotion } from '../components/motion';
 import { Badge, IntelCard, Panel, Ribbon, SourceLine, TaskList, type BadgeKind } from '../components/Panel';
@@ -46,6 +47,9 @@ export function Kit() {
   const [crateDone, setCrateDone] = useState(false);
   const [reaction, setReaction] = useState<Reaction>('choosing');
   const [chipKey, setChipKey] = useState(0);
+  const [looked, setLooked] = useState<number | null>(null);
+  const stage = stageGeometry(window.innerWidth, window.innerHeight);
+  const look = looked === null ? undefined : Object.fromEntries(OPTIONS[looked].costs.filter((c) => c.meter !== 'stars').map((c) => [c.meter, c.amount]));
 
   const bump = (m: Meter, d: number) => setMeters((v) => ({ ...v, [m]: Math.max(0, Math.min(100, v[m] + d)) }));
   const tileState = (i: number): TileState => (chosen === null ? 'idle' : chosen === i ? 'chosen' : 'gone');
@@ -53,8 +57,8 @@ export function Kit() {
   return (
     <Scene
       place="space"
-      top={<Hud meters={meters} stars={stars} lead={<Ribbon tone="go">Game kit</Ribbon>} />}
-      bottom={<Dock />}
+      top={<Hud meters={meters} stars={stars} look={look} lead={<Ribbon tone="go">Game kit</Ribbon>} />}
+      rail={<Dock />}
     >
       <Panel ribbon="Controls" tone="go">
         <p className="text-lg">Hidden dev page. Every part, every state.</p>
@@ -152,6 +156,18 @@ export function Kit() {
           <ChangeChip change={{ meter: 'S', amount: -5 }} />
           <ChangeChip change={{ meter: 'stars', amount: 2 }} />
         </div>
+      </Section>
+
+      <Section title="ChoiceCard and Look first">
+        <p>Tap a card to look: it lifts and the meters it touches wiggle with arrows. Tap again to unselect.</p>
+        <div className="mt-3 flex gap-3">
+          {OPTIONS.map((o, i) => (
+            <ChoiceCard key={o.label} label={o.label.split(' ').slice(0, 3).join(' ')} icon={o.icon} selected={looked === i} onClick={() => setLooked(looked === i ? null : i)} />
+          ))}
+        </div>
+        <p className="mt-3 text-sm text-muted">
+          Stage: {stage.w}×{stage.h}, root {stage.rootPx.toFixed(1)} px, {stage.turned ? 'turned' : 'sideways'}
+        </p>
       </Section>
 
       <Section title="Panel and Ribbon">
@@ -281,7 +297,7 @@ export function Kit() {
       </Section>
 
       <Section title="Dock">
-        <p>The Dock sits at the bottom of this page. Locked places show a padlock.</p>
+        <p>The Dock is the rail down the left edge. Locked places show a padlock.</p>
       </Section>
     </Scene>
   );

@@ -43,7 +43,7 @@ These points come from the written challenge and from the briefing by its author
 | "There is no unlimited resource mode in space" | Every option changes at least two things. The game refuses to load a level that breaks this rule | Any choice, any level |
 | Five systems: life support, radiation shielding, power budgeting, food production, communication delay | Each is the main subject of one level and all five return in level 6 | Section 6 |
 | Coupled systems: a decision in one must visibly hit another | A reason line after every choice, and choices that come back in later levels | "Remember the panels you left out?" |
-| Use NASA DONKI so today's solar weather shifts in-game risk | Live DONKI sets the storm size in levels 2 and 6 and the speed of Quick Run | DONKI card with today's date |
+| Use NASA DONKI so today's solar weather shifts in-game risk | Live DONKI sets the storm size in levels 2 and 6 and the speed of Fly | DONKI card with today's date |
 | Real data, attributed, never static shown as live | A source line under every screen; a LIVE / ARCHIVE / GAME ESTIMATE badge on every data card | Bottom of every screen |
 | Browser-friendly, no install, no account | A static web app that opens from a link on a phone | The link |
 | Replayable; failure teaches | Mission Replay instead of Game Over; storm, dust and crew change between runs | Fail any level |
@@ -499,7 +499,7 @@ Build order is top to bottom. If time runs short, cut from the bottom (section 1
 | W | **Welcome** | Must | **Every time the game opens.** While it loads, the picture of two real-looking young astronauts turns into Orbit, Nova and Twinkle, in step with the loading bar. Then the bar becomes **Play**, with **How to Play** under it and the **EN / বাংলা** switch top right. It says "you become the astronaut" without a word, and it gives the videos their title shot. Play goes to the hook the first time and to Home after that |
 | 0 | **Opening hook** | Must | First Play only, about 15 seconds. Alarm, red light: "SOL 214 · JEZERO BASE. Commander — dust storm in 60 seconds. Fold the panels or leave them out?" One tap, two meters jolt. Then: "Every choice costs something. How did we get here?" → the three story cards → Home. It throws the child into the best moment of the game before explaining anything, and it is the same footage that opens both videos |
 | 1 | **Missions → Mars** | Must — most important | The six levels. A mission map shows six stops from Earth to the outpost; other worlds appear locked |
-| 2 | **Quick Run** | Must — second | A 60-second, three-lane dodge game. Dodge debris, collect stardust. Today's real storm index sets the hazard speed, shown as "Space weather today: Kp 3". It is the fast, easy way in for a child who is not ready to read |
+| 2 | **Fly** | Must — second | An **endless** three-lane runner in space, in the spirit of Subway Surfers but with our own look. Orbit or Nova flies on and on: **tap the left or right half of the screen** to change lane, **swipe up** (or tap the Hop button) to hop low rocks. Dodge rocks and debris, grab stardust. Three **powers** appear as glowing pickups and switch on by themselves for about 6 seconds, one at a time: **Shield** (takes one hit), **Magnet** (pulls stardust in), **Boost** (fast and can't be hit). Three hull pips; a hit costs one and the run ends at zero, with distance and stardust counted. It speeds up the further you fly. Today's real storm index sets the starting speed and how fast it speeds up, shown as "Space weather today: Kp 3". Best distance and stardust are saved on the device. It is the fast, easy way in for a child who is not ready to read |
 | 3 | **Profile** | Important | Pick your astronaut — **Orbit (teal suit) or Nova (pink suit)**. Call-sign chosen from a list (no typed personal data), rank, six level badges, the **Space Book** of collected words, a **leaderboard** of the best runs on this device, and settings: sound, reduced motion, replay intro, reset, Sources & credits |
 | 4 | **Resources** | Important | The outpost's four systems as cards: one kid sentence on what each does, its source, and two upgrade steps bought with stardust (+5 to that meter's starting value). The rocket carries **only 4 upgrades in total** — no unlimited mode here either |
 | 5 | **Training** | Locked — "Coming in the next update" | Three locked cards: **Mind** (mini brain games), **Body** (real astronaut exercise), **Reels** (short NASA clips) |
@@ -539,8 +539,8 @@ All endpoints were tested with our key on 12 Nov 2026.
 
 | Data | Agency | Endpoint | Key? | Where in the game | Live or archive |
 |---|---|---|---|---|---|
-| DONKI — CME, SEP, GST, notifications | NASA | `https://api.nasa.gov/DONKI/CME?startDate=…&endDate=…&api_key=KEY` (same for `SEP`, `GST`, `notifications`) | Yes | Levels 2 and 6, Quick Run, home | Live, archive fallback |
-| Planetary K index | NOAA SWPC | `https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json` | No | Quick Run, level 2 | Live, archive fallback |
+| DONKI — CME, SEP, GST, notifications | NASA | `https://api.nasa.gov/DONKI/CME?startDate=…&endDate=…&api_key=KEY` (same for `SEP`, `GST`, `notifications`) | Yes | Levels 2 and 6, Fly, home | Live, archive fallback |
+| Planetary K index | NOAA SWPC | `https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json` | No | Fly, level 2 | Live, archive fallback |
 | NeoWs — near-Earth asteroids | NASA | `https://api.nasa.gov/neo/rest/v1/feed?start_date=…&end_date=…&api_key=KEY` | Yes | Story card 1 | Live, archive fallback |
 | EPIC Earth photo | NASA | `https://epic.gsfc.nasa.gov/api/natural` | No | Level 1 | Live, archive fallback |
 | InSight Mars weather | NASA | `https://api.nasa.gov/insight_weather/?api_key=KEY&feedtype=json&ver=1.0` | Yes | Level 3 | Archive only (2020) |
@@ -612,7 +612,7 @@ Write the real names here once and use them everywhere.
 |---|---|---|
 | **Captain** | [NAME 1] | Scope, schedule, check-ins, Profile and Resources screens, project page, submission |
 | **Engine Dev** | [NAME 2] | Game rules, consequences, NASA service, tests, balance |
-| **UI Dev** | [NAME 3] | Hook, story cards, home, mission screens, Quick Run, publishing |
+| **UI Dev** | [NAME 3] | Hook, story cards, home, mission screens, Fly, publishing |
 | **Science & Data Lead** | [NAME 4] | NASA data, every number and fact, source lines, Sources page |
 | **Story & Video Lead** | [NAME 5] | Story, kid-level text, Twinkle, both videos, subtitles |
 | Sixth member | [NAME 6] | Play-testing if available; named in credits |
@@ -708,7 +708,7 @@ v9 planned 40 free hours. The event's run of show (Participants Guide §02, §08
 | **Fri 13, 07:00–11:30** | Bug fixes only. Register every member and role on the NASA site (08:30) | Record all game footage: 1080p, landscape, internet on, LIVE badge showing. Ask the Local Lead the §10 question | Footage in hand |
 | **Fri 13, 11:30–15:00** | L1: the learning layer, if the footage is done | Edit the 240 s: subtitles, citations, names. Rough cut ready for the 15:00 mentor round | A full rough cut |
 | **Fri 13, 15:00–18:30** | Fixes from mentor feedback | Apply feedback at the 18:00 round. Export. **Upload by 18:30:** YouTube link in the form, file in Drive | **240 s submitted** |
-| **Fri 13, evening** | L2, S2 (Quick Run), S3–S4, F2 (Bangla), in that order, as far as time allows | NASA project page, `docs/AI_USE.md`, README. Draft the 30 s for the 22:00 mentor round | Project page complete |
+| **Fri 13, evening** | L2, S2 (Fly), S3–S4, F2 (Bangla), in that order, as far as time allows | NASA project page, `docs/AI_USE.md`, README. Draft the 30 s for the 22:00 mentor round | Project page complete |
 | **Sat 14, to 09:00** | F3–F5: balance, play-test fixes, final pass. **Freeze at 09:00** | Re-record any shot the new build improves | The published build is the judged build |
 | **Sat 14, 09:00–12:00** | Nothing but emergencies | Finish the 30 s. **Upload by 12:00**; link in the form and on the project page. Open every link in a private window | **30 s and page submitted** |
 
@@ -722,7 +722,7 @@ Three checkpoints decide cuts, so nobody argues at 3 a.m.
 - **Friday 11:30, footage not recorded:** nobody builds until it is.
 - **Saturday 09:00:** freeze, no exceptions.
 
-Cut in this order: sound → Bangla level text (keep the switch and the buttons) → Resources upgrades → Space Words → Try-it toys → leaderboard (keep badges) → Quick Run → the welcome picture change (keep the screen).
+Cut in this order: sound → Bangla level text (keep the switch and the buttons) → Resources upgrades → Space Words → Try-it toys → leaderboard (keep badges) → Fly → the welcome picture change (keep the screen).
 **Never cut:** the six levels, the four meters, landscape, the hook, Look first, Mission Replay, source lines, live DONKI in level 2, the Sources page.
 
 ---
@@ -737,7 +737,7 @@ Cut in this order: sound → Bangla level text (keep the switch and the buttons)
 - [ ] Level 2 shows real DONKI data with a correct LIVE or ARCHIVE badge
 - [ ] The Outpost Check gives one of three results, and the six "I learned" lines appear
 - [ ] Every screen with a fact has a source line; the Sources page lists every dataset and the honesty note
-- [ ] Quick Run, Profile and Resources work; Training shows as locked
+- [ ] Fly, Profile and Resources work; Training shows as locked
 - [ ] The game still works with the internet off
 - [ ] `.env` is not in the repository; `.env.example` is
 - [ ] Both videos uploaded: hook, solution first, all members named, subtitles, citations, future plans

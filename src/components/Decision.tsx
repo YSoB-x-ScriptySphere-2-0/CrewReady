@@ -103,11 +103,10 @@ export function EarthClock() {
           <span
             key={leg}
             aria-hidden
-            className={`absolute top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border-[3px] border-ink bg-go text-white shadow-[0_0_12px_var(--color-go)] ${
+            className={`absolute top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border-[3px] border-ink bg-go text-white ${
               reduce ? dotAt : leg === 'there' ? 'msg-there' : 'msg-back'
             }`}
           >
-            {!reduce ? <span className="absolute -inset-1.5 rounded-full bg-go/30 animate-ping" /> : null}
             <Radio size={22} strokeWidth={2.75} className="relative z-10" />
           </span>
         </div>
@@ -123,7 +122,6 @@ function Planet({ name }: { name: string; color: string }) {
   const gradient = isMars
     ? 'radial-gradient(circle at 35% 32%, #fba86b 0%, #d9622b 50%, #6e1c07 95%)'
     : 'radial-gradient(circle at 35% 32%, #7ac2ff 0%, #2f6fed 52%, #0b2260 95%)';
-  const glow = isMars ? 'rgba(217,98,43,0.35)' : 'rgba(47,111,237,0.35)';
 
   return (
     <span className="flex w-16 shrink-0 flex-col items-center gap-1.5">
@@ -131,7 +129,7 @@ function Planet({ name }: { name: string; color: string }) {
         className="relative h-12 w-12 rounded-full border-[3px] border-ink shadow-[inset_0_2px_4px_rgba(255,255,255,0.45),inset_-4px_-4px_8px_rgba(0,0,0,0.65)]"
         style={{
           background: gradient,
-          boxShadow: `0 0 14px ${glow}, inset 0 2px 4px rgba(255,255,255,0.45), inset -4px -4px 8px rgba(0,0,0,0.65)`,
+          boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.45), inset -4px -4px 8px rgba(0,0,0,0.65)',
         }}
         aria-hidden
       >

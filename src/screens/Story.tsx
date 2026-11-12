@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, Rocket, SkipForward } from 'lucide-react';
 import { GameButton, RoundButton } from '../components/GameButton';
 import { useCountTo } from '../components/motion';
 import { IntelCard, Panel } from '../components/Panel';
+import { isStageTurned, stageDelta } from '../components/stageMath';
 import { Scene, type ScenePlace } from '../components/Scene';
 import { Kid, Twinkle } from '../components/Twinkle';
 import neows from '../content/samples/neows.json';
@@ -58,10 +59,7 @@ function AsteroidRadarFigure({ count }: { count: number }) {
   return (
     <div className="flex w-full flex-col items-center gap-2 py-1">
       <div className="flex items-center gap-2 rounded-full border-2 border-ink bg-paper px-3 py-0.5 text-xs font-extrabold uppercase tracking-wider text-ink shadow-[0_2px_0_var(--color-ink)]">
-        <span className="relative flex h-2.5 w-2.5">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-good opacity-75" />
-          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-good" />
-        </span>
+        <span className="inline-flex h-2.5 w-2.5 rounded-full bg-good" aria-hidden />
         <span>Planetary Defense Radar</span>
       </div>
       <div className="flex items-baseline gap-2 font-display text-[50px] leading-none font-extrabold text-paper tabular-nums">
@@ -69,7 +67,7 @@ function AsteroidRadarFigure({ count }: { count: number }) {
         <span className="font-display text-2xl font-bold text-paper/80">tracked</span>
       </div>
       <span className="rounded-md bg-paper/15 px-2.5 py-0.5 font-display text-xs font-bold text-paper/90">
-        Impact Risk: 0.00% · Safe Flybys Verified
+        None will hit us.
       </span>
     </div>
   );
@@ -102,8 +100,9 @@ export function Story() {
     const s = start.current;
     start.current = null;
     if (!s) return;
-    const dx = e.clientX - s.x;
-    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(e.clientY - s.y)) (dx < 0 ? forward : back)();
+    // Read direction through stageDelta so "left" stays left on the turned (upright-phone) stage.
+    const { dx, dy } = stageDelta(e.clientX - s.x, e.clientY - s.y);
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) (dx < 0 ? forward : back)();
   };
 
   const card = CARDS[i];
@@ -124,7 +123,7 @@ export function Story() {
         </GameButton>
       </div>
 
-      <div className="flex flex-1 flex-col gap-4" onPointerDown={onPointerDown} onPointerUp={onPointerUp} style={{ touchAction: 'pan-y' }}>
+      <div className="flex flex-1 flex-col gap-4" onPointerDown={onPointerDown} onPointerUp={onPointerUp} style={{ touchAction: isStageTurned() ? 'pan-x' : 'pan-y' }}>
         <Panel key={card.title} ribbon="Fiction" tone="go" as="article">
           {/* the comic picture */}
           <div className="overflow-hidden rounded-[18px] border-[3px] border-ink" aria-hidden>

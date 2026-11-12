@@ -2,10 +2,24 @@
 
 /* Design tokens — BUILD_SEQUENCE.md §4.2. A meter colour means that meter, everywhere. */
 @theme {
+  /* v10 tokens (§4.3): deep navy space, dark panels, one cyan main action. */
+  --color-space: #0b1437;
+  --color-space-deep: #070b1e;
+  --color-panel: #14204d;
+  --color-panel-up: #1c2b63;
+  --color-line: #3a4a8c;
+  --color-text: #f4f7ff;
+  --color-muted: #a9b4d6; /* secondary text on dark */
+  --color-orbit: #19a7b8;
+  --color-nova: #e8338b;
+  --color-go-text: #06202b;
+  --color-lip: #0a1233; /* hard lip under a dark pressable */
+
+  /* paper and ink: the Sources page only (§4.3), plus old screens until R3-R4 restyle them. */
   --color-ink: #1b1f3b;
   --color-paper: #fff8ec;
   --color-edge: #e9dfcc;
-  --color-muted: #5a5f7d; /* secondary text on paper */
+  --color-muted-paper: #5a5f7d;
 
   --color-power: #f5b700;
   --color-air: #1e9be0;
@@ -15,13 +29,13 @@
   --color-danger: #d93a3a;
   --color-good: #1f8a4c;
 
-  /* The one main action per screen (G1). Pink: the meters own yellow, blue, green and purple; red means danger. */
-  --color-go: #e8336f;
-  --color-go-lip: #b81e52;
+  /* The one main action per screen: cyan. The meters own yellow, blue, green and purple; red means danger. */
+  --color-go: #22d7e6;
+  --color-go-lip: #0f8f9c;
   /* Lip shades for the toy parts: a darker step of each fill. */
   --color-paper-lip: #cbbd9f;
-  --color-locked: #d9d4c7;
-  --color-locked-lip: #aaa392;
+  --color-locked: #1a2455;
+  --color-locked-lip: #0a1233;
   --color-crate: #c7773a;
   --color-crate-lip: #8e4f22;
 
@@ -31,12 +45,12 @@
   --color-sky-dust: #b9801f;
   --color-sky-alarm: #a8322e;
 
-  --radius-card: 20px;
-  --radius-btn: 14px;
-  --radius-tile: 16px; /* buttons and choice tiles */
-  --radius-panel: 24px; /* panels */
-  --shadow-card: 0 8px 24px rgb(27 31 59 / 0.18);
-  --shadow-panel: 0 10px 24px rgb(27 31 59 / 0.22);
+  --radius-card: 1rem;
+  --radius-btn: 1rem;
+  --radius-tile: 1rem; /* buttons and choice cards */
+  --radius-panel: 1.5rem; /* panels */
+  --shadow-card: none;
+  --shadow-panel: none;
 
   --font-sans: 'Nunito', system-ui, 'Segoe UI', sans-serif;
   --font-display: 'Baloo Da 2', 'Nunito', system-ui, sans-serif;
@@ -50,10 +64,10 @@ body,
 }
 body {
   margin: 0;
-  background: var(--color-sky-earth);
-  color: var(--color-ink);
+  background: var(--color-space-deep);
+  color: var(--color-text);
   font-family: var(--font-sans);
-  font-size: 18px;
+  font-size: 1.125rem; /* rem follows the stage height (Stage.tsx) */
   line-height: 1.5;
   -webkit-text-size-adjust: 100%;
 }
@@ -71,11 +85,11 @@ button:disabled {
   opacity: 0.45;
 }
 :focus-visible {
-  outline: 3px solid var(--color-ink);
+  outline: 3px solid var(--color-text);
   outline-offset: 3px;
 }
 .on-sky :focus-visible {
-  outline-color: var(--color-paper);
+  outline-color: var(--color-text);
 }
 /* Paper surfaces (panels, the Dock) sitting on a dark scene get the ink ring back. */
 .on-paper :focus-visible {
@@ -123,17 +137,18 @@ button:disabled {
 /* ================= Game kit (BUILD_SEQUENCE.md §4.3–4.4, step G1) ================= */
 
 @layer components {
-/* Toy parts: 3 px ink outline and a hard lip (darker fill + ink edge) underneath, no blur.
-   On press they squash to 95% and drop 4 px onto the lip. */
+/* Toy parts: a 2 px line border and a hard lip (a darker shade, no blur) underneath.
+   On press they squash to 95% and drop onto the lip. `.halo` adds the one soft cyan glow, main button only. */
 .toy {
-  --lip: var(--color-paper-lip);
-  --lip-y: 6px;
+  --lip: var(--color-lip);
+  --lip-y: 0.35rem;
+  --halo: 0 0 0 0 transparent;
   position: relative;
-  border: 3px solid var(--color-ink);
+  border: 2px solid var(--color-line);
   box-shadow:
     0 var(--lip-y) 0 0 var(--lip),
-    0 var(--lip-y) 0 3px var(--color-ink);
-  margin-bottom: 9px; /* room for the lip */
+    var(--halo);
+  margin-bottom: 0.45rem; /* room for the lip */
   transition:
     transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1),
     box-shadow 180ms cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -143,10 +158,14 @@ button:disabled {
   user-select: none;
 }
 .toy[data-pressed='true'] {
-  --lip-y: 2px;
-  transform: translateY(4px) scale(0.95);
+  --lip-y: 0.1rem;
+  transform: translateY(0.25rem) scale(0.95);
   transition-duration: 60ms;
   transition-timing-function: ease-out;
+}
+/* The one halo in the game: soft cyan, on the main action only. */
+.halo {
+  --halo: 0 0 1.25rem rgb(34 215 230 / 0.45);
 }
 .toy:disabled,
 .toy[aria-disabled='true'] {
@@ -164,7 +183,7 @@ button:disabled {
   top: 4px;
   height: 26%;
   border-radius: 999px;
-  background: rgb(255 255 255 / 0.3);
+  background: rgb(255 255 255 / 0.18);
   pointer-events: none;
 }
 .toy:disabled.shine::before {

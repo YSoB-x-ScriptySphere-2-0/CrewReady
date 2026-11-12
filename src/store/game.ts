@@ -1,6 +1,6 @@
 // Mission progress: which level and step the player is on, and what just happened.
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import { LEVELS } from '../content/levels';
 import { costliest, enterLevel, enterSteps, startMission, type LogEntry } from '../engine/engine';
 import type { GameState, Meter, Outcome } from '../engine/types';
@@ -16,7 +16,7 @@ export type Screen =
   | 'play'
   | 'replay'
   | 'success'
-  | 'quickrun'
+  | 'fly'
   | 'resources'
   | 'profile'
   | 'training'
@@ -74,6 +74,39 @@ function enter(game: GameState, levelIndex: number) {
 
 /** Why the mission paused: the meter, every reason from the last hit, and the entry that cost it the most. */
 const pause = (meter: Meter, reasons: string[], log: LogEntry[]) => ({ meter, reasons, blame: costliest(log, meter) });
+
+/** localStorage that never throws, and drops a save that isn't valid JSON so the game starts fresh. */
+export const safeStorage = {
+  getItem: (name: string): string | null => {
+    try {
+      const raw = localStorage.getItem(name);
+      if (raw === null) return null;
+      JSON.parse(raw);
+      return raw;
+    } catch {
+      try {
+        localStorage.removeItem(name);
+      } catch {
+        /* storage is blocked: nothing to clean up */
+      }
+      return null;
+    }
+  },
+  setItem: (name: string, value: string): void => {
+    try {
+      localStorage.setItem(name, value);
+    } catch {
+      /* a full or blocked store: play on without saving */
+    }
+  },
+  removeItem: (name: string): void => {
+    try {
+      localStorage.removeItem(name);
+    } catch {
+      /* ignore */
+    }
+  },
+};
 
 export const useGame = create<Store>()(
   persist(
@@ -150,6 +183,8 @@ export const useGame = create<Store>()(
     {
       name: 'crewready_v1_mission',
       version: 2,
+      // A failed read or write (private window, blocked storage, a broken save) starts a fresh game.
+      storage: createJSONStorage(() => safeStorage),
       // First launch (no save, or a save from before the hook existed) opens the hook.
       // Saves from before A9 have no leaderboard or run ids: `current` supplies the defaults.
       merge: (persisted, current) => {

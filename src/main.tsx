@@ -7,6 +7,7 @@ import '@fontsource/nunito/400.css';
 import '@fontsource/nunito/700.css';
 import '@fontsource/nunito/800.css';
 import App from './App';
+import { Stage } from './components/Stage';
 import { useGame } from './store/game';
 import './index.css';
 
@@ -15,6 +16,8 @@ if (import.meta.env.DEV) (window as unknown as { __game: typeof useGame }).__gam
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <Stage>
+      <App />
+    </Stage>
   </StrictMode>,
 );

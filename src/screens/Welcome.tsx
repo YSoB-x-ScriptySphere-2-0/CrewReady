@@ -64,17 +64,19 @@ export function Welcome({ onStart }: WelcomeProps) {
   // Crossfade opacity: 0 -> 1 as progress moves from 15% to 90%
   const crossfade = Math.min(1, Math.max(0, (progress - 15) / 75));
 
+  // Mission-prep lines only. A line naming NASA data waits for D1, when that data really loads.
+  // No new Bangla yet (R2): Bangla keeps the one existing loading line.
   const loadingText =
-    progress < 30
-      ? t('welcome.loading')
-      : progress < 65
-        ? (lang === 'bn' ? 'নাসার ডেটা সংযোগ হচ্ছে…' : 'Syncing NASA Space Weather…')
-        : progress < 98
-          ? (lang === 'bn' ? 'সিস্টেম ক্যালিব্রেট করা হচ্ছে…' : 'Calibrating Life Support Systems…')
-          : t('welcome.ready');
+    progress >= 98
+      ? t('welcome.ready')
+      : lang === 'bn' || progress < 30
+        ? t('welcome.loading')
+        : progress < 65
+          ? 'Preparing life support…'
+          : 'Waking up Twinkle…';
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-[#070b1e] text-[#f4f7ff] select-none flex flex-col justify-between">
+    <div className="relative min-h-full w-full overflow-hidden bg-[#070b1e] text-[#f4f7ff] select-none flex flex-col justify-between">
       {/* Background Deep Space Base */}
       <div className="absolute inset-0 bg-[#070b1e] pointer-events-none" />
 
@@ -110,7 +112,7 @@ export function Welcome({ onStart }: WelcomeProps) {
       <header className="relative z-20 flex items-center justify-between px-6 pt-6 sm:px-12 sm:pt-8">
         {/* Brand Logo with Planet Ring */}
         <div className="flex items-center gap-3">
-          <div className="relative grid h-10 w-10 place-items-center rounded-full bg-cyan-500/20 text-[#22d7e6] shadow-[0_0_16px_rgba(34,215,230,0.4)] border border-cyan-400/40">
+          <div className="relative grid h-10 w-10 place-items-center rounded-full bg-cyan-500/20 text-[#22d7e6] border border-cyan-400/40">
             <OrbitIcon size={24} strokeWidth={2.2} />
           </div>
           <div className="flex flex-col">
@@ -124,12 +126,12 @@ export function Welcome({ onStart }: WelcomeProps) {
         </div>
 
         {/* Language Switcher Pill [ EN | বাংলা ] */}
-        <div className="flex items-center rounded-full border border-white/20 bg-[#0e1638]/70 backdrop-blur-md p-1 shadow-lg">
+        <div className="flex items-center rounded-full border border-white/20 bg-[#0e1638]/80 p-1">
           <button
             onClick={() => setLang('en')}
             className={`rounded-full px-3.5 py-1 text-sm font-extrabold transition-all ${
               lang === 'en'
-                ? 'bg-gradient-to-r from-cyan-600 to-cyan-500 text-white shadow-[0_0_12px_rgba(6,182,212,0.5)]'
+                ? 'bg-gradient-to-r from-cyan-600 to-cyan-500 text-white'
                 : 'text-white/70 hover:text-white'
             }`}
           >
@@ -139,7 +141,7 @@ export function Welcome({ onStart }: WelcomeProps) {
             onClick={() => setLang('bn')}
             className={`rounded-full px-3.5 py-1 text-sm font-extrabold transition-all ${
               lang === 'bn'
-                ? 'bg-gradient-to-r from-cyan-600 to-cyan-500 text-white shadow-[0_0_12px_rgba(6,182,212,0.5)]'
+                ? 'bg-gradient-to-r from-cyan-600 to-cyan-500 text-white'
                 : 'text-white/70 hover:text-white'
             }`}
           >
@@ -166,7 +168,7 @@ export function Welcome({ onStart }: WelcomeProps) {
               /* Glowing Cyan Play Button */
               <button
                 onClick={handlePlay}
-                className="anim-pop group relative flex w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#00b4d8] via-[#22d7e6] to-[#48cae4] px-8 py-3.5 md:py-4 font-display text-xl md:text-2xl font-extrabold text-[#06202b] shadow-[0_0_24px_rgba(34,215,230,0.6),0_4px_0_#0f8f9c] active:translate-y-1 active:shadow-[0_0_16px_rgba(34,215,230,0.4),0_1px_0_#0f8f9c] transition-all cursor-pointer"
+                className="anim-pop group relative flex w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#00b4d8] via-[#22d7e6] to-[#48cae4] px-8 py-3.5 md:py-4 font-display text-xl md:text-2xl font-extrabold text-[#06202b] shadow-[0_0_1.25rem_rgba(34,215,230,0.45),0_4px_0_#0f8f9c] active:translate-y-1 active:shadow-[0_0_1.25rem_rgba(34,215,230,0.45),0_1px_0_#0f8f9c] transition-all cursor-pointer"
               >
                 <Play size={24} strokeWidth={2.75} fill="#06202b" className="transition-transform group-hover:scale-110" />
                 <span>{t('welcome.play')}</span>
@@ -174,16 +176,16 @@ export function Welcome({ onStart }: WelcomeProps) {
             ) : (
               /* Futuristic Progress Loading Bar */
               <div className="flex flex-col gap-2">
-                <div className="relative h-13 md:h-14 w-full rounded-full border-2 border-cyan-400/40 bg-[#0a1130]/80 backdrop-blur-md p-1.5 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] overflow-hidden flex items-center">
+                <div className="relative h-13 md:h-14 w-full rounded-full border-2 border-cyan-400/40 bg-[#0a1130]/85 p-1.5 overflow-hidden flex items-center">
                   {/* Glowing cyan fill progress */}
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-cyan-600 via-cyan-400 to-[#22d7e6] shadow-[0_0_16px_rgba(34,215,230,0.8)] transition-all duration-150 ease-out"
+                    className="h-full rounded-full bg-gradient-to-r from-cyan-600 via-cyan-400 to-[#22d7e6] transition-all duration-150 ease-out"
                     style={{ width: `${progress}%` }}
                   />
                   {/* Text centered inside the bar */}
                   <div className="absolute inset-0 flex items-center justify-between px-5 font-display text-sm font-extrabold text-white drop-shadow">
                     <span className="flex items-center gap-2 truncate">
-                      <Sparkles size={16} className="text-cyan-300 animate-pulse shrink-0" />
+                      <Sparkles size={16} className="text-cyan-300 shrink-0" />
                       <span className="truncate">{loadingText}</span>
                     </span>
                     <span className="tabular-nums font-bold text-cyan-200 ml-2">{progress}%</span>
@@ -195,7 +197,7 @@ export function Welcome({ onStart }: WelcomeProps) {
             {/* Frosted Glass How to Play Button */}
             <button
               onClick={() => setShowHowToPlay(true)}
-              className="flex w-full items-center justify-center gap-2.5 rounded-full border border-white/30 bg-white/10 backdrop-blur-md px-6 py-2.5 md:py-3 font-display text-base md:text-lg font-bold text-white hover:bg-white/20 hover:border-white/50 active:scale-98 transition-all cursor-pointer shadow-md"
+              className="flex w-full items-center justify-center gap-2.5 rounded-full border-2 border-white/30 bg-[#14204d]/70 px-6 py-2.5 md:py-3 font-display text-base md:text-lg font-bold text-white hover:bg-[#14204d]/85 hover:border-white/50 active:scale-98 transition-all cursor-pointer"
             >
               <BookOpen size={19} strokeWidth={2.2} className="text-cyan-300" />
               <span>{t('welcome.howToPlay')}</span>
@@ -212,7 +214,7 @@ export function Welcome({ onStart }: WelcomeProps) {
 
       {/* How to Play Modal */}
       {showHowToPlay ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
           <div className="relative w-full max-w-lg rounded-3xl border-2 border-white/20 bg-[#0d163d]/95 p-6 sm:p-8 text-white shadow-2xl space-y-6">
             <div className="flex items-center justify-between border-b border-white/15 pb-4">
               <div className="flex items-center gap-2.5">

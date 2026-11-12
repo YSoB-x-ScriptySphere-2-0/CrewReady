@@ -23,7 +23,7 @@ Endpoints tested on 12 Nov 2026.
 | 9 | OSDR | `https://osdr.nasa.gov/osdr/data/search?term=veggie&type=cgene` · `https://visualization.osdr.nasa.gov/biodata/api/v2/dataset/<OSD-id>/` | No | study title, accession, mission, description | 5 | Archive (snapshot) |
 | 10 | NTRS | `https://ntrs.nasa.gov/` | No | report title + link | Sources panel | Static links |
 | 12 | **NeoWs** — near-Earth asteroids | `https://api.nasa.gov/neo/rest/v1/feed?start_date=YYYY-MM-DD&end_date=YYYY-MM-DD&api_key=KEY` | Yes | `element_count`, per object: `name`, `is_potentially_hazardous_asteroid`, `close_approach_data[0].miss_distance` | Story card 1 | Live → archive |
-| 11 | **NOAA SWPC** planetary K index (other-agency data, needed for the top "NASA data usage" mark) | `https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json` | No | `time_tag`, `Kp` | Quick Run hazard speed, level 2, home chip | Live → archive |
+| 11 | **NOAA SWPC** planetary K index (other-agency data, needed for the top "NASA data usage" mark) | `https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json` | No | `time_tag`, `Kp` | Fly hazard speed, level 2, home chip | Live → archive |
 
 Notes from testing:
 - DONKI date ranges must be **60 days or less**.
@@ -113,7 +113,7 @@ If the live window is quiet, level 2 says so truthfully ("The Sun is calm this m
 | 2007 dust storm | Opportunity rover's power fell sharply and it stopped driving for weeks | 15 |
 | 2018 global dust storm | The storm covered the whole planet; Opportunity never woke up again | 25 |
 
-**Quick Run hazard speed** — from today's highest Kp (NOAA SWPC, or DONKI GST): Kp 0–3 slow, 4–6 medium, 7–9 fast.
+**Fly starting speed** — from today's highest Kp (NOAA SWPC, or DONKI GST): Kp 0–3 slow, 4–6 medium, 7–9 fast. Fly is endless, so this sets where the run starts and how quickly it speeds up. The powers (Shield, Magnet, Boost) are game inventions, not NASA facts: no source line, and the Fly screen says nothing real about them.
 
 ---
 
