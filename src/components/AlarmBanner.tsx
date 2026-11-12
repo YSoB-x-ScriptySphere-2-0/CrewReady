@@ -1,5 +1,6 @@
 // Full-width striped banner for storms, alarms and Mission Replay. It slams in from the side and the
 // scene shakes once (400 ms). With reduced motion it is simply there. BUILD_SEQUENCE.md §4.4.
+// Sized in rem so it scales with the stage; one slim row in landscape (R4).
 import { useEffect, useRef } from 'react';
 import { TriangleAlert, type LucideIcon } from 'lucide-react';
 import { shakeScene } from './motion';
@@ -22,18 +23,16 @@ export function AlarmBanner({
     return () => clearTimeout(t);
   }, [shake]);
   return (
-    <div ref={ref} role="alert" className="anim-slam relative w-full border-y-[3px] border-ink bg-danger text-white shadow-[0_6px_0_var(--color-ink)]">
-      <div className="hazard h-3 border-b-[3px] border-ink" aria-hidden />
-      <div className="flex items-center justify-center gap-3 px-4 py-2.5">
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border-[3px] border-ink bg-paper text-danger" aria-hidden>
-          <Icon size={26} strokeWidth={2.75} />
+    <div ref={ref} role="alert" className="anim-slam relative w-full border-y-2 border-line bg-danger text-white shadow-[0_0.3rem_0_var(--color-lip)]">
+      <div className="hazard h-[0.5rem]" aria-hidden />
+      <div className="flex items-center justify-center gap-[0.75rem] px-[1rem] py-[0.25rem]">
+        <span className="grid h-[2.25rem] w-[2.25rem] shrink-0 place-items-center rounded-full bg-space-deep text-white" aria-hidden>
+          <Icon size={22} strokeWidth={2.75} />
         </span>
-        <div className="min-w-0 text-center">
-          <p className="font-display text-[28px] leading-none font-extrabold tracking-wide uppercase sm:text-[38px]">{title}</p>
-          {sub ? <p className="mt-1 font-display text-lg leading-tight font-bold sm:text-xl">{sub}</p> : null}
-        </div>
+        <p className="min-w-0 font-display text-[1.625rem] leading-none font-extrabold tracking-wide uppercase">{title}</p>
+        {sub ? <p className="min-w-0 font-display text-[1.125rem] leading-tight font-bold">· {sub}</p> : null}
       </div>
-      <div className="hazard h-3 border-t-[3px] border-ink" aria-hidden />
+      <div className="hazard h-[0.5rem]" aria-hidden />
     </div>
   );
 }

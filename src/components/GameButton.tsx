@@ -180,6 +180,7 @@ export function ChoiceCard({
   disabled,
   children,
   className = '',
+  innerRef,
 }: {
   label: ReactNode;
   icon?: LucideIcon;
@@ -188,6 +189,7 @@ export function ChoiceCard({
   state?: TileState;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
+  innerRef?: React.Ref<HTMLButtonElement>;
   /** The arrows row (Look first). */
   children?: ReactNode;
   className?: string;
@@ -204,6 +206,7 @@ export function ChoiceCard({
   const marked = selected || state === 'chosen';
   return (
     <button
+      ref={innerRef}
       type="button"
       onClick={onClick}
       disabled={disabled}
@@ -211,16 +214,16 @@ export function ChoiceCard({
       aria-hidden={state === 'gone' ? true : undefined}
       tabIndex={state === 'gone' ? -1 : undefined}
       {...press}
-      className={`toy flex min-h-[8rem] min-w-0 flex-1 flex-col items-center justify-center gap-[0.5rem] rounded-tile p-[0.75rem] text-center text-text ${
+      className={`toy flex min-h-[6.5rem] min-w-0 flex-1 flex-col items-center justify-center gap-[0.375rem] rounded-tile p-[0.5rem] text-center text-text ${
         disabled ? LOCKED : marked ? '-translate-y-1 border-[3px] border-go bg-panel-up [--lip:var(--color-go-lip)]' : 'bg-panel'
       } ${state === 'chosen' ? 'anim-stamp' : ''} ${state === 'gone' ? 'is-gone' : ''} ${state !== 'idle' ? 'cursor-default' : ''} ${className}`}
     >
       {picture ?? (Icon ? (
-        <span className="grid h-[4rem] w-[4rem] shrink-0 place-items-center rounded-full bg-space" aria-hidden>
-          <Icon size={34} strokeWidth={2.25} />
+        <span className="grid h-[3rem] w-[3rem] shrink-0 place-items-center rounded-full bg-space" aria-hidden>
+          <Icon size={28} strokeWidth={2.25} />
         </span>
       ) : null)}
-      <span className="block font-display text-[1.125rem] leading-tight font-extrabold">{label}</span>
+      <span className="block font-display text-[0.875rem] leading-[1.15] font-extrabold">{label}</span>
       {children}
     </button>
   );

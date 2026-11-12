@@ -1,5 +1,5 @@
-// Level 1 — stow the ship. A cutaway of your seat with two cubbies. Tap an item and it flies into a cubby;
-// tap a cubby to send it back to the hold. Each item says what happens next to you and in the hold.
+// Level 1 — stow the ship. A cutaway of your seat with two cubbies (left zone). Tap an item and it flies into
+// a cubby; tap a cubby to send it back to the hold. Each item says what happens next to you and in the hold.
 import { useRef, useState } from 'react';
 import { Check, Package, Rocket } from 'lucide-react';
 import { iconFor } from '../../content/icons';
@@ -7,20 +7,20 @@ import { stow } from '../../engine/engine';
 import type { GameState, StowStep } from '../../engine/types';
 import { GameButton } from '../GameButton';
 import { usePress } from '../motion';
-import { hop, ToyArea, type Done } from './shared';
+import { hop, LeftSlot, ToyArea, type Done } from './shared';
 
-const itemHtml = '<span style="display:grid;place-items:center;width:44px;height:44px;border:3px solid #1B1F3B;border-radius:12px;background:#E9DFCC"></span>';
+const itemHtml = '<span style="display:grid;place-items:center;width:40px;height:40px;border:2px solid #3a4a8c;border-radius:12px;background:#1c2b63"></span>';
 
 /** The seat, drawn flat. */
 function Seat() {
   return (
-    <svg viewBox="0 0 80 110" className="h-[110px] w-[80px] shrink-0" aria-hidden>
-      <rect x="18" y="6" width="44" height="58" rx="12" fill="#5A5F7D" stroke="#1B1F3B" strokeWidth="3" />
+    <svg viewBox="0 0 80 110" className="h-[5.5rem] w-[4rem] shrink-0" aria-hidden>
+      <rect x="18" y="6" width="44" height="58" rx="12" fill="#5A5F7D" stroke="#3a4a8c" strokeWidth="3" />
       <rect x="26" y="14" width="28" height="12" rx="5" fill="#7d82a3" />
-      <rect x="10" y="60" width="60" height="22" rx="9" fill="#5A5F7D" stroke="#1B1F3B" strokeWidth="3" />
-      <rect x="22" y="82" width="8" height="22" fill="#1B1F3B" />
-      <rect x="50" y="82" width="8" height="22" fill="#1B1F3B" />
-      <rect x="12" y="100" width="56" height="7" rx="3" fill="#1B1F3B" />
+      <rect x="10" y="60" width="60" height="22" rx="9" fill="#5A5F7D" stroke="#3a4a8c" strokeWidth="3" />
+      <rect x="22" y="82" width="8" height="22" fill="#3a4a8c" />
+      <rect x="50" y="82" width="8" height="22" fill="#3a4a8c" />
+      <rect x="12" y="100" width="56" height="7" rx="3" fill="#3a4a8c" />
     </svg>
   );
 }
@@ -34,26 +34,26 @@ function ItemCard({ label, inReach, inHold, picked, onClick }: { label: string; 
       onClick={onClick}
       aria-pressed={picked}
       {...press}
-      className={`toy flex w-full items-start gap-3 rounded-tile p-3 text-left text-ink ${picked ? 'bg-[#ffe3ec] [--lip:#e9a3bb]' : 'bg-white'}`}
+      className={`toy !mb-[0.3rem] flex h-[calc(100%-0.3rem)] min-h-0 w-full items-center gap-[0.375rem] rounded-tile p-[0.25rem] text-left text-text ${picked ? 'border-[3px] border-go bg-panel-up [--lip:var(--color-go-lip)]' : 'bg-panel'}`}
     >
-      <span data-item-icon className={`grid h-12 w-12 shrink-0 place-items-center rounded-[12px] border-[3px] border-ink ${picked ? 'bg-white' : 'bg-edge'}`} aria-hidden>
-        <Icon size={26} strokeWidth={2.25} />
+      <span data-item-icon className="grid h-[2.25rem] w-[2.25rem] shrink-0 place-items-center rounded-[0.625rem] border-2 border-line bg-space" aria-hidden>
+        <Icon size={20} strokeWidth={2.25} />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block font-display text-xl leading-tight font-extrabold">{label}</span>
-        <span className={`mt-1 block text-base leading-snug ${picked ? 'font-bold text-ink' : 'text-muted'}`}>Next to you: {inReach}.</span>
-        <span className={`block text-base leading-snug ${picked ? 'text-muted' : 'font-bold text-ink'}`}>In the hold: {inHold}.</span>
+        <span className="block font-display text-[0.8125rem] leading-[1.1] font-extrabold">{label}</span>
+        <span className={`block text-[0.6875rem] leading-[1.1] ${picked ? 'font-bold' : 'text-muted'}`}>Next to you: {inReach}.</span>
+        <span className={`block text-[0.6875rem] leading-[1.1] ${picked ? 'text-muted' : 'font-bold'}`}>In the hold: {inHold}.</span>
       </span>
       {picked ? (
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border-[3px] border-ink bg-go text-white" aria-hidden>
-          <Check size={20} strokeWidth={3.5} />
+        <span className="grid h-[1.5rem] w-[1.5rem] shrink-0 place-items-center rounded-full bg-go text-go-text" aria-hidden>
+          <Check size={16} strokeWidth={3.5} />
         </span>
       ) : null}
     </button>
   );
 }
 
-export function Stow({ step, game, onDone }: { step: StowStep; game: GameState; onDone: Done }) {
+export function Stow({ step, game, onDone, slot }: { step: StowStep; game: GameState; onDone: Done; slot?: HTMLElement | null }) {
   // cubbies[k] holds an item flag or null.
   const [cubbies, setCubbies] = useState<(string | null)[]>(() => Array.from({ length: step.pick }, () => null));
   const [landedAt, setLandedAt] = useState(-1);
@@ -91,49 +91,53 @@ export function Stow({ step, game, onDone }: { step: StowStep; game: GameState; 
         onClick={() => empty(k)}
         disabled={!item}
         label={item ? `Cubby ${k + 1}: ${item.label}. Tap to send it back to the hold.` : `Cubby ${k + 1}: empty`}
-        className={`grid h-[92px] w-[92px] shrink-0 place-items-center !bg-[#3a3f63] disabled:!bg-[#3a3f63] ${nudge && full ? 'anim-wiggle' : ''}`}
+        className={`grid h-[4rem] w-[4rem] shrink-0 place-items-center !bg-space-deep disabled:!bg-space-deep ${nudge && full ? 'anim-wiggle' : ''}`}
       >
         <span ref={(el) => void (cubbyRefs.current[k] = el)} className="grid place-items-center">
           {item ? (
-            <span className={`grid h-14 w-14 place-items-center rounded-[12px] border-[3px] border-ink bg-edge ${landedAt === k ? 'anim-land' : ''}`} aria-hidden>
-              <Icon size={30} strokeWidth={2.25} />
+            <span className={`grid h-[2.75rem] w-[2.75rem] place-items-center rounded-[0.625rem] border-2 border-line bg-panel-up ${landedAt === k ? 'anim-land' : ''}`} aria-hidden>
+              <Icon size={24} strokeWidth={2.25} />
             </span>
           ) : (
-            <span className="h-14 w-14 rounded-[12px] border-[3px] border-dashed border-paper/50" aria-hidden />
+            <span className="h-[2.75rem] w-[2.75rem] rounded-[0.625rem] border-2 border-dashed border-text/40" aria-hidden />
           )}
         </span>
       </ToyArea>
     );
   };
 
+  const half = Math.ceil(step.pick / 2);
   return (
-    <div>
-      {/* Cutaway: cubby, seat, cubby. */}
-      <div className="rounded-panel border-[3px] border-ink bg-[#262a4d] px-3 pt-3 pb-1 text-paper shadow-panel">
-        <p className="text-center font-display text-lg leading-tight font-extrabold">Next to your seat</p>
-        <div className="mt-2 flex items-end justify-center gap-2 sm:gap-5">
-          {cubbies.slice(0, Math.ceil(step.pick / 2)).map((_, k) => cubby(k))}
-          <Seat />
-          {cubbies.slice(Math.ceil(step.pick / 2)).map((_, k) => cubby(k + Math.ceil(step.pick / 2)))}
+    <>
+      <LeftSlot slot={slot}>
+        {/* Cutaway: cubby, seat, cubby. */}
+        <div className="flex h-full w-full flex-col items-center justify-center rounded-panel border-2 border-line bg-panel/85 px-[0.5rem] py-[0.5rem] text-text">
+          <p className="text-center font-display text-[0.9375rem] leading-tight font-extrabold">Next to your seat</p>
+          <div className="mt-[0.25rem] flex items-end justify-center gap-[0.25rem]">
+            {cubbies.slice(0, half).map((_, k) => cubby(k))}
+            <Seat />
+            {cubbies.slice(half).map((_, k) => cubby(k + half))}
+          </div>
+        </div>
+      </LeftSlot>
+
+      <div className="flex h-full min-h-0 flex-col gap-[0.5rem]">
+        <div ref={list} className="grid min-h-0 flex-1 grid-cols-2 gap-x-[0.5rem] gap-y-[0.125rem]">
+          {step.items.map((it) => (
+            <div key={it.flag} data-flag={it.flag} className="min-h-0">
+              <ItemCard {...it} picked={picked.includes(it.flag)} onClick={() => toggle(it.flag)} />
+            </div>
+          ))}
+        </div>
+        <div className="flex items-center justify-between gap-[0.5rem]">
+          <p className="min-w-0 font-display text-[0.9375rem] leading-tight font-extrabold" aria-live="polite">
+            {full ? 'Both cubbies full. Tap one to empty it.' : `Tap ${step.pick - picked.length} more.`}
+          </p>
+          <GameButton variant="go" icon={Rocket} disabled={!full} onClick={() => onDone(stow(game, step, picked))} className="!min-h-[2.75rem] !mb-0">
+            Ready for launch ({picked.length}/{step.pick})
+          </GameButton>
         </div>
       </div>
-
-      <p className="mt-4 font-display text-lg font-extrabold" aria-live="polite">
-        {full ? 'Both cubbies full. Tap one to empty it.' : `The hold: tap ${step.pick - picked.length} more.`}
-      </p>
-      <div ref={list} className="mt-2 grid gap-x-3 gap-y-1 sm:grid-cols-2">
-        {step.items.map((it) => (
-          <div key={it.flag} data-flag={it.flag}>
-            <ItemCard {...it} picked={picked.includes(it.flag)} onClick={() => toggle(it.flag)} />
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-3">
-        <GameButton variant="go" icon={Rocket} disabled={!full} onClick={() => onDone(stow(game, step, picked))}>
-          Ready for launch ({picked.length}/{step.pick})
-        </GameButton>
-      </div>
-    </div>
+    </>
   );
 }

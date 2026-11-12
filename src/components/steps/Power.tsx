@@ -1,14 +1,14 @@
-// Level 4 — share the battery. Seven chunky battery blocks sit in the tray. Tap a socket and a block hops in;
-// tap a socket's blocks to pull one back out. Each empty slot shows what it costs, in that meter's colour.
+// Level 4 — share the battery. Seven chunky battery blocks sit in the tray (left zone). Tap a socket's plug and a
+// block hops in; tap a socket's blocks to pull one back out. Each empty slot shows what it costs, in that meter's colour.
 import { useRef, useState } from 'react';
 import { Plug, Undo2, Zap } from 'lucide-react';
 import { crewMods, setSliders } from '../../engine/engine';
 import { METER_NAMES, type CrewStep, type GameState, type Level, type SlidersStep } from '../../engine/types';
 import { ChangeChip, GameButton } from '../GameButton';
 import { METER_COLOR, MeterBadge } from '../meters';
-import { BLOCK_HTML, BatteryBlock, hop, ToyArea, type Done } from './shared';
+import { BLOCK_HTML, BatteryBlock, hop, LeftSlot, ToyArea, type Done } from './shared';
 
-export function Power({ step, game, level, onDone }: { step: SlidersStep; game: GameState; level: Level; onDone: Done }) {
+export function Power({ step, game, level, onDone, slot }: { step: SlidersStep; game: GameState; level: Level; onDone: Done; slot?: HTMLElement | null }) {
   const [alloc, setAlloc] = useState(step.systems.map(() => 0));
   const [landed, setLanded] = useState(-2); // socket index, -1 for the tray
   const left = step.units - alloc.reduce((a, b) => a + b, 0);
@@ -30,77 +30,79 @@ export function Power({ step, game, level, onDone }: { step: SlidersStep; game: 
   };
 
   return (
-    <div>
-      {/* The battery tray. */}
-      <div ref={tray} className="flex min-h-[72px] flex-wrap items-end gap-2 rounded-tile border-[3px] border-ink bg-[#2c2f52] px-3 pt-4 pb-3 text-paper" aria-live="polite">
-        <span className="sr-only">{left ? `${left} battery blocks left in the tray.` : 'Every block is plugged in.'}</span>
-        {Array.from({ length: left }, (_, k) => (
-          <span key={k} data-block>
-            <BatteryBlock on size={30} land={landed === -1 && k === left - 1} />
+    <>
+      <LeftSlot slot={slot}>
+        {/* The battery tray. */}
+        <div ref={tray} className="flex h-full w-full flex-col justify-center gap-[0.5rem] rounded-panel border-2 border-line bg-panel/85 px-[0.75rem] py-[0.5rem] text-text" aria-live="polite">
+          <span className="sr-only">{left ? `${left} battery blocks left in the tray.` : 'Every block is plugged in.'}</span>
+          <span className="flex items-center gap-[0.25rem] self-start rounded-full bg-space-deep px-[0.625rem] font-display text-[1.125rem] leading-snug font-extrabold tabular-nums" aria-hidden>
+            <Zap size={16} strokeWidth={3} /> {left ? `${left} left` : 'Tray empty!'}
           </span>
-        ))}
-        {!left ? (
-          <span className="font-display text-xl font-extrabold" aria-hidden>
-            Tray empty!
-          </span>
-        ) : null}
-        <span className="ml-auto flex items-center gap-1 rounded-full border-[3px] border-ink bg-paper px-3 font-display text-xl leading-snug font-extrabold text-ink tabular-nums" aria-hidden>
-          <Zap size={18} strokeWidth={3} /> {left} left
-        </span>
-      </div>
+          <div className="flex flex-wrap items-end gap-[0.375rem]">
+            {Array.from({ length: left }, (_, k) => (
+              <span key={k} data-block>
+                <BatteryBlock on size={28} land={landed === -1 && k === left - 1} />
+              </span>
+            ))}
+          </div>
+        </div>
+      </LeftSlot>
 
-      <div className="mt-4 grid gap-x-3 gap-y-2 sm:grid-cols-3">
-        {step.systems.map((sys, i) => {
-          const missing = step.want - alloc[i];
-          const full = missing === 0;
-          return (
-            <div key={sys.meter} className="flex flex-col rounded-tile border-[3px] border-ink bg-white text-ink shadow-[0_5px_0_var(--color-ink)]">
-              <div className="flex items-center gap-2 rounded-t-[13px] border-b-[3px] border-ink px-2.5 py-1.5" style={{ background: `color-mix(in srgb, ${METER_COLOR[sys.meter]} 30%, white)` }}>
-                <MeterBadge meter={sys.meter} size={32} />
-                <span className="min-w-0 font-display text-lg leading-tight font-extrabold">{sys.label}</span>
+      <div className="flex h-full min-h-0 flex-col gap-[0.5rem]">
+        <div className="grid min-h-0 flex-1 grid-cols-3 gap-[0.5rem]">
+          {step.systems.map((sys, i) => {
+            const missing = step.want - alloc[i];
+            const full = missing === 0;
+            return (
+              <div key={sys.meter} className="flex min-h-0 flex-col rounded-tile border-2 border-line bg-panel text-text">
+                <div className="flex items-center gap-[0.25rem] rounded-t-[0.875rem] px-[0.375rem] py-[0.25rem]" style={{ background: `color-mix(in srgb, ${METER_COLOR[sys.meter]} 55%, #14204d)` }}>
+                  <MeterBadge meter={sys.meter} size={24} />
+                  <span className="min-w-0 font-display text-[0.75rem] leading-[1.1] font-extrabold">{sys.label}</span>
+                </div>
+
+                <div className="flex min-h-0 flex-1 flex-col items-stretch justify-between gap-[0.25rem] p-[0.375rem]">
+                  <div className="flex items-stretch gap-[0.25rem]">
+                    {/* The socket: blocks plugged in, and dashed slots still waiting. Tap to pull one out. */}
+                    <ToyArea
+                      onClick={() => unplug(i)}
+                      disabled={!alloc[i]}
+                      label={`Take a block out of ${sys.label}. It has ${alloc[i]} of ${step.want}.`}
+                      className="flex min-h-[3.25rem] min-w-0 flex-1 items-end justify-center gap-[0.125rem] !bg-space-deep px-[0.125rem] pt-[0.5rem] pb-[0.25rem] disabled:!bg-space-deep"
+                    >
+                      <span ref={(el) => void (slots.current[i] = el)} className="flex items-end gap-[0.125rem]">
+                        {Array.from({ length: step.want }, (_, k) => (k < alloc[i] ? <BatteryBlock key={k} on size={16} land={landed === i && k === alloc[i] - 1} /> : <BatteryBlock key={k} on={false} empty size={16} />))}
+                      </span>
+                      {alloc[i] ? <Undo2 size={12} strokeWidth={3} aria-hidden className="absolute top-[0.125rem] right-[0.125rem] text-muted" /> : null}
+                    </ToyArea>
+                    <ToyArea
+                      onClick={() => plug(i)}
+                      disabled={left === 0 || full}
+                      label={`Plug a block into ${sys.label}`}
+                      className="grid w-[2.5rem] shrink-0 place-items-center bg-power text-go-text [--lip:#b98a00] disabled:bg-locked disabled:text-muted disabled:[--lip:var(--color-locked-lip)]"
+                    >
+                      <Plug size={20} strokeWidth={2.75} aria-hidden />
+                    </ToyArea>
+                  </div>
+                  <div className="flex min-h-[1.5rem] items-center justify-center">
+                    {full ? (
+                      <span className="inline-flex items-center rounded-full bg-good/40 px-[0.5rem] font-display text-[0.8125rem] font-extrabold">Fully powered</span>
+                    ) : (
+                      <ChangeChip change={{ meter: sys.meter, amount: -missing * step.costPerMissing }} size="sm" />
+                    )}
+                    <span className="sr-only"> {full ? '' : `${METER_NAMES[sys.meter]} will drop by ${missing * step.costPerMissing}.`}</span>
+                  </div>
+                </div>
               </div>
+            );
+          })}
+        </div>
 
-              <div className="flex items-stretch gap-2 p-2.5">
-                {/* The socket: blocks plugged in, and dashed slots still waiting. Tap to pull one out. */}
-                <ToyArea
-                  onClick={() => unplug(i)}
-                  disabled={!alloc[i]}
-                  label={`Take a block out of ${sys.label}. It has ${alloc[i]} of ${step.want}.`}
-                  className="flex min-h-[76px] flex-1 items-end justify-center gap-1.5 !bg-[#f3ecdd] px-2 pt-4 pb-2 disabled:!bg-[#f3ecdd]"
-                >
-                  <span ref={(el) => void (slots.current[i] = el)} className="flex items-end gap-1.5">
-                    {Array.from({ length: step.want }, (_, k) => (k < alloc[i] ? <BatteryBlock key={k} on size={26} land={landed === i && k === alloc[i] - 1} /> : <BatteryBlock key={k} on={false} empty size={26} />))}
-                  </span>
-                  {alloc[i] ? <Undo2 size={16} strokeWidth={3} aria-hidden className="absolute top-1.5 right-1.5 text-muted" /> : null}
-                </ToyArea>
-                <ToyArea
-                  onClick={() => plug(i)}
-                  disabled={left === 0 || full}
-                  label={`Plug a block into ${sys.label}`}
-                  className="grid w-14 shrink-0 place-items-center bg-power [--lip:#b98a00] disabled:bg-locked disabled:text-muted disabled:[--lip:var(--color-locked-lip)]"
-                >
-                  <Plug size={26} strokeWidth={2.75} aria-hidden />
-                </ToyArea>
-              </div>
-
-              <div className="mt-auto px-2.5 pb-2.5">
-                {full ? (
-                  <span className="inline-flex items-center gap-1 rounded-full border-2 border-ink bg-[#d8f3e1] px-2.5 font-display text-base font-extrabold">Fully powered</span>
-                ) : (
-                  <ChangeChip change={{ meter: sys.meter, amount: -missing * step.costPerMissing }} size="sm" />
-                )}
-                <span className="sr-only"> {full ? '' : `${METER_NAMES[sys.meter]} will drop by ${missing * step.costPerMissing}.`}</span>
-              </div>
-            </div>
-          );
-        })}
+        <div className="flex justify-end">
+          <GameButton variant="go" icon={Zap} disabled={left !== 0} onClick={() => onDone(setSliders(game, step, alloc, mods))} className="!min-h-[3rem]">
+            {left ? `Plug in ${left} more` : 'Switch it on'}
+          </GameButton>
+        </div>
       </div>
-
-      <div className="mt-3">
-        <GameButton variant="go" icon={Zap} disabled={left !== 0} onClick={() => onDone(setSliders(game, step, alloc, mods))}>
-          {left ? `Plug in ${left} more` : 'Switch it on'}
-        </GameButton>
-      </div>
-    </div>
+    </>
   );
 }

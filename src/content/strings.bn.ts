@@ -1,17 +1,13 @@
+// Every line here was written in Antigravity and NEEDS A CHECK by a Bangla speaker (F2).
+// Keys with no line yet fall back to English: howToPlay.p1–p3, welcome.loading.*, welcome.credit, stage.turnPhone.
 export const stringsBn: Record<string, string> = {
   'app.name': 'CrewReady',
   'app.tagline': 'BEYOND US',
-  'app.subtitle': 'জুনিয়র মহাকাশচারী মিশন ট্রেইনার',
-  'welcome.play': 'শুরু করো',
-  'welcome.howToPlay': 'খেলার নিয়ম',
-  'welcome.loading': 'মিশন প্রস্তুত হচ্ছে…',
-  'welcome.ready': 'অভিযান শুরুর জন্য প্রস্তুত',
-  'howToPlay.title': 'খেলার নিয়ম',
-  'howToPlay.step1.title': '৪টি মিটার খেয়াল রাখো',
-  'howToPlay.step1.desc': 'বিদ্যুৎ, বাতাস ও পানি, খাবার এবং রেডিয়েশন শিল্ড। কোনো মিটার যেন শূন্য না হয়!',
-  'howToPlay.step2.title': 'প্রতিটি সিদ্ধান্তের বিনিময় আছে',
-  'howToPlay.step2.desc': 'একটি পছন্দে চাপ দিয়ে ফলাফল দেখো। নিশ্চিত করতে GO চাপো।',
-  'howToPlay.step3.title': 'ব্যর্থতাই শিক্ষা',
-  'howToPlay.step3.desc': 'মিটার শেষ হয়ে গেলে মিশন রিপ্লে থেকে নাসার তথ্য দেখে পুনরায় চেষ্টা করো।',
-  'howToPlay.close': 'বুঝেছি, কমান্ডার',
+  'app.subtitle': 'জুনিয়র মহাকাশচারী মিশন ট্রেইনার', // needs a check
+  'welcome.play': 'শুরু করো', // needs a check
+  'welcome.howToPlay': 'খেলার নিয়ম', // needs a check
+  'welcome.loading': 'মিশন প্রস্তুত হচ্ছে…', // needs a check
+  'welcome.ready': 'অভিযান শুরুর জন্য প্রস্তুত', // needs a check
+  'howToPlay.title': 'খেলার নিয়ম', // needs a check
+  'howToPlay.close': 'বুঝেছি, কমান্ডার', // needs a check
 };

@@ -43,7 +43,7 @@ export function Kid({
 }: {
   who: 'orbit' | 'nova';
   pose: OrbitPose | NovaPose;
-  height: number;
+  height: number | string;
   label?: string;
   className?: string;
   bob?: boolean;
@@ -86,15 +86,22 @@ export function reactionFor(totalChange: number): Reaction {
  */
 export function TwinkleSays({ children, mood = 'happy', size = 72, speaker }: { children: ReactNode; mood?: TwinkleMood; size?: number; speaker?: ReactNode }) {
   return (
-    <div className="flex items-end gap-1" key={mood}>
+    <div className="flex items-end gap-[0.5rem]" key={mood}>
       <span className="anim-pop-in shrink-0">{speaker ?? <Twinkle mood={mood} size={size} />}</span>
-      <div
-        className="anim-bubble relative mb-4 min-w-0 rounded-[20px] border-[3px] border-ink bg-paper px-4 py-3 font-display text-xl leading-snug font-bold text-ink shadow-[0_5px_0_var(--color-ink)]"
-        role="status"
-      >
-        <span aria-hidden className="absolute -left-[11px] bottom-4 h-5 w-5 rotate-45 border-b-[3px] border-l-[3px] border-ink bg-paper" />
-        {children}
-      </div>
+      <Bubble className="mb-[0.75rem]">{children}</Bubble>
+    </div>
+  );
+}
+
+/** A speech bubble with a tail on its left. Dark panel and thin line, never paper (§4.3). */
+export function Bubble({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return (
+    <div
+      className={`anim-bubble relative min-w-0 rounded-[1.25rem] border-2 border-line bg-panel px-[1rem] py-[0.5rem] font-display text-[1.125rem] leading-snug font-bold text-text shadow-[0_0.3rem_0_var(--color-lip)] ${className}`}
+      role="status"
+    >
+      <span aria-hidden className="absolute bottom-[0.875rem] -left-[0.5rem] h-[0.875rem] w-[0.875rem] rotate-45 border-b-2 border-l-2 border-line bg-panel" />
+      {children}
     </div>
   );
 }

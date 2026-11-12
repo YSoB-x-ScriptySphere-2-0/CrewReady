@@ -40,11 +40,9 @@ export default function App() {
       <Welcome
         onStart={() => {
           setWelcomeDismissed(true);
-          if (!seenIntro) {
-            go('hook');
-          } else if (screen === 'hook') {
-            go('home');
-          }
+          // First time (intro not finished, even if quit half-way): the hook. After that: Home, never the hook again.
+          if (!seenIntro) go('hook');
+          else if (screen === 'hook') go('home');
         }}
       />
     );

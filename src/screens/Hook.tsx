@@ -1,10 +1,12 @@
 // The opening hook (BUILD_SEQUENCE.md A1, restyled in G2): first launch only, about 15 seconds.
 // The player is dropped into the Sol 214 dust storm and makes one real-feeling choice.
 // It is a taste: nothing here touches the real mission state.
+// Landscape (R4): HUD, alarm banner, then the kid on the left; on the right Twinkle across the top, the countdown ring
+// and two big cards under it. One tap picks; the result takes the cards' place. Nothing scrolls.
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, SkipForward, SolarPanel, Sun } from 'lucide-react';
 import { AlarmBanner } from '../components/AlarmBanner';
-import { ChangeChip, ChoiceTile, GameButton } from '../components/GameButton';
+import { ChangeChip, ChoiceCard, GameButton } from '../components/GameButton';
 import { Hud } from '../components/Hud';
 import { outcomeChanges } from '../components/LevelChrome';
 import { reducedMotion, shakeScene } from '../components/motion';
@@ -33,21 +35,22 @@ function apply(delta: Partial<Record<Meter, number>>) {
 function SkipIntro() {
   const leaveIntro = useGame((s) => s.leaveIntro);
   return (
-    <GameButton variant="small" icon={SkipForward} onClick={() => leaveIntro('home')}>
+    // No lip margin: the strip it sits in already leaves room for the lip.
+    <GameButton variant="small" icon={SkipForward} onClick={() => leaveIntro('home')} className="!mb-0 !min-h-[2.75rem] !px-[0.875rem] !text-[1rem]">
       Skip intro
     </GameButton>
   );
 }
 
-/** A big countdown ring: the storm is coming. It closes once a second. */
+/** A big countdown ring: the storm is coming. It closes once a second. Dark panel, line track, go stroke. */
 function CountdownRing({ left }: { left: number }) {
   const r = 46;
   const c = 2 * Math.PI * r;
   return (
-    <div role="timer" aria-label={`Storm arrives in ${left} seconds`} className="relative h-[104px] w-[104px] shrink-0 sm:h-[124px] sm:w-[124px]">
+    <div role="timer" aria-label={`Storm arrives in ${left} seconds`} className="relative h-[7rem] w-[7rem] shrink-0">
       <svg viewBox="0 0 124 124" className="h-full w-full -rotate-90" aria-hidden>
-        <circle cx="62" cy="62" r={r + 10} fill="var(--color-paper)" stroke="var(--color-ink)" strokeWidth="3" />
-        <circle cx="62" cy="62" r={r} fill="none" stroke="var(--color-edge)" strokeWidth="12" />
+        <circle cx="62" cy="62" r={r + 10} fill="var(--color-panel)" stroke="var(--color-line)" strokeWidth="3" />
+        <circle cx="62" cy="62" r={r} fill="none" stroke="var(--color-line)" strokeWidth="12" />
         <circle
           cx="62"
           cy="62"
@@ -61,10 +64,19 @@ function CountdownRing({ left }: { left: number }) {
           className="transition-[stroke-dashoffset] duration-1000 ease-linear"
         />
       </svg>
-      <span className="absolute inset-0 grid place-items-center font-display text-[40px] leading-none font-extrabold text-ink tabular-nums" aria-hidden>
+      <span className="absolute inset-0 grid place-items-center font-display text-[2.5rem] leading-none font-extrabold text-text tabular-nums" aria-hidden>
         {left}
       </span>
     </div>
+  );
+}
+
+/** A big icon on top of a choice card. */
+function CardIcon({ icon: Icon }: { icon: typeof Sun }) {
+  return (
+    <span className="grid h-[3.25rem] w-[3.25rem] shrink-0 place-items-center rounded-full bg-space" aria-hidden>
+      <Icon size={32} strokeWidth={2.25} />
+    </span>
   );
 }
 
@@ -74,6 +86,8 @@ export function Hook() {
   const [left, setLeft] = useState(COUNTDOWN);
   const [pick, setPick] = useState<Pick | null>(null);
   const [timedOut, setTimedOut] = useState(false);
+  // The result takes the cards' place once the chosen card has stamped.
+  const [shown, setShown] = useState(false);
   const nextRef = useRef<HTMLDivElement>(null);
 
   const choose = (p: Pick, auto = false) => {
@@ -96,29 +110,36 @@ export function Hook() {
     if (left === 0 && !pick) choose('fold', true); // Twinkle folds them; no punishment
   }, [left]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // After a choice (and the tile stamp), bring the outcome and its Next button into view and focus.
+  // After a choice (and the card stamp), the outcome takes the cards' place.
   useEffect(() => {
     if (!pick) return;
-    const t = setTimeout(() => {
-      const el = nextRef.current;
-      el?.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'nearest' });
-      el?.querySelector<HTMLButtonElement>('button.toy')?.focus({ preventScroll: true });
-    }, 350);
+    const t = setTimeout(() => setShown(true), reducedMotion() ? 0 : 350);
     return () => clearTimeout(t);
   }, [pick]);
+  // Then its Next button takes focus. The stage never scrolls.
+  useEffect(() => {
+    if (!shown) return;
+    nextRef.current?.querySelector<HTMLButtonElement>('button.toy')?.focus({ preventScroll: true });
+  }, [shown]);
 
   if (part === 2) {
     return (
-      <Scene place="dust">
-        <div className="flex justify-end">
+      <Scene bare place="dust">
+        <div className="flex justify-end px-[0.75rem] pt-[0.5rem]">
           <SkipIntro />
         </div>
-        <div className="flex flex-1 flex-col items-center justify-center gap-6 pb-24 text-center">
-          <Kid who="orbit" pose="think" height={180} bob />
-          <h1 className="anim-pop-in font-display text-[36px] leading-tight font-extrabold sm:text-5xl">Every choice costs something.</h1>
-          <GameButton variant="go" icon={ArrowRight} onClick={() => leaveIntro('story')}>
-            How did we get here?
-          </GameButton>
+        <div className="flex min-h-0 flex-1 gap-[1rem] px-[0.75rem] pb-[0.75rem]">
+          <div className="flex min-h-0 w-[40%] shrink-0 items-end justify-center">
+            <Kid who="orbit" pose="think" height="min(17rem, 100%)" className="max-h-full" bob />
+          </div>
+          <div className="flex min-w-0 flex-1 flex-col items-start justify-center gap-[1.25rem] pb-[2rem]">
+            <h1 className="anim-pop-in rounded-[1.25rem] bg-panel/85 px-[1rem] py-[0.5rem] font-display text-[2.25rem] leading-tight font-extrabold text-text">
+              Every choice costs something.
+            </h1>
+            <GameButton variant="go" icon={ArrowRight} onClick={() => leaveIntro('story')}>
+              How did we get here?
+            </GameButton>
+          </div>
         </div>
       </Scene>
     );
@@ -128,51 +149,77 @@ export function Hook() {
   const meters = chosen ? apply(chosen.delta) : START;
 
   return (
-    <Scene place="dust" top={<Hud meters={meters} stars={0} lead={<SkipIntro />} />}>
-      <div className="-mx-4">
-        <AlarmBanner key={pick ? 'hit' : 'warn'} title={pick ? 'Storm hits!' : 'Storm in 60 s'} sub="Sol 214 · Jezero Base" shake={!pick} />
-      </div>
+    <Scene bare place="dust" top={<Hud meters={meters} stars={0} lead={<SkipIntro />} />}>
+      <AlarmBanner key={pick ? 'hit' : 'warn'} title={pick ? 'Storm hits!' : 'Storm in 60 s'} sub="Sol 214 · Jezero Base" shake={!pick} />
 
-      <div className="flex items-center gap-3">
-        <h1 className="min-w-0 flex-1 font-display text-[26px] leading-[1.12] font-extrabold sm:text-[40px]">Commander — a dust storm hits in 60 seconds.</h1>
-        {!pick ? <CountdownRing left={left} /> : <Kid who="orbit" pose={pick === 'fold' ? 'surprised' : 'think'} height={120} label="Orbit reacts" />}
-      </div>
+      <div className="flex min-h-0 flex-1 flex-col gap-[0.25rem] px-[0.75rem] py-[0.25rem]">
+        {/* The setup line. Once the storm hits there is no room for it next to the result, so it stays for screen readers only. */}
+        <h1
+          className={
+            pick
+              ? 'sr-only'
+              : 'max-w-full shrink-0 self-center truncate rounded-full bg-panel/85 px-[0.875rem] py-[0.0625rem] font-display text-[1.125rem] leading-snug font-extrabold text-text'
+          }
+        >
+          Commander — a dust storm hits in 60 seconds.
+        </h1>
 
-      <TwinkleSays mood="surprised" size={64}>
-        {timedOut ? "Time's up! I folded them for you." : 'The solar panels! Fold them, or leave them out?'}
-      </TwinkleSays>
+        <div className="flex min-h-0 flex-1 gap-[0.75rem]">
+          {/* left: the kid, reacting */}
+          <div className="flex min-h-0 w-[24%] shrink-0 items-end justify-center">
+            <Kid who="orbit" pose={pick === 'fold' ? 'surprised' : 'think'} height="min(13rem, 100%)" label="Orbit reacts" className="max-h-full" />
+          </div>
 
-      <div className="grid gap-2 overflow-x-clip sm:grid-cols-2">
-        {(Object.keys(OPTIONS) as Pick[]).map((p) => (
-          <ChoiceTile
-            key={p}
-            label={OPTIONS[p].label}
-            icon={OPTIONS[p].icon}
-            state={!pick ? 'idle' : pick === p ? 'chosen' : 'gone'}
-            onClick={() => choose(p)}
-          />
-        ))}
-      </div>
-
-      {chosen ? (
-        <div ref={nextRef}>
-          <Panel ribbon="What happened" tone="danger">
-            <p className="text-lg leading-snug">{chosen.reason}</p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {outcomeChanges({ delta: chosen.delta, starsDelta: 0 }).map((c) => (
-                <ChangeChip key={c.meter} change={c} />
-              ))}
+          {/* right: Twinkle across the top, then the countdown and the two cards (then the result in their place), the source */}
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-[0.25rem] text-text">
+            <div className="shrink-0">
+              <TwinkleSays mood="surprised" size={44}>
+                <span className="text-[1rem]">{timedOut ? "Time's up! I folded them for you." : 'The solar panels! Fold them, or leave them out?'}</span>
+              </TwinkleSays>
             </div>
-            <div className="mt-5">
-              <GameButton variant="go" icon={ArrowRight} onClick={() => setPart(2)}>
-                Next
-              </GameButton>
+
+            <div className="flex min-h-0 flex-1 gap-[0.75rem]">
+              {/* middle: the countdown, until the storm hits */}
+              {!pick ? (
+                <div className="flex min-h-0 shrink-0 items-center justify-center">
+                  <CountdownRing left={left} />
+                </div>
+              ) : null}
+
+              {chosen && shown ? (
+                <div ref={nextRef} className="rise flex min-w-0 flex-1 flex-col justify-center">
+                  <Panel compact ribbon="What happened" tone="danger">
+                    <p className="text-[0.9375rem] leading-snug">{chosen.reason}</p>
+                    <div className="mt-[0.375rem] flex flex-wrap items-center gap-[0.5rem]">
+                      {outcomeChanges({ delta: chosen.delta, starsDelta: 0 }).map((c) => (
+                        <ChangeChip key={c.meter} change={c} />
+                      ))}
+                      <GameButton variant="go" icon={ArrowRight} onClick={() => setPart(2)} className="ml-auto !mb-0 !min-h-[3rem]">
+                        Next
+                      </GameButton>
+                    </div>
+                  </Panel>
+                </div>
+              ) : (
+                <div className="flex min-h-0 min-w-0 flex-1 gap-[0.75rem]">
+                  {(Object.keys(OPTIONS) as Pick[]).map((p) => (
+                    <ChoiceCard
+                      key={p}
+                      label={<span className="text-[1.125rem]">{OPTIONS[p].label}</span>}
+                      picture={<CardIcon icon={OPTIONS[p].icon} />}
+                      state={!pick ? 'idle' : pick === p ? 'chosen' : 'gone'}
+                      onClick={() => choose(p)}
+                      className="!min-h-[6rem]"
+                    />
+                  ))}
+                </div>
+              )}
             </div>
-          </Panel>
+
+            <SourceStrip text="Dust storms: NASA Opportunity mission" className="shrink-0" />
+          </div>
         </div>
-      ) : null}
-
-      <SourceStrip text="Dust storms: NASA Opportunity mission" />
+      </div>
     </Scene>
   );
 }

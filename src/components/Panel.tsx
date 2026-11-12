@@ -15,10 +15,10 @@ const RIBBON: Record<RibbonTone, string> = {
 };
 
 /** The ribbon tag that sits across a panel's top edge. Bold, so every tone passes. */
-export function Ribbon({ children, tone = 'ink', icon: Icon }: { children: ReactNode; tone?: RibbonTone; icon?: LucideIcon }) {
+export function Ribbon({ children, tone = 'ink', icon: Icon, small }: { children: ReactNode; tone?: RibbonTone; icon?: LucideIcon; small?: boolean }) {
   return (
     <span
-      className={`inline-flex max-w-full items-center gap-1.5 rounded-full border-2 border-line px-3.5 py-0.5 font-display text-[1.125rem] leading-snug font-extrabold tracking-wide uppercase ${RIBBON[tone]}`}
+      className={`inline-flex max-w-full items-center gap-1.5 rounded-full border-2 border-line px-3.5 py-0.5 font-display leading-snug font-extrabold tracking-wide uppercase ${small ? 'text-[0.9375rem]' : 'text-[1.125rem]'} ${RIBBON[tone]}`}
     >
       {Icon ? <Icon size={18} strokeWidth={2.75} aria-hidden /> : null}
       <span className="truncate pt-0.5">{children}</span>
@@ -34,6 +34,7 @@ export function Panel({
   icon,
   className = '',
   as: Tag = 'section',
+  compact,
 }: {
   children: ReactNode;
   ribbon?: ReactNode;
@@ -41,12 +42,16 @@ export function Panel({
   icon?: LucideIcon;
   className?: string;
   as?: 'section' | 'div' | 'article';
+  /** Landscape stage: tighter padding and a smaller ribbon. */
+  compact?: boolean;
 }) {
+  const pad = compact ? 'p-[0.75rem]' : 'p-4 sm:p-6';
+  const top = ribbon ? (compact ? 'mt-[0.75rem] pt-[1.5rem]' : 'mt-4 pt-7 sm:pt-8') : '';
   return (
-    <Tag className={`rise relative rounded-panel border-2 border-line bg-panel p-4 text-text sm:p-6 ${ribbon ? 'mt-4 pt-7 sm:pt-8' : ''} ${className}`}>
+    <Tag className={`rise relative rounded-panel border-2 border-line bg-panel text-text ${pad} ${top} ${className}`}>
       {ribbon ? (
-        <div className="absolute -top-[1.125rem] right-4 left-4 flex">
-          <Ribbon tone={tone} icon={icon}>
+        <div className={`absolute right-4 left-4 flex ${compact ? '-top-[0.875rem]' : '-top-[1.125rem]'}`}>
+          <Ribbon tone={tone} icon={icon} small={compact}>
             {ribbon}
           </Ribbon>
         </div>
@@ -80,7 +85,7 @@ export function Badge({ kind }: { kind: BadgeKind }) {
 export function SourceLine({ text, bare }: { text: string; /** No divider: for a line on its own strip. */ bare?: boolean }) {
   const go = useGame((s) => s.go);
   const line = `Source: ${text}`;
-  const look = bare ? 'block text-sm text-muted' : 'mt-4 block w-full border-t-2 border-line pt-2 text-sm text-muted';
+  const look = bare ? 'block truncate text-[0.8125rem] leading-snug text-muted' : 'mt-4 block w-full border-t-2 border-line pt-2 text-sm text-muted';
   return BUILT_SCREENS.has('sources') ? (
     <button onClick={() => go('sources')} className={`${look} text-left font-sans underline-offset-4 hover:underline`}>
       {line}
@@ -91,9 +96,9 @@ export function SourceLine({ text, bare }: { text: string; /** No divider: for a
 }
 
 /** A source line on its own small dark strip, for facts shown straight on a scene. */
-export function SourceStrip({ text }: { text: string }) {
+export function SourceStrip({ text, className = '' }: { text: string; className?: string }) {
   return (
-    <div className="rounded-2xl border-2 border-line bg-panel/85 px-3 py-1.5 text-text">
+    <div className={`truncate rounded-full border-2 border-line bg-panel/85 px-[0.75rem] py-[0.125rem] text-text ${className}`}>
       <SourceLine text={text} bare />
     </div>
   );
@@ -111,6 +116,7 @@ export function IntelCard({
   image,
   source,
   title = 'Mission Intel',
+  compact,
 }: {
   badge: BadgeKind;
   date?: string;
@@ -119,7 +125,31 @@ export function IntelCard({
   image?: { src: string; alt: string; credit: string };
   source?: string;
   title?: string;
+  /** Landscape stage: the picture or figure on the left, badge and sentence on the right. */
+  compact?: boolean;
 }) {
+  if (compact)
+    return (
+      <Panel as="article" ribbon={title} tone="space" compact className="!pb-[0.5rem]">
+        <div className="flex items-center gap-[0.75rem]">
+          <div className="w-[7rem] shrink-0 overflow-hidden rounded-[0.75rem] border-2 border-line bg-space-deep">
+            {image ? (
+              <img src={image.src} alt={image.alt} className="aspect-video w-full object-cover" loading="lazy" />
+            ) : (
+              <div className="grid min-h-[3.5rem] place-items-center bg-sky-space px-[0.25rem] py-[0.25rem] font-display text-[1.75rem] leading-none font-extrabold text-text tabular-nums">{figure}</div>
+            )}
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-x-[0.5rem] gap-y-[0.125rem]">
+              <Badge kind={badge} />
+              {date ? <span className="text-[0.8125rem] font-bold text-muted">{date}</span> : null}
+            </div>
+            <p className="mt-[0.25rem] text-[0.9375rem] leading-snug">{sentence}</p>
+          </div>
+        </div>
+        {source ? <SourceLine text={source} bare /> : null}
+      </Panel>
+    );
   return (
     <Panel as="article" ribbon={title} tone="space" className="!p-3 !pt-7 sm:!p-4 sm:!pt-8">
       <div className="rounded-[1.125rem] border-2 border-line bg-space-deep p-2">
@@ -162,7 +192,7 @@ export function TaskList({ tasks, variant = 'list' }: { tasks: Task[]; variant?:
   if (variant === 'strip') {
     const current = tasks[now] ?? tasks[tasks.length - 1];
     return (
-      <div className="flex items-center gap-3 rounded-full border-2 border-line bg-panel/85 px-3 py-1.5 text-text" aria-label={`Step ${Math.max(0, now) + 1} of ${tasks.length}: ${current.label}`}>
+      <div className="flex items-center gap-[0.5rem] rounded-full border-2 border-line bg-panel/85 px-[0.625rem] py-[0.25rem] text-text" aria-label={`Step ${Math.max(0, now) + 1} of ${tasks.length}: ${current.label}`}>
         <ol className="flex shrink-0 items-center gap-1" aria-hidden>
           {tasks.map((t, i) => (
             <li
@@ -171,7 +201,7 @@ export function TaskList({ tasks, variant = 'list' }: { tasks: Task[]; variant?:
             />
           ))}
         </ol>
-        <span className="min-w-0 truncate font-display text-lg leading-tight font-extrabold">{now === -1 ? 'All done!' : current.label}</span>
+        <span className="min-w-0 truncate font-display text-[0.9375rem] leading-tight font-extrabold">{now === -1 ? 'All done!' : current.label}</span>
       </div>
     );
   }

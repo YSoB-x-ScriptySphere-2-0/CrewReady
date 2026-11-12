@@ -1,22 +1,28 @@
-// Shared parts for the hands-on steps (A7): the crate and battery-block shapes, a toy button that squashes,
-// and `hop()`, which flies a copy of a thing from where it was to where it lands.
+// Shared parts for the hands-on steps: the crate and battery-block shapes, a toy area that squashes,
+// and `hop()`, which flies a copy of a thing from where it was to where it lands. Dark stage look (§4.3).
 import type { ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { Zap } from 'lucide-react';
 import type { Outcome } from '../../engine/types';
 import { reducedMotion, usePress } from '../motion';
 
 export type Done = (o: Outcome, opts?: { stay?: boolean }) => void;
 
+/** Steps that need room draw part of themselves in the left zone, with the kid shrunk to a corner. */
+export function LeftSlot({ slot, children }: { slot?: HTMLElement | null; children: ReactNode }) {
+  return slot ? createPortal(children, slot) : null;
+}
+
 /** A little supply crate. `land` delays its pop-in so it appears as a hopping copy arrives. */
 export function Crate({ size = 30, faded, land }: { size?: number; faded?: boolean; land?: boolean }) {
   return (
     <span
-      className={`relative inline-block shrink-0 rounded-[6px] border-[3px] border-ink bg-crate ${faded ? 'opacity-30' : ''} ${land ? 'anim-land' : ''}`}
+      className={`relative inline-block shrink-0 rounded-[0.375rem] border-2 border-[#5a3416] bg-crate ${faded ? 'opacity-30' : ''} ${land ? 'anim-land' : ''}`}
       style={{ width: size, height: Math.round(size * 0.8) }}
       aria-hidden
     >
-      <span className="absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 bg-ink/40" />
-      <span className="absolute inset-y-0 left-1/2 w-[3px] -translate-x-1/2 bg-ink/25" />
+      <span className="absolute inset-x-0 top-1/2 h-[2px] -translate-y-1/2 bg-[#5a3416]/60" />
+      <span className="absolute inset-y-0 left-1/2 w-[2px] -translate-x-1/2 bg-[#5a3416]/40" />
     </span>
   );
 }
@@ -25,14 +31,14 @@ export function Crate({ size = 30, faded, land }: { size?: number; faded?: boole
 export function BatteryBlock({ on, size = 30, land, empty }: { on: boolean; size?: number; land?: boolean; empty?: boolean }) {
   return (
     <span
-      className={`relative inline-block shrink-0 rounded-[6px] border-[3px] ${empty ? 'border-dashed border-ink/50 bg-white/60' : 'border-ink'} ${on ? 'bg-power' : empty ? '' : 'bg-white'} ${
+      className={`relative inline-block shrink-0 rounded-[0.375rem] border-2 ${empty ? 'border-dashed border-text/40 bg-space-deep/60' : 'border-[#8a6a00]'} ${on ? 'bg-power' : empty ? '' : 'bg-panel-up'} ${
         land ? 'anim-land' : ''
       }`}
       style={{ width: size, height: Math.round(size * 1.35) }}
       aria-hidden
     >
-      {!empty ? <span className="absolute -top-[8px] left-1/2 h-[6px] w-[45%] -translate-x-1/2 rounded-t-[3px] border-[3px] border-b-0 border-ink bg-ink" /> : null}
-      {on ? <Zap size={Math.round(size * 0.5)} strokeWidth={3} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" /> : null}
+      {!empty ? <span className="absolute -top-[0.4rem] left-1/2 h-[0.3rem] w-[45%] -translate-x-1/2 rounded-t-[3px] bg-[#8a6a00]" /> : null}
+      {on ? <Zap size={Math.round(size * 0.5)} strokeWidth={3} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-go-text" /> : null}
     </span>
   );
 }
@@ -55,7 +61,7 @@ export function ToyArea({
 }) {
   const press = usePress(disabled);
   return (
-    <button type="button" onClick={onClick} disabled={disabled} aria-label={label} aria-pressed={pressed} {...press} className={`toy rounded-tile text-ink ${className}`}>
+    <button type="button" onClick={onClick} disabled={disabled} aria-label={label} aria-pressed={pressed} {...press} className={`toy rounded-tile text-text ${className}`}>
       {children}
     </button>
   );
@@ -89,6 +95,6 @@ export function hop(from: Element | null | undefined, to: Element | null | undef
 }
 
 export const CRATE_HTML =
-  '<span style="display:block;width:32px;height:26px;border:3px solid #1B1F3B;border-radius:6px;background:#c7773a;box-shadow:inset 0 -10px 0 rgba(27,31,59,.15)"></span>';
+  '<span style="display:block;width:32px;height:26px;border:2px solid #5a3416;border-radius:6px;background:#c7773a;box-shadow:inset 0 -10px 0 rgba(27,31,59,.15)"></span>';
 export const BLOCK_HTML =
-  '<span style="display:block;width:28px;height:38px;border:3px solid #1B1F3B;border-radius:6px;background:#F5B700"></span>';
+  '<span style="display:block;width:28px;height:38px;border:2px solid #8a6a00;border-radius:6px;background:#F5B700"></span>';

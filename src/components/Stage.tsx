@@ -2,6 +2,7 @@
 // Sideways phone, tablet, laptop: it fills the window. Upright phone: the same stage is drawn a
 // quarter-turn, with a 2-second "Turn your phone" hint from Twinkle. Nothing blocks the game.
 import { useEffect, useLayoutEffect, useState, type ReactNode } from 'react';
+import { t, useI18n } from '../content/i18n';
 import { setStageTurned, stageGeometry, type StageGeometry } from './stageMath';
 
 const read = (): StageGeometry => {
@@ -33,6 +34,7 @@ function useStageGeometry(): StageGeometry {
 
 /** Twinkle's hint, shown for 2 seconds each time the phone is upright. */
 function TurnHint({ show }: { show: boolean }) {
+  useI18n((s) => s.lang); // re-render when the language changes
   const [on, setOn] = useState(false);
   useEffect(() => {
     if (!show) return setOn(false);
@@ -47,7 +49,7 @@ function TurnHint({ show }: { show: boolean }) {
       className="pointer-events-none absolute bottom-[1rem] left-1/2 z-[70] flex -translate-x-1/2 items-center gap-[0.75rem] rounded-full border-2 border-line bg-panel/85 py-[0.25rem] pr-[1.25rem] pl-[0.5rem] text-text"
     >
       <img src="/art/twinkle-question.webp" alt="" className="h-[3rem] w-[3rem] object-contain" />
-      <span className="font-display text-[1.125rem] leading-none font-extrabold whitespace-nowrap">Turn your phone</span>
+      <span className="font-display text-[1.125rem] leading-none font-extrabold whitespace-nowrap">{t('stage.turnPhone')}</span>
     </div>
   );
 }
@@ -71,7 +73,7 @@ export function Stage({ children }: { children: ReactNode }) {
           ['--stage-h' as string]: `${g.h}px`,
         }}
       >
-        {/* Old screens still scroll here until R3-R4 fit them to the three zones. */}
+        {/* Every game screen fits the stage (R3-R4). Only the Sources page (S1) may scroll; this is its safety net. */}
         <div className="h-full w-full overflow-x-hidden overflow-y-auto">{children}</div>
         <TurnHint show={g.turned} />
       </div>

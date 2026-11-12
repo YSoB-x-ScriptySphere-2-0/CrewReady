@@ -1,16 +1,17 @@
-// A5 — the level opening. The level's place fills the screen, the HUD sits on top, and everything
-// carried in from earlier (living costs, sunlight, consequences) plays onto the HUD one at a time,
-// each with a reason toast in its meter's colour. Then the level card, the Intel card and a pink GO!.
-// BUILD_SEQUENCE.md §6 A5.
+// The level opening, in landscape (BUILD_SEQUENCE.md R3). The level's place fills the stage and the HUD sits on top.
+// Left: the crew, with each carry-over (living costs, sunlight, consequences) landing on the HUD one at a time,
+// shown with its reason. Right: the ribbon ("LEVEL 3 · FIRST BREATH"), one line, the task list as icon chips,
+// the Intel card and GO!.
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Lightbulb, Play as PlayIcon, Sun } from 'lucide-react';
+import { Lightbulb, Play as PlayIcon, Sun, Target } from 'lucide-react';
 import { ChangeChip, GameButton } from '../components/GameButton';
-import { LEVEL_SCENE, LevelHud, tasksFor } from '../components/LevelChrome';
+import { LEVEL_SCENE, LevelHud, LevelZones, tasksFor } from '../components/LevelChrome';
 import { METER_COLOR, MeterBadge } from '../components/meters';
 import { useReducedMotion } from '../components/motion';
-import { IntelCard, Panel, SourceStrip, TaskList, type BadgeKind } from '../components/Panel';
+import { IntelCard, Ribbon, SourceStrip, type BadgeKind } from '../components/Panel';
 import { Scene } from '../components/Scene';
-import { Twinkle, TwinkleSays } from '../components/Twinkle';
+import { Kid, Twinkle } from '../components/Twinkle';
+import { TASK_ICON } from '../content/icons';
 import { LEVELS } from '../content/levels';
 import { enterSteps, type EnterStep } from '../engine/engine';
 import { METERS } from '../engine/types';
@@ -23,7 +24,7 @@ const EACH_MS = 1100;
 type Intel = { badge: BadgeKind; date?: string; figure: ReactNode; sentence: string; source: string };
 
 /**
- * Each level's Mission Intel card: real archive values from docs/06 only (live data arrives in B4).
+ * Each level's Mission Intel card: real archive values from docs/06 only (live data arrives in D2).
  * Levels 1 and 5 have none yet: EPIC is not snapshotted, and the Veggie facts are still unconfirmed.
  */
 function intelFor(levelId: number, D: number): Intel | null {
@@ -54,38 +55,37 @@ function intelFor(levelId: number, D: number): Intel | null {
     return {
       badge: 'NASA ARCHIVE',
       date: '9 May 2024',
-      figure: <Sun size={56} strokeWidth={2.5} aria-label="The Sun" />,
+      figure: <Sun size={36} strokeWidth={2.5} aria-label="The Sun" />,
       sentence: 'On 9 May 2024 the Sun shot out a burst of fast particles.',
       source: 'NASA DONKI · ARCHIVE · 9 May 2024',
     };
   return null;
 }
 
-/** One carry-over: a toast tinted with its meter's colour, its icon(s), its reason and its change chips. */
+/** One carry-over: a dark toast tinted with its meter's colour, its icon(s), its reason and its change chips. */
 function CarryToast({ step }: { step: EnterStep }) {
-  const tint = step.about.length ? METER_COLOR[step.about[0]] : 'var(--color-edge)';
+  const tint = step.about.length ? METER_COLOR[step.about[0]] : 'var(--color-line)';
   const chips = METERS.filter((m) => step.delta[m]).map((m) => ({ meter: m, amount: step.delta[m]! }));
   return (
-    <li
-      className="anim-pop-in flex items-center gap-2.5 rounded-2xl border-[3px] border-ink py-2 pr-3 pl-2 text-ink shadow-[0_4px_0_var(--color-ink)]"
-      style={{ background: `color-mix(in srgb, ${tint} 24%, var(--color-paper))` }}
+    <div
+      className="anim-pop-in flex w-full items-center gap-[0.5rem] rounded-[1rem] border-2 py-[0.375rem] pr-[0.5rem] pl-[0.375rem] text-text"
+      style={{ background: `color-mix(in srgb, ${tint} 28%, #14204d)`, borderColor: tint }}
+      role="status"
     >
       <span className="flex shrink-0 -space-x-2">
         {step.about.map((m) => (
-          <MeterBadge key={m} meter={m} size={34} />
+          <MeterBadge key={m} meter={m} size={28} />
         ))}
       </span>
-      <span className="min-w-0 flex-1 sm:flex sm:items-center sm:gap-3">
-        <span className="block min-w-0 font-display text-lg leading-snug font-bold sm:flex-1">{step.reason}</span>
-        {chips.length ? (
-          <span className="mt-1 flex shrink-0 flex-wrap gap-1 sm:mt-0">
-            {chips.map((c) => (
-              <ChangeChip key={c.meter} change={c} size="sm" />
-            ))}
-          </span>
-        ) : null}
-      </span>
-    </li>
+      <span className="min-w-0 flex-1 font-display text-[0.875rem] leading-tight font-bold">{step.reason}</span>
+      {chips.length ? (
+        <span className="flex shrink-0 flex-col gap-[0.125rem]">
+          {chips.map((c) => (
+            <ChangeChip key={c.meter} change={c} size="sm" />
+          ))}
+        </span>
+      ) : null}
+    </div>
   );
 }
 
@@ -110,61 +110,60 @@ export function LevelOpening() {
   // The HUD shows the meters as they were after the last carry-over that landed; the last frame is the real state.
   const meters = played >= steps.length ? game.meters : played === 0 ? checkpoint.meters : steps[played - 1].meters;
   const intel = intelFor(level.id, checkpoint.D);
+  const tasks = tasksFor(levelIndex, 0);
+  const latest = played > 0 ? steps[played - 1] : null;
+
+  const left = (
+    <>
+      <div className="flex min-h-[3.25rem] w-full items-end">{latest ? <CarryToast key={played} step={latest} /> : null}</div>
+      <div className="flex min-h-0 flex-1 items-end justify-center gap-[0.25rem]">
+        <span className="mb-[0.5rem]">
+          <Twinkle mood={intel ? 'tablet' : 'happy'} size={60} />
+        </span>
+        <Kid who="orbit" pose="stand" height="min(13rem, 100%)" label="Orbit" className="max-h-full" bob />
+      </div>
+    </>
+  );
 
   return (
     <Scene bare place={LEVEL_SCENE[level.id]} top={<LevelHud meters={meters} stars={game.stars} />}>
-      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-4 px-4 pt-5 pb-10">
-        {steps.length ? (
-          <section aria-label="On the way here">
-            <ol className="space-y-2" aria-live="polite">
-              {steps.slice(0, played).map((s, i) => (
-                <CarryToast key={i} step={s} />
-              ))}
-            </ol>
-          </section>
-        ) : null}
-
-        <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-6">
-          <Panel ribbon={`Level ${level.id} of ${LEVELS.length}`} tone="go">
-            {/* The title is a heading, not ribbon text: "The Dangerous Journey" would be cut off at 375 px. */}
-            <h1 className="font-display text-[32px] leading-tight font-extrabold sm:text-[38px]">
-              <span className="sr-only">Level {level.id}: </span>
-              {level.title}
-            </h1>
-            <p className="mt-2 inline-block rounded-full border-[3px] border-ink bg-white px-3 py-0.5 font-display text-lg leading-snug font-extrabold">{level.place}</p>
-            <p className="mt-3 text-lg leading-snug">{level.story}</p>
-            <p className="mt-3 flex items-start gap-2 rounded-tile border-[3px] border-ink bg-[#fff1c2] px-3 py-2 font-display text-lg leading-snug font-bold">
-              <Lightbulb size={22} strokeWidth={2.75} aria-hidden className="mt-0.5 shrink-0" />
-              <span>You'll learn: {level.teaches}</span>
-            </p>
-            <div className="mt-4">
-              <TaskList tasks={tasksFor(levelIndex, 0)} />
-            </div>
-            <div className="mt-5">
-              <GameButton variant="go" icon={PlayIcon} onClick={beginLevel} className="!px-10 !text-[26px]">
-                GO!
-              </GameButton>
-            </div>
-          </Panel>
-
-          {intel ? (
-            <div className="flex items-end gap-1">
-              <span className="anim-pop-in mb-2 shrink-0">
-                <Twinkle mood="tablet" size={84} />
-              </span>
-              <div className="min-w-0 flex-1">
-                <IntelCard badge={intel.badge} date={intel.date} figure={intel.figure} sentence={intel.sentence} source={intel.source} />
-              </div>
-            </div>
-          ) : (
-            <TwinkleSays mood="happy" size={84}>
-              Ready, Commander? Tap GO!
-            </TwinkleSays>
-          )}
+      <LevelZones left={left}>
+        <div className="flex flex-wrap items-center gap-x-[0.625rem] gap-y-[0.25rem]">
+          <Ribbon tone="go">{`Level ${level.id} · ${level.title}`}</Ribbon>
+          <span className="sr-only">{`Level ${level.id} of ${LEVELS.length}: ${level.title}`}</span>
+          <span className="rounded-full bg-panel/85 px-[0.625rem] font-display text-[0.875rem] leading-snug font-bold text-text">{level.place}</span>
         </div>
 
-        <SourceStrip text={level.source} />
-      </main>
+        <p className="flex items-start gap-[0.375rem] rounded-[1rem] bg-panel/85 px-[0.75rem] py-[0.375rem] font-display text-[1.0625rem] leading-snug font-bold text-text">
+          <Lightbulb size={20} strokeWidth={2.75} aria-hidden className="mt-[0.1875rem] shrink-0 text-star" />
+          <span>{level.teaches}</span>
+        </p>
+
+        <ol className="flex flex-wrap gap-[0.375rem]" aria-label="This level's tasks">
+          {tasks.map((t, i) => {
+            const Icon = TASK_ICON[t.label] ?? Target;
+            return (
+              <li key={i} className="flex items-center gap-[0.375rem] rounded-full border-2 border-line bg-panel/85 py-[0.125rem] pr-[0.75rem] pl-[0.125rem] text-text">
+                <span className="grid h-[1.75rem] w-[1.75rem] place-items-center rounded-full bg-space-deep font-display text-[0.875rem] font-extrabold" aria-hidden>
+                  <Icon size={16} strokeWidth={2.5} />
+                </span>
+                <span className="font-display text-[0.875rem] leading-tight font-bold">{t.label}</span>
+              </li>
+            );
+          })}
+        </ol>
+
+        <div className="min-h-0 flex-1">
+          {intel ? <IntelCard compact badge={intel.badge} date={intel.date} figure={intel.figure} sentence={intel.sentence} source={intel.source} /> : null}
+        </div>
+
+        <div className="flex items-center gap-[0.5rem]">
+          <SourceStrip text={level.source} className="min-w-0 flex-1" />
+          <GameButton variant="go" icon={PlayIcon} onClick={beginLevel} className="!min-h-[3rem] !px-[2rem] !text-[1.5rem]">
+            GO!
+          </GameButton>
+        </div>
+      </LevelZones>
     </Scene>
   );
 }
