@@ -18,11 +18,11 @@ describe('Resources screen (S4)', () => {
     expect(html).toContain('Food Supply');
     expect(html).toContain('Radiation Shield');
 
-    // Sourced kid facts
-    expect(html).toContain('Mars gets less than half the sunlight Earth does');
-    expect(html).toContain('The Space Station recycles about 98% of its water');
-    expect(html).toContain('Growing food takes water and power');
-    expect(html).toContain('Water tanks and food supplies make great storm shields');
+    // Sourced kid facts directly from docs/06 §4
+    expect(html).toContain('Mars gets less than half the sunlight Earth does.');
+    expect(html).toContain('The Space Station now recycles about 98% of its water.');
+    expect(html).toContain('Astronauts ate lettuce grown on the Space Station for the first time in August 2015.');
+    expect(html).toContain('Water and food are good radiation shields, so crews plan to shelter behind their supplies.');
 
     // Launch button
     expect(html).toContain('Launch Mission');
