@@ -15,6 +15,7 @@ import { Training } from './screens/Training';
 import { Welcome } from './screens/Welcome';
 import { useGame } from './store/game';
 import { useSpace } from './store/space';
+import { WordCardHost } from './components/Words';
 
 /** Hidden dev page with every game-kit part (G1). Not linked from the game. */
 const Kit = lazy(() => import('./screens/Kit').then((m) => ({ default: m.Kit })));
@@ -28,7 +29,7 @@ function useHash() {
   return hash;
 }
 
-export default function App() {
+function Screens() {
   const [welcomeDismissed, setWelcomeDismissed] = useState(false);
   const { screen, seenIntro, go } = useGame();
   const hash = useHash();
@@ -69,4 +70,14 @@ export default function App() {
   if (screen === 'profile') return <Profile />;
   if (screen === 'training') return <Training />;
   return <Home />;
+}
+
+
+export default function App() {
+  return (
+    <>
+      <Screens />
+      <WordCardHost />
+    </>
+  );
 }

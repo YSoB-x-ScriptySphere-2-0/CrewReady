@@ -1,7 +1,11 @@
 // The crew: Twinkle the robot guide, and the two kid astronauts Orbit and Nova.
 // Art is cut from the team's pose sheets (ui reference/characters cutout) into public/art/.
 // Characters appear only on the hook, story cards, Home, hints, Mission Replay and success.
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
+import { Square, Volume2 } from 'lucide-react';
+import { useI18n } from '../content/i18n';
+import { speak, stopSpeaking, useCanSpeak } from './speech';
+import { Words } from './Words';
 
 export type TwinkleMood = 'happy' | 'neutral' | 'question' | 'worried' | 'stars' | 'surprised' | 'sad' | 'tablet' | 'wink' | 'hearts' | 'squint' | 'sleepy';
 export type KidPose = 'stand' | 'wave' | 'arms' | 'cheer' | 'tablet' | 'think' | 'point';
@@ -94,14 +98,51 @@ export function TwinkleSays({ children, mood = 'happy', size = 72, speaker }: { 
 }
 
 /** A speech bubble with a tail on its left. Dark panel and thin line, never paper (§4.3). */
-export function Bubble({ children, className = '' }: { children: ReactNode; className?: string }) {
+export function Bubble({ children, className = '', speak: speakText }: { children: ReactNode; className?: string; /** What Read to me says. Defaults to the bubble's own text; pass the full sentence when the bubble shows a short one. */ speak?: string }) {
+  const text = speakText ?? (typeof children === 'string' ? children : undefined);
   return (
     <div
       className={`anim-bubble relative min-w-0 rounded-[1.25rem] border-2 border-line bg-panel px-[1rem] py-[0.5rem] font-display text-[1.125rem] leading-snug font-bold text-text shadow-[0_0.3rem_0_var(--color-lip)] ${className}`}
       role="status"
     >
       <span aria-hidden className="absolute bottom-[0.875rem] -left-[0.5rem] h-[0.875rem] w-[0.875rem] rotate-45 border-b-2 border-l-2 border-line bg-panel" />
-      {children}
+      {text ? (
+        <div className="flex items-center gap-[0.5rem]">
+          <span className="min-w-0 flex-1">{typeof children === 'string' ? <Words text={children} /> : children}</span>
+          <ReadToMe text={text} />
+        </div>
+      ) : (
+        children
+      )}
     </div>
+  );
+}
+
+/** The speaker on a bubble. One tap speaks, another stops; leaving the screen stops it. Hidden if no voice fits the language. */
+function ReadToMe({ text }: { text: string }) {
+  const can = useCanSpeak();
+  const lang = useI18n((s) => s.lang);
+  const [on, setOn] = useState(false);
+  useEffect(() => () => stopSpeaking(), []);
+  useEffect(() => {
+    if (on) stopSpeaking();
+    setOn(false); // the text changed: stop what was being read
+  }, [text]); // eslint-disable-line react-hooks/exhaustive-deps
+  if (!can) return null;
+  return (
+    <button
+      type="button"
+      aria-label={on ? 'Stop reading' : 'Read to me'}
+      aria-pressed={on}
+      onClick={() => {
+        if (on) {
+          stopSpeaking();
+          setOn(false);
+        } else setOn(speak(text, lang, () => setOn(false)));
+      }}
+      className="grid h-[2.75rem] w-[2.75rem] shrink-0 place-items-center rounded-full border-2 border-line bg-panel-up text-text"
+    >
+      {on ? <Square size={18} strokeWidth={3} aria-hidden /> : <Volume2 size={22} strokeWidth={2.5} aria-hidden />}
+    </button>
   );
 }

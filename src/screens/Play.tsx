@@ -126,7 +126,7 @@ export function Play() {
         ) : (
           <>
         <div className="flex items-end gap-[0.5rem]">
-          <Bubble className="mb-[0.25rem] min-w-0 flex-1 text-[1.0625rem]">{step.kind === 'choice' ? captionFor(step.prompt) : step.prompt}</Bubble>
+          <Bubble className="mb-[0.25rem] min-w-0 flex-1 text-[1.0625rem]" speak={step.kind === 'choice' ? `${step.prompt} ${(step as ChoiceStep).options.map((o) => o.label).join('. ')}.` : step.prompt}>{step.kind === 'choice' ? captionFor(step.prompt) : step.prompt}</Bubble>
           {!outcome ? <RoundButton icon={CircleHelp} label={hint ? 'Hide hint' : 'Ask Twinkle'} pressed={hint} onClick={() => setHint(!hint)} /> : null}
         </div>
 

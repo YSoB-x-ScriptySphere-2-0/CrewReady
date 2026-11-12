@@ -15,6 +15,8 @@ import {
   Trophy,
 } from 'lucide-react';
 import { useGame } from '../store/game';
+import { SPACE_WORDS } from '../content/words';
+import { useWords } from '../store/words';
 import { Kid } from '../components/Twinkle';
 import {
   loadProfile,
@@ -23,7 +25,6 @@ import {
   shuffleCallsign,
   resetAllGameData,
   BADGE_DETAILS,
-  SPACE_WORDS_DEFAULT,
   type Astronaut,
   type ProfileSettings,
 } from '../engine/profile';
@@ -34,6 +35,7 @@ export function Profile() {
   const [showSpaceBook, setShowSpaceBook] = useState(false);
 
   const { badges, leaderboard, go } = useGame();
+  const collected = useWords((s) => s.collected);
 
   const handlePickAstronaut = (who: Astronaut) => {
     const updated = { ...profile, astronaut: who };
@@ -251,16 +253,17 @@ export function Profile() {
                   <span className="font-display text-xs font-bold uppercase tracking-wider text-text">
                     Space Book — Mission Vocabulary
                   </span>
-                  <span className="text-[10px] text-muted">All definitions verified with NASA</span>
+                  <span className="text-[10px] text-muted">{collected.length} of {SPACE_WORDS.length} collected</span>
                 </div>
                 <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-1">
-                  {SPACE_WORDS_DEFAULT.map((item) => (
-                    <div key={item.word} className="rounded-lg border border-line/50 bg-panel/60 p-2">
+                  {SPACE_WORDS.filter((w) => collected.includes(w.id)).map((item) => (
+                    <div key={item.id} className="rounded-lg border border-line/50 bg-panel/60 p-2">
                       <div className="font-display text-xs font-extrabold text-go">{item.word}</div>
-                      <div className="mt-0.5 text-[11px] text-muted">{item.def}</div>
+                      <div className="mt-0.5 text-[11px] text-muted">{item.sentence}</div>
                       <div className="mt-1 text-[9px] text-muted/70">{item.source}</div>
                     </div>
                   ))}
+                  {collected.length === 0 ? <p className="text-[11px] text-muted">Tap an underlined word in the game to collect it.</p> : null}
                 </div>
               </div>
             )}

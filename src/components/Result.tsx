@@ -8,6 +8,7 @@ import type { Outcome } from '../engine/types';
 import { ScenePicture } from './Decision';
 import { ChangeChip, type Change } from './GameButton';
 import { Panel } from './Panel';
+import { Words } from './Words';
 
 const STEP = 0.2;
 const delay = (i: number) => ({ '--fsx': 0, '--fsy': 0, '--d': '0.35s', '--dl': `${i * STEP}s` }) as unknown as CSSProperties;
@@ -72,7 +73,7 @@ export function ResultMoment({
           {!changes.length ? <span className="text-muted">No meters moved — yet.</span> : null}
         </span>
       </div>
-      <p className="mt-[0.5rem] text-[0.9375rem] leading-snug">{line}</p>
+      <p className="mt-[0.5rem] text-[0.9375rem] leading-snug"><Words text={line} /></p>
       {/* Carry-over consequences keep their words for screen readers; the chips above already show what they cost. */}
       {extras.length ? (
         <ul className="sr-only">

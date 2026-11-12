@@ -63,6 +63,8 @@ export function Panel({
 
 // ---------- badges and sources ----------
 
+import { Words } from './Words';
+
 export type BadgeKind = 'NASA LIVE' | 'NASA ARCHIVE' | 'GAME ESTIMATE' | 'FICTION';
 const BADGE_LOOK: Record<BadgeKind, string> = {
   // LIVE: a green dot and a green border, so it is never colour alone.
@@ -160,7 +162,7 @@ export function IntelCard({
               <Badge kind={badge} />
               {date ? <span className="text-[0.8125rem] font-bold text-muted">{date}</span> : null}
             </div>
-            <p className="mt-[0.25rem] text-[0.9375rem] leading-snug">{sentence}</p>
+            <p className="mt-[0.25rem] text-[0.9375rem] leading-snug"><Words text={sentence} /></p>
           </div>
         </div>
         {source ? <SourceLine text={source} bare /> : null}

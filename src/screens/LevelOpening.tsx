@@ -10,6 +10,7 @@ import { METER_COLOR, MeterBadge } from '../components/meters';
 import { useReducedMotion } from '../components/motion';
 import { IntelCard, Ribbon, SourceStrip, type BadgeKind } from '../components/Panel';
 import { Scene } from '../components/Scene';
+import { Words } from '../components/Words';
 import { Kid, Twinkle } from '../components/Twinkle';
 import { TASK_ICON } from '../content/icons';
 import { LEVELS } from '../content/levels';
@@ -177,7 +178,7 @@ export function LevelOpening() {
 
         <p className="flex items-start gap-[0.375rem] rounded-[1rem] bg-panel/85 px-[0.75rem] py-[0.375rem] font-display text-[1.0625rem] leading-snug font-bold text-text">
           <Lightbulb size={20} strokeWidth={2.75} aria-hidden className="mt-[0.1875rem] shrink-0 text-star" />
-          <span>{level.teaches}</span>
+          <span><Words text={level.teaches} /></span>
         </p>
 
         <ol className="flex flex-wrap gap-[0.25rem]" aria-label="This level's tasks">
