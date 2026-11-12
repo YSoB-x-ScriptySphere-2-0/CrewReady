@@ -222,7 +222,7 @@ export function Resources() {
       </div>
 
       {/* 4 Systems Cards Grid */}
-      <div className="grid flex-grow grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4 sm:gap-3">
+      <div className="grid flex-grow grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 min-h-0">
         {SYSTEMS.map((sys) => {
           const status = getSystemStatus(sys.key, upgrades);
           const check = checkPurchase(sys.key, upgrades, stardust);
