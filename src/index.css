@@ -134,6 +134,34 @@ button:disabled {
 }
 .msg-there { left: 0; animation: msg-there 2s ease-in-out 1 forwards; }
 .msg-back { left: calc(100% - 2.75rem); animation: msg-back 2s ease-in-out 1 forwards; }
+/* Event moments and acted results (R5). The element's own style is the END frame, so with animations off
+   (reduced motion) the end frame shows. All one-shot. */
+@keyframes ev-move {
+  from { transform: translate(var(--fx, 0px), var(--fy, 0px)); opacity: var(--fo, 1); }
+}
+.ev-move { transform: translate(var(--tx, 0px), var(--ty, 0px)); animation: ev-move var(--d, 1.4s) ease-out var(--dl, 0s) both; }
+@keyframes ev-scale {
+  from { transform: scale(var(--fsx, 1), var(--fsy, 1)); }
+}
+.ev-scale { transform-box: fill-box; transform-origin: var(--o, center); transform: scale(var(--tsx, 1), var(--tsy, 1)); animation: ev-scale var(--d, 0.6s) cubic-bezier(0.34, 1.2, 0.64, 1) var(--dl, 0s) both; }
+@keyframes ev-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+.ev-blink { animation: ev-blink 0.45s ease-in-out var(--dl, 0s) 3 both; }
+@keyframes ev-fade {
+  from { opacity: 0; }
+}
+.ev-fade { animation: ev-fade var(--d, 0.5s) ease-out var(--dl, 0s) both; }
+@keyframes ev-draw {
+  from { opacity: 0; }
+}
+.ev-draw { animation: ev-draw 0.8s ease-out var(--dl, 0s) both; }
+@keyframes ev-rot {
+  from { transform: rotate(0deg); }
+}
+.ev-rot { transform: rotate(var(--r, 0deg)); animation: ev-rot 1.2s ease-in-out 0.3s both; }
+
 /* ================= Game kit (BUILD_SEQUENCE.md §4.3–4.4, step G1) ================= */
 
 @layer components {

@@ -181,8 +181,11 @@ export function ChoiceCard({
   children,
   className = '',
   innerRef,
+  ariaLabel,
 }: {
   label: ReactNode;
+  /** The full words for screen readers when `label` is a short caption. */
+  ariaLabel?: string;
   icon?: LucideIcon;
   picture?: ReactNode;
   selected?: boolean;
@@ -211,6 +214,7 @@ export function ChoiceCard({
       onClick={onClick}
       disabled={disabled}
       aria-pressed={selected}
+      aria-label={ariaLabel}
       aria-hidden={state === 'gone' ? true : undefined}
       tabIndex={state === 'gone' ? -1 : undefined}
       {...press}

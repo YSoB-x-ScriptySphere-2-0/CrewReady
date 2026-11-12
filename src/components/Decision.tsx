@@ -5,8 +5,11 @@
 // Earth message clock while the Air & Water pill ticks down.
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Play as PlayIcon, Radio, Star } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { iconFor } from '../content/icons';
+import { captionFor, pictureFor } from '../content/pictures';
 import { chooseOption, crewMods } from '../engine/engine';
+import { EventMoment, hasEvent } from './events';
 import { METER_NAMES, type ChoiceStep, type CrewStep, type GameState, type Level, type Meter, type Option, type Outcome } from '../engine/types';
 import { ChoiceCard, GameButton, type Change } from './GameButton';
 import { arrowCount } from './Hud';
@@ -18,6 +21,25 @@ import { reducedMotion, useReducedMotion } from './motion';
 export const LEG_MS = 2000;
 /** How much air leaks while the player waits on Earth (plan §6.3: −15, then +5 when the fix arrives). */
 const LEAK = 15;
+
+/** While the leak runs, Air & Water ticks down on the HUD until the player chooses (display only; at most this many). */
+const PRESSURE = 5;
+
+/** An icon scene for a card or result: one big icon and, optionally, a small one tucked in the corner. */
+export function ScenePicture({ scene, size = 'md' }: { scene: [LucideIcon, LucideIcon?]; size?: 'md' | 'lg' }) {
+  const [Big, Small] = scene;
+  const box = size === 'lg' ? 'h-[3.75rem] w-[3.75rem]' : 'h-[3.25rem] w-[3.25rem]';
+  return (
+    <span className={`relative grid shrink-0 place-items-center rounded-[1rem] bg-space ${box}`} aria-hidden>
+      <Big size={size === 'lg' ? 34 : 30} strokeWidth={2.25} />
+      {Small ? (
+        <span className="absolute -right-[0.375rem] -bottom-[0.375rem] grid h-[1.5rem] w-[1.5rem] place-items-center rounded-full border-2 border-line bg-panel-up">
+          <Small size={14} strokeWidth={2.5} />
+        </span>
+      ) : null}
+    </span>
+  );
+}
 
 const modsFor = (level: Level, game: GameState) => crewMods(level.steps.find((s): s is CrewStep => s.kind === 'crew'), game.crew);
 
@@ -66,7 +88,27 @@ export function Decision({
   const [picked, setPicked] = useState<number | null>(null);
   const [waiting, setWaiting] = useState(false);
   const cards = useRef<(HTMLButtonElement | null)[]>([]);
-  const commit = (o: Option) => onDone(chooseOption(game, o, modsFor(level, game)), o.label);
+  const stepIndex = level.steps.indexOf(step);
+  // The event moment plays first (2–3 s, tap to skip); then the choices appear.
+  const [eventDone, setEventDone] = useState(() => !hasEvent(level.id, stepIndex));
+  const commit = (o: Option) => {
+    onHudPreview(null);
+    onDone(chooseOption(game, o, modsFor(level, game)), o.label);
+  };
+
+  // Level 3 leak: the Air & Water pill ticks down until a choice is made. Display only; the engine decides the cost.
+  const shownL = useRef(game.meters.L);
+  const leak = step.options.some((o) => o.clock);
+  useEffect(() => {
+    if (!leak || picked !== null) return;
+    const id = setInterval(() => {
+      if (shownL.current <= Math.max(1, game.meters.L - PRESSURE)) return;
+      shownL.current -= 1;
+      onHudPreview({ ...game.meters, L: shownL.current });
+    }, 800);
+    return () => clearInterval(id);
+  }, [leak, picked]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => () => onHudPreview(null), []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const looks = useMemo(() => optionCosts(step, game, level).map((c) => c.changes), [step, game, level]);
 
@@ -100,10 +142,11 @@ export function Decision({
     if (!waiting || picked === null) return;
     const start = gameRef.current.meters;
     const floor = Math.max(1, start.L - LEAK);
-    const steps = start.L - floor;
+    const from = Math.min(start.L, shownL.current); // carry on from where the live pressure got to
+    const steps = Math.max(0, from - floor);
     const total = LEG_MS * 2;
     const timers: ReturnType<typeof setTimeout>[] = [];
-    for (let k = 1; k <= steps; k++) timers.push(setTimeout(() => onHudPreview({ ...start, L: start.L - k }), (total * k) / (steps + 1)));
+    for (let k = 1; k <= steps; k++) timers.push(setTimeout(() => onHudPreview({ ...start, L: from - k }), (total * k) / (steps + 1)));
     timers.push(
       setTimeout(() => {
         onHudPreview(null);
@@ -124,15 +167,19 @@ export function Decision({
   return (
     <div className="flex h-full min-h-0 flex-col gap-[0.5rem]">
       <div className="min-h-0 flex-1">
-        {waiting ? (
+        {!eventDone ? (
+          <EventMoment levelId={level.id} stepIndex={stepIndex} game={game} label={captionFor(step.prompt)} onDone={() => setEventDone(true)} />
+        ) : waiting ? (
           <EarthClock />
         ) : (
           <div className="flex h-full gap-[0.5rem] overflow-x-clip pb-[0.25rem]" role="group" aria-label="Your choices" onKeyDown={onKeyDown}>
             {step.options.map((o, i) => (
               <ChoiceCard
                 key={o.label}
-                label={o.label}
+                label={pictureFor(o.label)?.short ?? o.label}
+                ariaLabel={o.label}
                 icon={iconFor(o.label)}
+                picture={pictureFor(o.label) ? <ScenePicture scene={pictureFor(o.label)!.scene} /> : undefined}
                 selected={sel === i && picked === null}
                 state={stateOf(i)}
                 onClick={() => picked === null && setSel(i)}
@@ -150,7 +197,7 @@ export function Decision({
           </div>
         )}
       </div>
-      {!waiting ? (
+      {eventDone && !waiting ? (
         <div className="flex justify-end">
           <GameButton variant="go" icon={PlayIcon} disabled={sel === null || picked !== null} onClick={confirm} className="!min-h-[3rem] !px-[2rem]">
             GO

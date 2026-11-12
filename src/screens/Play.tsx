@@ -10,6 +10,8 @@ import { LEVEL_SCENE, LevelHud, LevelZones, outcomeChanges, tasksFor, totalChang
 import { MeterBadge } from '../components/meters';
 import { flyToHud } from '../components/motion';
 import { Panel, SourceStrip, TaskList } from '../components/Panel';
+import { ResultMoment } from '../components/Result';
+import { captionFor } from '../content/pictures';
 import { Scene } from '../components/Scene';
 import { StepView, USES_LEFT_ZONE } from '../components/steps';
 import { Bubble, Kid, kidPose, reactionFor, Twinkle, TWINKLE_FOR } from '../components/Twinkle';
@@ -116,31 +118,21 @@ export function Play() {
     <Scene bare place={LEVEL_SCENE[level.id]} top={<LevelHud meters={hudPreview ?? game.meters} stars={game.stars - held} look={look ?? undefined} />}>
       <LevelZones left={left}>
         <div className="flex items-end gap-[0.5rem]">
-          <Bubble className="mb-[0.25rem] min-w-0 flex-1 text-[1.0625rem]">{step.prompt}</Bubble>
+          <Bubble className="mb-[0.25rem] min-w-0 flex-1 text-[1.0625rem]">{step.kind === 'choice' ? captionFor(step.prompt) : step.prompt}</Bubble>
           {!outcome ? <RoundButton icon={CircleHelp} label={hint ? 'Hide hint' : 'Ask Twinkle'} pressed={hint} onClick={() => setHint(!hint)} /> : null}
         </div>
 
         <div className="relative min-h-0 flex-1">
           {outcome ? (
             <div ref={resultRef} className="rise flex h-full min-h-0 flex-col gap-[0.5rem]">
-              <Panel compact ribbon={reaction === 'good' ? 'Nice!' : 'What happened'} tone={reaction === 'good' ? 'good' : 'danger'} className="min-h-0 flex-1">
-                <div className="flex items-center gap-[0.625rem]">
-                  <span className="anim-stamp grid h-[2.75rem] w-[2.75rem] shrink-0 place-items-center rounded-[0.75rem] border-2 border-go bg-panel-up" aria-hidden>
-                    <ChosenIcon size={26} strokeWidth={2.25} />
-                  </span>
-                  <span className="flex min-w-0 flex-1 flex-wrap gap-[0.375rem]">
-                    {changes.map((c) => (
-                      <ChangeChip key={c.meter} change={c} />
-                    ))}
-                    {!changes.length ? <span className="text-muted">No meters moved — yet.</span> : null}
-                  </span>
-                </div>
-                <ul className="mt-[0.5rem] space-y-[0.125rem] text-[0.9375rem] leading-snug">
-                  {outcome.reasons.map((r, i) => (
-                    <li key={i}>{r}</li>
-                  ))}
-                </ul>
-              </Panel>
+              <ResultMoment
+                label={chosenLabel}
+                outcome={outcome}
+                changes={changes}
+                fallback={ChosenIcon}
+                ribbon={reaction === 'good' ? 'Nice!' : 'What happened'}
+                tone={reaction === 'good' ? 'good' : 'danger'}
+              />
               <div className="flex justify-end">
                 <GameButton
                   variant="go"
