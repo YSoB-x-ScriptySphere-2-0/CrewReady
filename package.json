@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "nasa:snapshot": "node scripts/nasa-snapshot.mjs",
+    "balance": "node --import ./scripts/ts-resolve.mjs src/engine/balance.ts"
   },
   "dependencies": {
     "@fontsource/baloo-da-2": "^5.3.0",

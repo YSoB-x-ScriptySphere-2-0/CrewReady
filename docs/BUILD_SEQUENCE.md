@@ -1,730 +1,604 @@
-# CrewReady — MVP Build Sequence
+# CrewReady — Build Sequence v10.1
 
-**How to use this file.**
-1. Open a new chat in this project folder. Attach this file and the plan (`plan.md`, or `CrewReady_FINAL_PLAN_v9.docx`).
-2. Paste the **kickoff prompt** from §9.1 once.
-3. For each step, paste that step's **prompt** (the grey quote at the end of each step in §5–§7). Or just say **"next"**. The step's spec above the prompt is what Claude builds against.
-4. Do not start the next step until the current step's **Done when** list passes and you have looked at the two screenshots.
+Goes with `plan.md` v10. The plan says **what** the game is. This file says **how to build it**, in what order, and what "done" means. On game content the plan wins; on look and build order this file wins. Older files in `docs/` (01–05, 07, 08, `BUILD_PROMPTS`, `CHARACTER_CONCEPT_SHEET`, `frontend-ui-prompt-pack`) are history: don't read them.
 
-**What each file is for.**
-- The plan says **what** the game is: story, rules, every level, data, scripts, schedule.
-- This file says **how to build it**: what already exists, how it should look, the order of work, and what "done" means for each page.
-- `docs/human design standards.md` is the quality bar for every screen.
-- `docs/06_SCIENCE_AND_NASA_DATA.md` is the only list of facts and data the game may show.
-- Where these disagree on game content, the plan wins. Ignore older files in `docs/` (01–05, 07, 08, `BUILD_PROMPTS`, `CHARACTER_CONCEPT_SHEET`, `frontend-ui-prompt-pack`) where they disagree.
+## 1. How to use this file (and spend few tokens)
 
----
+1. **One step, one new chat.** A long chat re-sends its whole history with every message, so a fresh chat per step is the biggest saving there is.
+2. Paste the step's **prompt**. It's short on purpose: the spec is here, not in the prompt.
+3. Claude reads **§3, §4 and that one step**, then only the files on the step's **Read** line. Nothing else unless a search shows it's needed.
+4. Don't move on until the step's **Done when** passes and you've looked at the screenshot yourself.
+5. A fix to the last step is just a sentence in the same chat ("the GO button overlaps Twinkle at 667 wide").
 
-## 1. What we are building, and what winning needs
+**Start with R0.** A5–A9 are committed (`49aabda`), and so is the welcome screen built in Antigravity (`36f70fb`, `3743293`). R0 brings that work in line with §3 and §4 before anything new is built.
 
-**The product.** A free browser game. Kids aged 7–12 command a Mars mission across six levels. Every choice trades power, air and water, food, or radiation protection. Real NASA data drives the events. (NASA Space Apps 2026, challenge: *Build a Junior Astronaut Mission Trainer*.)
-
-**What the judges score, turned into build requirements.** Every step below serves at least one of these. If a piece of work serves none, skip it.
-
-| Judges score | So the build must |
-|---|---|
-| **Relevance** (20) — answers the challenge; NASA data at the core | Cover all five systems: life support, radiation, power, food, communication delay. Real DONKI storm data must change the size of the storm in levels 2 and 6. If you remove the data, the level should not work |
-| **Validity** (20) — sound, working, usable | Be a working public link. Show a source line on every screen that states a fact. Have a "what we simplified" page. Survive a play-test with a real child |
-| **Creativity** (20) — fresh, not routine | Open inside an emergency (the hook). Make choices come back later. End with a crew pick that becomes the multiplayer teaser |
-| **Impact** (20) — who benefits, how far it reaches | Open on a cheap phone with no login. End with six "I learned" lines |
-| **Presentation** (20) — understood in 240 s | Look clear and colourful on video: big readable meters, one idea per screen, the crew on the key screens |
-| **User experience** (5) — anyone can use it | A first-timer finishes level 1 in under 3 minutes without help |
-| **NASA data usage** (5) — top mark needs NASA plus another agency | NASA DONKI, NeoWs, EPIC, InSight, OSDR, Image Library and APOD, plus NOAA's storm index |
-| **Teamwork** (5), named challenge, open repo, complete page (3) | Public repository; credits screen with every member and role |
-
-**Global awards we aim at:**
-- **Best Use of Data:** a 7-year-old feels today's real solar storm as a decision.
-- **Best Storytelling:** NASA data is the plot of one Earth-to-Mars story.
-
-Both are judged from the project page and the video. So the game must **show** its data on screen, with dates and sources.
-
-**From the challenge author's briefing — rules the build must never break:**
-- Not a quiz, not a slideshow. A living simulation.
-- No unlimited mode. Every choice costs something.
-- A decision in one system visibly hits another.
-- Fun and accurate are the same goal.
+**The one idea of v10.1:** the game is still more reading than seeing. From now on every screen is judged by §4.1a, *See it, don't read it*, and R5 makes the levels pass it before we film.
 
 ---
 
-## 2. Where the project stands today (12 Nov 2026)
+## 2. Where the project stands (12 Nov 2026)
 
 | Area | State | Files |
 |---|---|---|
-| Repository | **Connected** to `github.com/YSoB-x-ScriptySphere-2-0/CrewReady` (`main`). The repo's own `public/assets/` (audio, 3D models) and `source/` are kept. The v1 docs are replaced by the v9 docs | `.git`, `.gitignore` |
-| Stack | Vite 8, React 19, TypeScript, Tailwind 4, Zustand 5, Vitest, `lucide-react`, Baloo Da 2 and Nunito via `@fontsource`. No backend | `package.json`, `vite.config.ts` |
-| Game rules | **Done and tested** (24 tests). Four meters, storm and dust sizes from data, consequences across levels, crew specialists, the Outpost Check. A check rejects any option that changes fewer than two things | `src/engine/engine.ts`, `types.ts`, `engine.test.ts` |
-| Level content | **Done**: all six levels from plan §6, as typed data | `src/content/levels.ts` |
-| Progress and saving | **Done**: current level, step, retry checkpoint, badges, saved in the browser. The store knows all 13 screens. `go(screen)` switches screens. `BUILT_SCREENS` lists the ones that exist | `src/store/game.ts` |
-| Design foundations (A0) | **Done.** Colour tokens, fonts, motion rules, and the shared parts from §4.4 | `src/index.css`, `src/components/ui.tsx`, `BottomNav.tsx`, `Twinkle.tsx` |
-| Character art | **Done.** 30 transparent poses cut from the team's sheets, glow halo removed | `public/art/*.webp` (list in §4.3) |
-| Screens built | Home, level opening, play (all six step kinds), Mission Replay, Success. All use the new look. Home, hints, Replay and Success show the crew | `src/App.tsx`, `src/components/steps.tsx` |
-| NASA data | **Not built.** Storm size is fixed at medium and dust size is random. The key is in `.env` as `VITE_NASA_API_KEY` (git-ignored). `.env.example` is committed | — |
-| Not built | Hook, story cards, mission map, data on cards, Quick Run, Profile, Resources, Training (locked), Sources page, sound, publishing | — |
+| Rules, levels, saving | **Done, tested.** Don't rewrite | `src/engine/*`, `src/content/levels.ts`, `src/store/game.ts` |
+| Screens | **Work, but upright and quiz-like.** Hook, Story, Home, Map, LevelOpening, Play, Replay, Success, `#kit` | `src/screens/*` |
+| Shared parts | Scene, Hud, GameButton, Panel, Decision, AlarmBanner, RewardCrate, Dock, Twinkle (crew), LevelChrome, five hands-on steps | `src/components/*`, `src/components/steps/*` |
+| Replay blame, leaderboard, APOD sample | Done (A8, A9) | `src/engine/blame.test.ts`, `src/store/leaderboard.ts`, `src/content/apod.ts` |
+| Crew art | 30 cut-outs. **Nova is now in the pink suit** (re-cut 12 Nov, same file names and sizes) | `public/art/*.webp` |
+| Welcome screen | **Built in Antigravity; the visual reference for every screen.** Full-bleed art, crossfade, bar → Play, How to Play, EN / বাংলা switch, shown on every load. Needs R0 (wording, blur) and R2 (stage, loading) | `src/screens/Welcome.tsx`, `src/App.tsx` |
+| Strings | `t()` helper with English and Bangla for the welcome screen only | `src/content/i18n.ts`, `strings.en.ts`, `strings.bn.ts` |
+| Antigravity extras | Home: Kp gauge with NOAA G-scale labels. Story: asteroid "radar". LevelChrome: sol and place badge. Decision: shaded planets in the level-3 clock. Dock: frosted glass | see R0 |
+| Welcome art | `welcome-1.webp`, `welcome-2.webp`: cleaned in Antigravity (mock-up letters and language pill removed). Usable. A dark frame corner remains top right; R2 hides it with the backdrop fade. Upright crops (704 × 818); a 16:9 version is nice to have (§7) | `public/art/welcome-*` |
+| Not built | Real NASA data, Sources, learning layer, Fly (endless runner), Me, Resources, Training, Bangla beyond the welcome screen, offline, publishing | — |
 
-**Commands.**
-- Run: `npm run dev`. Port 5173 is set in `.claude/launch.json`. If 5173 is busy, the preview moves to the next free port.
-- Test: `npm test`.
-- If a new file's Tailwind classes don't show up in the dev preview (the layout looks unstyled), restart the dev server. The production build is not affected.
-- Build: `npm run build`.
+Stack: Vite 8, React 19, TypeScript, Tailwind 4, Zustand 5, Vitest, `lucide-react`, Baloo Da 2 + Nunito. `npm run dev` (port 5173, in `.claude/launch.json`) · `npm test` · `npm run build`. If new Tailwind classes don't show in the preview, restart the dev server.
 
-**Known problems to fix along the way**
-1. Mission Replay lists every reason line from the last action. It should name the one choice in this level that cost the failed meter the most (step A8).
-2. Orbit's shoulder patch is a dark blue oval with a red-orange streak. At game size it reads as a dot. The team should decide whether it looks too much like NASA's insignia (§10).
-3. A random player rarely wins level 6 because Air & Water runs out. That is a balance question for C1. Do not tune numbers before then.
-4. Nothing is pushed yet. The first push needs the team's go-ahead (C3).
+Known: a random player rarely wins level 6 (Air & Water). That's for balance (F3), not before.
 
 ---
 
-## 3. How to work
+## 3. Rules for every step
 
-1. **One step at a time, in order.** Name the step you are on. Finish it, check it, then stop and report.
-2. **Read before writing.** Read a file before changing it. Reuse what exists. Do not rewrite the engine or level content unless a step says so.
-3. **Every step ends with the same five checks:**
-   - `npm test` passes and `npm run build` succeeds.
-   - The page is opened in the browser preview and used for real: clicked through, not just compiled.
-   - It is looked at twice, at phone width (375 px) and laptop width (1280 px). No sideways scrolling, nothing cut off, nothing overlapping by accident.
-   - It works with the keyboard alone (Tab, Enter, Space, arrows where it makes sense) and the focus ring is visible.
-   - The browser console shows no errors.
-4. **No dead ends.** Every button does something or is clearly locked. When a step builds a new screen, add it to `BUILT_SCREENS` in `src/store/game.ts`. That unlocks its bottom-nav item and source lines automatically. Never show placeholder text as real content.
-5. **No invented facts.** Every factual sentence a player sees comes from the plan or `docs/06_SCIENCE_AND_NASA_DATA.md` §4. If a fact is needed and missing, leave it out and say so in the report.
-6. **Words are for a 7-year-old.** Sentences under 15 words. One idea per screen. The first time a science word appears, it gets a five-word explanation ("a sol — a Mars day"). All level text was simplified on 12 Nov 2026; keep new text at that level.
-7. **Do not add features that are not in this file.** If something seems missing, say so; do not build it unasked.
-8. **The API key never appears** in code, logs, screenshots or replies. Only `src/services/nasa.ts` and `scripts/nasa-snapshot.mjs` read it.
-9. **Report the same way every time** (template in §9.3): what was built, the files changed, the checks and their results, two screenshots, and anything not verified.
+**Working**
+1. Do the one step named. Finish, check, report, stop.
+2. Reuse what exists. Edit files; don't rewrite them. Never touch engine numbers or level words unless the step says so.
+3. Build from the shared parts (§4.6). If a part is missing, add it to the kit, don't make a look-alike.
+4. Every button does something or is clearly locked. A new screen goes into `BUILT_SCREENS`.
+5. No invented facts or numbers. Facts come from `plan.md` or `docs/06_SCIENCE_AND_NASA_DATA.md` §4. If one is missing, leave it out and say so.
+6. Words are for a 7-year-old: under 15 words a sentence, one idea per screen, a picture before a sentence.
+7. Every string a player sees goes through `t()` (from R2 on).
+8. The API key never appears in code, logs, screenshots or replies. Only `src/services/nasa.ts` and `scripts/nasa-snapshot.mjs` read it.
+9. Never commit, push or deploy without a yes in the chat.
+
+**Saving tokens**
+- Read only what the step lists. Find anything else with a search, then read just those lines.
+- `plan.md` is 60 KB: search for the section heading and read that section only.
+- Check with page text and small scripts first; take a screenshot only for the report.
+- Run `npm test` and `npm run build` once, at the end.
+- Keep the report to the format below.
+
+**Checks before reporting**
+- `npm test` and `npm run build` pass; no console errors.
+- Played in the preview, not just compiled.
+- Looks right at **844 × 390** (phone sideways) and **667 × 375** (small phone). Laptop is the same layout scaled, so check 1280 × 720 only when a step changes the stage or the zones.
+- Phone upright (**390 × 844**) shows the turned stage and still works by touch.
+- Keyboard alone works, with a visible focus ring. Touch targets are 44 px or more.
+- Reduced motion: things still change, nothing moves.
+- Colour is never the only signal: a meter always has its icon and name.
+- **The game check:** with the sound off and no reading, does it look like a game a kid wants to tap? If it looks like a form, it isn't done.
+
+**Report**
+```
+Step: __
+Built: <2–4 lines>
+Files: <created / changed>
+Checks: tests · build · played · 844 · 667 · upright · keyboard · reduced motion · console  (✓ or ✗ each)
+Screenshot: docs/screenshots/v10/<step>.jpg
+Left out / not verified: <what, and why>
+```
 
 ---
 
-## 4. Design direction
+## 4. Design v10: a wide window into deep space
 
-### 4.1 What the references tell us
+### 4.1 What went wrong, and the fix
 
-Three mock-ups are in `ui reference/`. The mentor's verdict: the idea is right, but they are **noisy**. Keep the app **colourful**.
+G1–G2 gave us working parts and good motion, but the screens still read as a quiz: an upright page, a question, three text rows. Two things fix that.
 
-| In the references | Decision | Reason |
+- **Turn it sideways.** Every screen is one landscape stage: the crew on the left, the thing you touch on the right, the meters across the top. (Plan §7.1 has the reasons.)
+- **Match the welcome art.** The team's welcome mock-up sets the look: deep navy space, the 3D crew large in the frame, white rounded type, one cyan button. The cream paper panels and ink outlines clash with 3D characters, so they go.
+
+We keep everything G1 got right: the lip under a button, the squash on press, meters that count and shake, chips that float, the crew reacting.
+
+### 4.1a See it, don't read it (the rule every screen is judged by)
+
+A 7-year-old reads slowly, and a judge watches a silent video. So **the scene tells the story and the words only label it.** Today a level is: read a question, read three options, read a reason. In v10.1 it is: **watch something happen, touch something, watch what it did.**
+
+**1. Every decision opens with an event moment (2–3 s, no reading needed).** The danger plays out in the scene before any choice appears. The words come after, as a caption.
+
+| Level · decision | What the player sees happen |
+|---|---|
+| 1 · last seat | The cargo bay: one empty seat outlined, three objects floating beside it |
+| 2 · storm | A wave of orange light rolls from the Sun toward the ship; the Shield pill blinks |
+| 2 · filter | The water tank's gauge drops; brown drips in the pipe |
+| 2 · landing zone | Mars fills the window; three zones light up on the real Jezero photo |
+| 3 · protect | Radiation dots fall on the bare habitat roof |
+| 3 · leak | Air streams out of a crack; the Air & Water pill ticks down **until the player chooses** |
+| 3 · oxygen maker | The oxygen box hums; its power cable lights up; the battery bar sinks a little |
+| 4 · panels | A brown dust wall rolls in from the horizon and the sky darkens |
+| 4 · cleaning | The panels sit grey; the power bar barely fills |
+| 5 · farm, water, pump | Plants droop when the water bar is low; the pump stops with a puff |
+| 6 · storm + dust | The orange wave and the dust wall arrive together |
+| 6 · scrubber | The carbon dioxide bar in the cabin creeps up; the crew yawns |
+| 6 · samples | The rover, the delta and the habitat on one map, with a dotted route to each |
+
+**2. Choices are pictures first.** A `ChoiceCard` is a picture (an icon scene: shelter = crew behind water bags), then 2–5 words ("Hide behind water"). The full option sentence lives in Read-to-me and in the result.
+
+**3. The result is shown in the scene, then counted.** After GO, the scene acts out the choice in about 1.5 s (the crew run into the shelter and the wave splashes off it; the panels fold and the lights dim), then the **chain reaction** (lights dim → plants slow → Food −5) draws the cost as pictures, then the HUD counts. The reason sentence is one line under the chain, never the main thing.
+
+**4. Numbers are drawn, not written.** Storm size is a bigger or smaller wave; dust size a thicker or thinner wall; the battery is 7 blocks; message delay is a dot that travels. Every number on screen also has a picture.
+
+**5. A word budget.** Count the words a player must read to act (labels, bubbles, cards; not the source line or Read-to-me):
+
+| Screen | Most words |
+|---|---|
+| Decision (bubble + all cards) | 20 |
+| Result | 12 |
+| Level opening | 15 |
+| Hands-on step | 10 |
+| Story card | 20 |
+| Replay | 25 |
+
+Anything over budget is cut, turned into a picture, or moved to Read-to-me.
+
+**6. The silent test.** Mute the sound, cover every word, and play a level. Can you still tell what went wrong and what your choice cost? If not, the screen isn't done.
+
+None of this changes a rule, a number or a fact. Event moments only *show* what the plan's level text already says.
+
+### 4.2 The stage (built in R1)
+
+- One `Stage` wraps the whole app. Sideways phone, tablet, laptop: it fills the window.
+- **Upright phone:** the same stage is drawn turned a quarter-turn and fills the screen, with a 2-second "Turn your phone" hint from Twinkle. No blocking screen. Touches still land in the right place; swipe code must read direction through one helper (`stageDelta`) so "left" stays left.
+- Everything is sized in `rem`, and the root size follows the stage height: about 16 px at 375 tall, capped near 30 px. So a laptop shows the phone's layout, bigger.
+- Stage shape is held between 4:3 and 21:9; outside that, the scene colour fills the edges.
+- On Play (a real tap), ask for full screen and a landscape lock. Ignore a refusal silently.
+
+**Three zones on every level screen**
+
+| Zone | Size | Holds |
 |---|---|---|
-| Two kid astronauts (Orbit and Nova) and Twinkle the round robot guide | **Keep**, using the team's art in `public/art/` | Warm, memorable, gives a child someone to be |
-| Big, obvious primary button ("PLAY", "FLY NOW") | **Keep** | A 7-year-old knows what to press |
-| Bottom navigation with five places | **Keep**: Missions, Quick Run, Resources, Training, Me | Matches the plan |
-| Earth and space through a window | **Keep, as real photos** | NASA's own images are more convincing than generated ones |
-| Dark navy everywhere with cyan glow on every edge | **Drop** | The look of every AI-made "space dashboard", and what made the mock-ups noisy |
-| Glass panels, neon outlines, bevelled glowing buttons | **Drop** | Decoration without purpose; hard to read on a cheap phone |
-| Busy 3D backgrounds full of props (mugs, books, globes, crates) | **Drop** | Competes with the one thing the child should look at |
-| Chips and pills along the top (rank, currency, language, sound) | **Reduce** to stars and one menu | Too much to read before playing |
-| NASA logo on the suits and buttons | **Remove** | NASA's insignia may not be used on products or characters without permission. Write "NASA Open Data" in plain text and link the source |
-| Full avatar customisation (helmets, patches, colours) | **Reduce** to choosing Orbit or Nova and a call-sign | Fun, but not what is judged |
+| Top strip | about 3 rem tall | Home, level chip, four meter pills in one row, stars |
+| Left | about 36% wide | Your kid and Twinkle, standing in the scene, reacting |
+| Right | the rest | Twinkle's speech bubble on top; under it, the thing you touch (choice cards, crates, batteries…); the **GO** button and the source line at the bottom |
 
-### 4.2 The idea: paper mission cards on a coloured sky
+Outside levels (Home, Map, Me…), the Dock is a **rail down the left edge**: five round icon buttons. A bottom bar would eat height we don't have.
 
-Colour comes from **where you are**, not from glow. Each place in the story has its own sky colour that fills the screen. Everything the player reads or presses sits on a solid, light "mission card" with dark text. The colour changes as the journey moves, which is how a child feels the trip, and text stays easy to read everywhere.
+### 4.3 Tokens
 
-| Place | Used in | Sky colour | `Sky place=` |
-|---|---|---|---|
-| Earth | Home, level 1, Profile | Bright blue `#2F6FED` | `earth` |
-| Deep space | Story cards, level 2, Quick Run | Indigo `#1F1A5C` | `space` |
-| Mars day | Levels 3, 5, 6, mission map, Resources, Training, Sources | Rust orange `#D9622B` | `mars` |
-| Dust storm | Hook, level 4 | Ochre `#B9801F` | `dust` |
-| Alarm | Mission Replay | Deep red `#A8322E` | `alarm` |
-| Success | Outpost Check | Dawn pink-to-gold, the **only** gradient in the app | `success` |
+Meter colours are untouched. A meter colour still means that meter and nothing else.
 
-| Token (Tailwind name) | Value | Used for |
+| Token | Value | Used for |
 |---|---|---|
-| `ink` | `#1B1F3B` | All text on cards; the primary button on paper |
-| `paper` | `#FFF8EC` | Card background; the primary button on a sky |
-| `edge` | `#E9DFCC` | Card dividers, quiet panels |
-| `muted` | `#5A5F7D` | Secondary text on paper (still at least 14 px) |
-| `power` | `#F5B700` | Power meter, and only that |
-| `air` | `#1E9BE0` | Air & Water meter, and only that |
-| `food` | `#2FA84F` | Food meter, and only that |
-| `shield` | `#7A5AE0` | Shield meter, and only that |
+| `space` / `space-deep` | `#0B1437` / `#070B1E` | Backdrop behind every scene. A scene may add **one** soft radial light (the Earth's edge, a far nebula) |
+| `panel` | `#14204D` | Panels, cards, HUD pills. Over a busy scene it may be 70–85% opaque, but never blurred |
+| `panel-up` | `#1C2B63` | A raised or selected card |
+| `line` | `#3A4A8C` | 2 px border on panels and cards |
+| `text` / `muted` | `#F4F7FF` / `#A9B4D6` | Text on dark |
+| **`go`** | `#22D7E6`, text `#06202B`, lip `#0F8F9C` | The one main action per screen (was pink) |
+| `power` / `air` / `food` / `shield` | `#F5B700` / `#1E9BE0` / `#2FA84F` / `#7A5AE0` | Their meter only, with a white icon |
 | `star` | `#E8A100` | Science stars |
-| `danger` | `#D93A3A` | A meter at 20 or below, losses |
-| `good` | `#1F8A4C` | Gains, the `NASA LIVE` badge |
+| `orbit` / `nova` | `#19A7B8` / `#E8338B` | Each kid's name tag and podium. Nothing else |
+| Loss / gain chip | white on `#D93A3A` / `#06202B` on `#3DDC84` | "−15" and "+10" |
+| Skies | Earth `#2F6FED`, space `#1F1A5C`, Mars `#D9622B`, dust `#B9801F`, alarm `#A8322E` | Scene gradients, lighter at the horizon |
+| `paper` / `ink` | `#FFF8EC` / `#1B1F3B` | The Sources page only (a calm page for reading) |
 
-Rules that keep it from looking generated:
-- **A meter colour means that meter everywhere**: bars, outcome chips, crew cards, crate bins. Never reuse it as decoration.
-- **One primary button per screen.** Everything else is a `QuietButton` or a `ChoiceCard`.
-- **No glow, no glass, no blur, no neon outlines, no floating particles.** Depth comes from one soft shadow under cards and a 2 px ink outline on things you can press.
-- **One corner radius for cards (20 px), one for buttons and choices (14 px).** Not everything is a pill.
-- **Different screens are built differently**, because their content is different. The hook is full-screen and loud. A decision is meters on top and three choices. The map is a path. Sources is a plain list. Do not reuse one card grid for all of them.
-- **No decoration without a job.** If a shape, star or icon tells the child nothing, remove it.
-- **Check on a phone at arm's length.** If the meters cannot be read, the screen is not finished.
+- **Shape.** Radius 1 rem for buttons and cards, 1.5 rem for panels, round for pills. A selected card gets a 3 px `go` border and lifts.
+- **Depth.** Every pressable thing keeps its hard lip (`0 0.35rem 0`, darker shade, no blur) and drops onto it when pressed.
+- **Type.** Baloo Da 2, weight 800, for titles, buttons, numbers and all Bangla. Nunito for English sentences. Nothing a kid needs is under 1 rem. Tabular figures for counters.
+- **Buttons, three kinds.** Main: cyan `go` with a gentle top-to-bottom gradient and its lip, exactly one per screen (Play, GO, Next, Continue). It may carry **one soft cyan halo** (`0 0 1.25rem` of `go` at 45%): the only glow in the game, because it marks the one thing to press. Second: an outlined pill, 2 px border of `text` at 30%, dark fill (`panel` at 70%), white text (How to Play, Map, Ask Twinkle, Start over). Small: icon-only round buttons.
+- **Still banned:** `backdrop-blur` (it stutters on the cheap phones we promise to reach, and over our dark scenes a 70–85% dark fill looks the same), any other glow, neon, emoji (use lucide icons), the NASA logo (also on suits in artwork), motion that loops forever (`animate-ping`, `animate-pulse`; the welcome bar may move while it loads, because it ends), walls of text (§4.1a), cream paper cards on the dark stage.
 
-### 4.3 Type, icons, characters, pictures, motion, sound
+### 4.3a What we keep from the Antigravity notes
 
-- **Type.** Headings and buttons use **Baloo Da 2**: round, friendly, and it includes Bangla, so a later Bangla version uses the same font. Body text uses **Nunito**. Sizes: body 18 px, choices 18 px bold, level title 32 px (26 px on phones), meter numbers 20 px bold. Nothing a player must read is under 14 px.
-- **Icons.** `lucide-react`, 2 px stroke, ink-coloured. Power `Zap`, Air & Water `Droplets`, Food `Sprout`, Shield `Shield`, stars `Star` with a gold fill. No emoji anywhere.
-- **Characters.** Use the `Twinkle`, `TwinkleSays` and `Kid` components in `src/components/Twinkle.tsx`. Never draw a character in code or generate new character art. The poses in `public/art/` are:
+`improvement-suggestions.md` (12 Nov) proposed a style for every page. Checked against our rules and `docs/human design standards.md`:
 
-  | Character | Poses (`public/art/<name>.webp`) |
-  |---|---|
-  | Twinkle | `twinkle-happy`, `-neutral`, `-question`, `-worried`, `-sad`, `-stars`, `-surprised`, `-tablet`, `-wink`, `-hearts`, `-squint`, `-sleepy` |
-  | Orbit | `orbit-stand`, `-wave`, `-arms`, `-cheer`, `-run`, `-tablet`, `-think`, `-point`, `-surprised`, `-thumbs` |
-  | Nova | `nova-stand`, `-wave`, `-arms`, `-cheer`, `-tablet`, `-think`, `-point`, `-helmet` |
+| Suggestion | Decision | Why |
+|---|---|---|
+| Deep navy base, the welcome screen as the reference | **Keep** | It's §4 already |
+| One cyan main button per screen | **Keep** | It's the `go` token |
+| Cyan button with a gradient and a glow | **Keep, tamed**: gentle gradient, the lip, one soft halo, on the main button only | It is the focal point; the design standards allow an effect that has a job, and this one says "press here" |
+| Frosted glass for second buttons, the Dock, How to Play | **Keep the look, drop the blur**: dark 70–85% fills with a thin light border | Same look over a dark scene, no stutter on low-end phones |
+| Paper cards on the dark stage for decisions | **Drop** | Two surface styles on one screen; dark `panel` cards with a cyan selected border |
+| Loading lines ("Preparing Life Support Systems…", "Syncing NASA Space Weather…") | **Keep the feel.** Mission-prep lines stay ("Preparing life support…", "Fuelling the rocket…", "Waking up Twinkle…"): they are clearly part of the story, like a countdown. **A line that names NASA data shows only while that data really loads** (after D1, "Checking today's Sun with NASA…" runs while the DONKI call does). The bar may be paced to last at least 1.8 s | Our citation rule and the challenge: never present static or invented data as live |
+| "Impact Risk: 0.00% · Safe Flybys Verified" on the asteroid card | **Drop** | Not in the data. The plan's line is "None will hit us." |
+| Kp gauge with NOAA G1–G5 names | **Keep** if the Kp → G mapping is added to `docs/06` §4 with NOAA's scale as its source; sentence cut under 15 words; no looping beacon | Real scale, but every fact needs its line in `docs/06` |
+| Look-first arrows scaled by size | **Keep**: one ▼ for 5–10, two for 15–20, three for 25+ | Shows "how much" without numbers |
+| Chain reaction with emoji | **Keep the idea, use icons**; built in R5, not L1 | No emoji; it is the heart of "see it, don't read it" |
+| Show radiation and delay as pictures, not paragraphs | **Keep**, and made a rule for every screen | §4.1a |
+| A sol and place badge in the level HUD | **Keep** | Teaches "sol" by repetition |
 
-  Which pose goes where:
+### 4.4 Motion — every effect has a job
 
-  | Screen | Characters | Status |
-  |---|---|---|
-  | Hook | Twinkle `surprised` in the bubble; Orbit `point` (or Nova `point` if Nova is chosen) at the screen edge | A1 |
-  | Story cards | Card 1: none (the asteroid card is the picture). Card 2: Nova `think`. Card 3: Orbit `arms` and Nova `arms` side by side | A2 |
-  | Home | Twinkle `happy` with the greeting; Nova `wave` and Orbit `wave` standing on the card | Built |
-  | Hints ("Ask Twinkle") | Twinkle `question` | Built |
-  | Mission Replay | Twinkle `worried` | Built |
-  | Success | Nova `cheer`, Twinkle `stars`, Orbit `cheer` | Built |
-  | Profile | The chosen kid in `stand`; the other in `stand` and faded until picked | A11 |
-  | Data cards, Sources | Twinkle `tablet`, small, at most once per screen | A5, A14 |
-  | Training (locked) | Twinkle `sleepy` | A13 |
+| Moment | What happens | Time |
+|---|---|---|
+| Press | Squash to 95% and drop onto the lip, on pointer-down | 60 ms down, 180 ms back |
+| Look first (card selected) | The card lifts; each meter it will touch wiggles once and shows ▲ or ▼ | 250 ms |
+| Meter down / up | Pill shakes and flashes red, or pops; the number counts; a chip floats up | 500–600 ms |
+| Stars earned | A star flies to the counter, which pops | 700 ms |
+| Choice confirmed | The card stamps; the others slide away; the kid reacts | 300 ms |
+| Alarm | A striped banner slams across; the stage shakes once | 400 ms |
+| Level complete | A crate drops, opens, the badge pops out | 1.6 s |
 
-  Characters appear **only** on these screens. During a decision they never cover the meters or the choices.
-- **Photographs.** Real NASA photos are the main imagery: Earth (EPIC), Jezero Crater (Perseverance), space lettuce (ISS), the picture of the day. Each sits in a `DataCard` with its credit. A photo is never a full-screen wallpaper behind text.
-- **Motion.** Meters slide to their new value in 0.7 s. Cards rise in 0.2 s. A meter change (+10 / −15) shows for 3 s, then fades. The hook shakes once. Nothing loops forever. Everything stops when the device asks for reduced motion (already handled in `index.css`).
-- **Sound.** Off until the player turns it on. Five short sounds at most: tap, gain, loss, alarm, success. Candidates are in the repo at `public/assets/audio/ui/`. Check each file's licence before using it (§10).
+Nothing loops (a character may bob once). Reduced motion keeps every change and colour flash, and drops the movement.
 
-### 4.4 Parts used on every screen (all exist in `src/components/`)
+### 4.5 The crew
 
-| Part | What it is |
+| Character | Colour | Poses (`public/art/<name>.webp`) |
+|---|---|---|
+| Orbit | teal | `orbit-stand`, `-wave`, `-arms`, `-cheer`, `-run`, `-tablet`, `-think`, `-point`, `-surprised`, `-thumbs` |
+| Nova | **pink** | `nova-stand`, `-wave`, `-arms`, `-cheer`, `-tablet`, `-think`, `-point`, `-helmet` |
+| Twinkle | cyan | `twinkle-happy`, `-neutral`, `-question`, `-worried`, `-sad`, `-stars`, `-surprised`, `-tablet`, `-wink`, `-hearts`, `-squint`, `-sleepy` |
+
+- They're **big**: the kid stands about half the stage tall in the left zone. They are why the game looks like the welcome art.
+- They react: `think` while you choose, `cheer` or `thumbs` on a good result, `surprised` on a big loss (Nova has no `surprised`; she uses `think`). Twinkle does the same with its faces.
+- Twinkle guides (hints, alarms, Replay). Orbit or Nova is "you".
+
+### 4.6 Shared parts, by job
+
+Names in `src/components/` may differ a little; keep the existing ones.
+
+| Part | Job | v10 change |
+|---|---|---|
+| `Stage` | The landscape frame (§4.2) | **New** |
+| `LevelChrome` | The three zones | Rebuilt for landscape |
+| `Scene` | The place behind everything | Wider art; horizon in the lower third |
+| `Hud` | Four meter pills + stars | One row; shows ▲/▼ for Look first |
+| `GameButton` | `go`, `plain`, `small` | `go` is cyan |
+| `ChoiceCard` (in `Decision`) | One option | An upright card: big icon on top, label under; three in a row |
+| `Panel` | A titled box | Dark `panel`, coloured ribbon stays |
+| `IntelCard` (in `Panel`) | Photo or number + badge + date | Dark frame; photo stays the hero |
+| `AlarmBanner`, `RewardCrate`, float chips | As built | Colours only |
+| `Dock` | Navigation outside levels | Left rail |
+| `Kid`, `TwinkleSays` (in `Twinkle`) | The crew | Bigger; bubble gets a speaker button in L2 |
+| `SourceLine` | One line under a fact | Opens Sources from S1 on |
+
+---
+
+## 5. The steps
+
+Order: **R0 → R1 → R2 → R3 → R4 → R5 → F1 → D1 → D2 → S1** reaches the **film line** (everything the 240-second video shows). Then **L1 → L2 → S2 → S3 → S4 → F2 → F3 → F4 → F5**.
+
+**Two tools at once: use §5a.** It splits the steps into two lanes that never wait for each other, with a prompt for each. The single-step prompts below still apply; §5a only adds a lane preface and says when to merge.
+
+### 5a. Two lanes at once (Claude Code + Antigravity)
+
+R0 and R1 are done, so both lanes start from that. Each lane works in **its own folder and branch** (a git worktree), so neither overwrites the other's files mid-step. The lanes are split by **which files they own**, not by how important the step is.
+
+**Set up once (you, 5 minutes)**
+```bash
+git add -A && git commit -m "R0+R1: clean-up, stage, v10 tokens"      # after you've looked at it
+git branch lane-b
+git worktree add ../crewready-lane-b lane-b
+```
+Claude Code stays in the main folder (branch `game-kit-g1-g2`, **Lane A**). Open `../crewready-lane-b` in Antigravity (**Lane B**). Run `npm install` in the second folder. Each lane runs its own dev server (Lane B: `npm run dev -- --port 5174`).
+
+**Who owns what**
+
+| | Lane A: screens (Claude Code) | Lane B: data and new screens (Antigravity) |
+|---|---|---|
+| Steps, in order | R2 → R3 → R4 → **M1** → R5 → D2b → L1 → L2 | D1 → D2a → S1 → S2 (Fly) → S4 → S3 → F1 docs |
+| Owns | `src/screens/*` that exist today, `src/components/*` (Decision, steps, Hud, Scene…), `src/content/icons.ts`, `strings.*` | `scripts/`, `public/data/`, `src/services/`, `src/engine/` (new files only), and the **new** screens `Sources`, `Fly`, `Resources`, `Profile`, `Training` plus `src/fly/` |
+| May touch, one line only | | `BUILT_SCREENS` in `store/game.ts` and the screen routes in `App.tsx`: add your own line, change nothing else there |
+| Never touches | `scripts/`, `src/services/`, new-screen files | Any existing screen, any file in `src/components/` (if a part is missing, ask Lane A or add a **new** file) |
+
+**Merge points** (you run them; nothing is merged without you)
+- **M0 — now.** The commit above. Both lanes start.
+- **M1 — after Lane A finishes R4 *and* Lane B finishes D2a.** Merge `lane-b` into the main branch: `git merge lane-b`. Conflicts should only be `store/game.ts` and `App.tsx`. Then both lanes carry on from the merged result: Lane A needs `stormSize()` from D2a before R5 (event moments read the real storm size). If Lane B is slower, Lane A does D2b-free work first (see "While you wait" below).
+- **M2 — after Lane B finishes S1 and S2** (or when Lane A finishes R5). Merge again. Lane B then does S4 and S3 on the merged base, and re-pulls: `git merge game-kit-g1-g2` in its folder.
+- After each merge: `npm test`, `npm run build`, and click through Home → map → a level → Sources → Fly.
+
+**While you wait.** If one lane runs out of steps it can do, it does the next one on its list below, in order. If one is truly blocked (Lane A on R5 before M1), take **L1** (Try-it toys: new files in `src/components/toys/`) instead.
+
+**The film line moves.** The 240-second video needs R2–R5, D1, D2 and S1. Fly and Resources are shown for about five seconds each, so S2 is nice to have on film but not blocking.
+
+**Lane prefaces: paste one at the top of every prompt in that lane**
+
+> **Lane A preface (Claude Code).** You are Lane A in `docs/BUILD_SEQUENCE.md` §5a, on branch `game-kit-g1-g2` in the main folder. Touch only the files Lane A owns. Do not create or edit anything in `scripts/`, `src/services/`, or the new screens Sources, Fly, Resources, Profile, Training. If you need data from the services, import the function and use it as is. Commit only when I say yes.
+
+> **Lane B preface (Antigravity).** You are Lane B in `docs/BUILD_SEQUENCE.md` §5a, on branch `lane-b` in `crewready-lane-b`. Touch only the files Lane B owns. Do **not** edit any existing screen or anything in `src/components/`; build new screens from the shared parts as they are. In `store/game.ts` and `App.tsx` change only your own one line. Obey §3 and §4.3 strictly: no invented facts or numbers, no `backdrop-blur`, no glow except the one halo on the main button, no looping animation, no emoji, no NASA logo. The API key never appears in any file, log or reply. Commit only when I say yes.
+
+**The prompts, lane by lane**
+
+*Lane A, in this order, each in a fresh chat:*
+
+| Order | Prompt |
 |---|---|
-| `Sky place=` | Full-screen background in the place's colour. Takes an optional `nav` (the bottom bar). Buttons placed directly on it switch to their on-sky look |
-| `MissionCard` | Paper card, ink text, 20 px corners, one soft shadow, rises in |
-| `Meters` / `MeterBar` | Icon, name, bar and number in the meter's colour. Turns red and says "Low" at 20 or below. Shows the change for a moment. `Meters` takes a `top` slot for the level's top bar |
-| `PrimaryButton`, `QuietButton` | At least 48 px tall; visible focus ring; one primary per screen |
-| `ChoiceCard` | Full-width pressable card for one option. `selected`, `faded` and `pressed` (for pick-N toggles) |
-| `Twinkle`, `TwinkleSays`, `Kid` | The characters (§4.3) |
-| `DataCard` | Real NASA data: picture or figure, one kid sentence, a `Badge` (`NASA LIVE`, `NASA ARCHIVE`, `GAME ESTIMATE` or `FICTION`), the date, and an optional source line |
-| `SourceLine` | One line at the foot of a card. It becomes a button that opens Sources once `sources` is in `BUILT_SCREENS` |
-| `OutcomePanel` | Reason lines plus one chip per changed meter, in that meter's colour |
-| `BottomNav` | Missions · Quick Run · Resources · Training · Me. Unbuilt places show a lock. Never shown inside a level |
-
----
-
-## 5. Phase A — the front end, one page at a time
-
-Hook and story come first. They are the first 30 seconds a judge sees and the opening shot of both videos. NASA data is wired in Phase B. Until then, every data card shows a fixed sample marked `NASA ARCHIVE` and taken from `docs/06` (for example the May 2024 storm). Never make up a number.
-
-Each step has five parts: **Why** (which score it serves), **Build**, **Words on screen** (exact copy where it matters), **Done when**, and a **Prompt** to paste.
-
-### A0 — Foundations ✅ done 12 Nov 2026
-Tokens, fonts, icons, shared parts, screen switching, no emoji. The existing mission plays end to end on the new parts. Character art was added on Home, hints, Replay and Success.
-
----
-
-### A1 — The hook (about 1.5 h) ✅ done 12 Nov 2026 — `src/screens/Hook.tsx`
-**Why.** Creativity and Presentation. The first five seconds of the app and of both videos.
-
-**Build.**
-- New file `src/screens/Hook.tsx`; add `hook` to `BUILT_SCREENS`.
-- Plays on **first launch only**. Store `seenIntro: true` in the game store, which already persists. After that, launch goes to Home. "Replay intro" in Profile (A11) sets the screen back to `hook`.
-- **Screen 1** (dust sky, full screen, no bottom nav):
-  - A small label, "SOL 214 · JEZERO BASE".
-  - Then large: **"Commander — a dust storm hits in 60 seconds."**
-  - The four meters, using the real `Meters` component with a fixed taste-only state (Power 60, Air & Water 70, Food 60, Shield 70).
-  - Twinkle `surprised` saying: "The solar panels! Fold them, or leave them out?"
-  - A 60-second bar that really counts down. At zero it does not punish: Twinkle picks "fold".
-  - Two large `ChoiceCard`s: **Fold the panels** / **Leave them out**.
-- **On choice:** the screen shakes once (`@keyframes` in `index.css`, off under reduced motion). The meters visibly drop, with one reason line. The numbers are level 4's (plan §6.4) at the medium dust case, D = 15, so the hook previews the real level:
-  - Fold: Power −25, Food −5. "The panels are safe. But the greenhouse lights went dim."
-  - Leave out: Power −15. "You caught the last light. But dust may bury the panels."
-
-  These are **taste numbers only**. They never touch the real game state.
-- **Screen 2** (dust sky): **"Every choice costs something."** Below it, one `PrimaryButton`: **"How did we get here?"**, which goes to `story`. Until A2 is built, it goes to `home`.
-- Source line on screen 1: `Dust storms: NASA Opportunity mission`.
-- Skip: a `QuietButton` "Skip intro" in the top corner, on both screens.
-
-**Done when.**
-- A new visitor (clear site data, reload) is making a choice within 5 seconds of loading.
-- It works by touch and by keyboard (Tab to a choice, Enter).
-- A second visit goes straight to Home.
-- The countdown stops when the tab is hidden, and nothing moves under reduced motion.
-- The game's real meters at "Start mission" are unchanged by the hook.
-
-> **Prompt — A1.** Do step A1 (the hook) from `docs/BUILD_SEQUENCE.md`. Build `src/screens/Hook.tsx` exactly as specified: dust sky, the two screens, the real 60-second countdown, Twinkle `surprised`, the two choices with their taste-only meter drops (level 4's numbers at D = 15) and reason lines, one shake, "Skip intro", and the source line. Add a persisted `seenIntro` flag so first launch opens the hook and later launches open Home, and add `hook` to `BUILT_SCREENS`. Reuse `Sky`, `Meters`, `ChoiceCard`, `TwinkleSays`, `PrimaryButton` and `SourceLine`; do not create new look-alike components. The hook must not change the real mission state. Then run the five checks in §3, including a fresh-visitor test and a second-visit test, show a 375 px and a 1280 px screenshot of both hook screens, report in the §9.3 format, and stop.
-
----
-
-### A2 — The story cards (about 1 h) ✅ done 12 Nov 2026 — `src/screens/Story.tsx`
-**Why.** Best Storytelling: the honest bridge from fiction (the asteroid) to fact (real NeoWs data).
-
-**Build.**
-- New file `src/screens/Story.tsx`; add `story` to `BUILT_SCREENS`. Deep-space sky.
-- Three cards, one per screen, text **word for word** from plan §4.2:
-  1. "The Near Miss"
-  2. "The Lesson"
-  3. "Your Mission"
-- Every card carries the `FICTION` badge at the top.
-- Progress dots (three) under the card. Next is the primary button, Skip is quiet. Swipe left and right on touch. Left and right arrow keys on the keyboard.
-- Under card 1, a `DataCard` with badge `NASA ARCHIVE`: "Real asteroids passing Earth this week — NASA is tracking N. None will hit us."
-  - N is a fixed sample until B4. Take it from a real NeoWs answer saved in `src/content/samples/neows.json` (bundled, so it works offline), and show that answer's date. If no real answer is at hand, show the sentence without N and say so in the report.
-- Characters: card 2 shows Nova `think`; card 3 shows Orbit `arms` and Nova `arms` (§4.3).
-- Card 3 ends with the primary button **"Accept the mission"** → Home.
-
-**Done when.**
-- Reading all three cards aloud takes under 25 seconds.
-- Skip works from every card.
-- The FICTION badge is visible on all three cards.
-- Swipe, arrows and buttons all move between cards.
-- The hook's "How did we get here?" now leads here.
-
-> **Prompt — A2.** Do step A2 (the story cards) from `docs/BUILD_SEQUENCE.md`. Build `src/screens/Story.tsx` on the deep-space sky with the three cards from plan §4.2, word for word, each with the `FICTION` badge. Add progress dots, Next (primary), Skip (quiet), swipe on touch and arrow keys on the keyboard. Put the asteroid `DataCard` under card 1 using only real saved NeoWs numbers, never invented ones. Place Nova and Orbit as in the §4.3 pose table. End card 3 with "Accept the mission" → Home, point the hook's last button here, and add `story` to `BUILT_SCREENS`. Time a read-aloud, run the five checks, show 375 px and 1280 px screenshots of card 1 and card 3, report in the §9.3 format, and stop.
-
----
-
-### A3 — Home (about 1.5 h) ✅ done 12 Nov 2026 — `src/screens/Home.tsx`
-**Why.** User experience: a child must know what to press without reading.
-
-**Build.** Home exists; finish it.
-- Keep the Earth sky, Twinkle `happy` greeting, and the waving Orbit and Nova.
-- One primary button: **Start mission**. When a mission is in progress it reads **Continue — Level N**, with "Start over" as a quiet button. "Start over" asks first if a mission is in progress, using a small inline confirm, not a browser popup.
-- A second, smaller button: **Quick Run — 60 seconds** (a `QuietButton`, locked with a lock icon until A10).
-- A slim **"Space weather today"** strip: one line, a sample Kp value from the May 2024 archive and its `NASA ARCHIVE` badge, until B4.
-- Replace the "Your route" list with one quiet line: "Level N of 6 — see the map", linking to `map` once A4 exists.
-- Bottom navigation. Stars top right. No other chips.
-
-**Done when.**
-- A child can tell what to press without reading more than three words.
-- At 375 px, the primary button sits above the fold together with the characters.
-
-> **Prompt — A3.** Do step A3 (Home) from `docs/BUILD_SEQUENCE.md`. Home already exists in `src/App.tsx`. Move it to `src/screens/Home.tsx` and finish it to the spec. Keep exactly one primary button: Start mission, or Continue — Level N. Add Start over with an inline confirm, the Quick Run quiet button (locked until A10), the one-line Space weather strip with a sample archive value and badge, and replace the route list with a single map link. Keep the crew art placement. Make sure the primary button is above the fold at 375 × 812. Run the five checks, show both screenshots, report in the §9.3 format, and stop.
-
----
-
-### A4 — Mission map (about 1 h) ✅ done 12 Nov 2026 — `src/screens/MissionMap.tsx`
-**Why.** Presentation: progress obvious at a glance, and a good video shot.
-
-**Build.**
-- New file `src/screens/MissionMap.tsx`; add `map` to `BUILT_SCREENS`. Mars-day sky. The bottom nav's Missions item now opens the map.
-- A vertical path drawn in SVG (one ink line, 4 px, dashed for the part not yet travelled). Earth at the bottom, the outpost at the top. Six stops; each shows its number, title and place, and the `Award` icon if its badge is earned.
-- The current stop is a larger paper disc with a 3 px ink ring and a "You are here" label. Pressing it opens the level. Earned stops can be pressed to see the "I learned" line. Later stops are visible but closed, with a lock icon.
-- Beyond stop 6, two closed stops: **"Crew Mode"** and **"More worlds — coming soon"**.
-- On phones the path is a single column. On laptops it may zigzag, but it still reads bottom to top.
-
-**Done when.**
-- Progress is obvious at a glance.
-- The path reads correctly on a phone with no sideways scrolling.
-- Every stop is reachable by keyboard and announces its state ("Level 3, First Breath, locked").
-
-> **Prompt — A4.** Do step A4 (the mission map) from `docs/BUILD_SEQUENCE.md`. Build `src/screens/MissionMap.tsx` on the Mars-day sky: an SVG path from Earth (bottom) to the outpost (top) with six stops showing number, title, place and earned badge. The current stop is highlighted and opens the level, earned stops show their "I learned" line, and later stops are locked. Add the two closed stops beyond stop 6. Wire Missions in the bottom nav and the Home map link to it, and add `map` to `BUILT_SCREENS`. Give each stop an accessible name with its state. Run the five checks, show both screenshots (with a mission in progress at level 3), report in the §9.3 format, and stop.
-
----
-
-### A5 — Level opening (about 1 h)
-**Why.** Relevance and Storytelling: each level starts with real data and shows that earlier choices matter.
-
-**Build.** The level opening exists (`LevelOpening` in `App.tsx`); finish it.
-- Move it to `src/screens/LevelOpening.tsx`. The sky already follows the level (`LEVEL_PLACE`).
-- Show, in order:
-  1. Level number and title.
-  2. The place and sol.
-  3. The story sentence.
-  4. "You will learn: …" (from `level.teaches`).
-  5. The level's `DataCard`, a sample until B4.
-  6. The carry-over lines.
-- The living costs and consequences from earlier levels tick down on the meters as the screen opens, with their reasons. The first line of a consequence starts with "Remember …" (already in the level data). Show each reason next to the meter colour it hit.
-- Twinkle `tablet`, small, beside the data card only.
-
-**Done when.**
-- Entering each of the six levels shows the right sky, the right data card, the right teaches line and the right carry-over lines.
-- Check this by playing to each level, or by setting the store state in the console.
-
-> **Prompt — A5.** Do step A5 (the level opening) from `docs/BUILD_SEQUENCE.md`. Move `LevelOpening` to `src/screens/LevelOpening.tsx`. Show title, place, story, the "You will learn" line from `level.teaches`, the level's sample `DataCard` (real archive values from `docs/06` only, badge `NASA ARCHIVE`), and the carry-over reasons, each marked with the colour of the meter it changed, while the meters slide. Use Twinkle `tablet` beside the data card. Verify all six levels one by one, run the five checks, show both screenshots for level 2 and level 4, report in the §9.3 format, and stop.
-
----
-
-### A6 — The decision screen and outcome (about 2 h) — the screen the player sees most
-**Why.** Presentation and Validity: a silent video must show what was chosen and what it cost.
-
-**Build.** It exists (`Play` in `App.tsx`); finish it.
-- Move it to `src/screens/Play.tsx`.
-- Top: the four meters, always. Middle: the question, large. Below: the options as `ChoiceCard`s.
-- **Ask Twinkle**: Twinkle `question` names the lowest meter and what each option costs, one short line per option, built from the option's effects. It never names the answer.
-- **After a choice:**
-  - The chosen card stays, marked `selected`; the other cards fade (`faded`) and stay in place, so the screen does not jump.
-  - The meters slide.
-  - The reason line and the chips appear ("Power −15" in the meter's colour).
-  - One button: **Next**.
-- **The Earth message clock** (level 3): replace the progress bar with a small SVG of Mars and Earth and a dot travelling there and back (2 s each way). Air & Water drains in view while it travels. Keep the existing 4.2 s timing.
-
-**Done when.**
-- In a 10-second screen recording with no sound, a stranger can tell what was chosen and what it cost.
-- The hint never contains the words "best", "right" or "answer".
-
-> **Prompt — A6.** Do step A6 (the decision screen) from `docs/BUILD_SEQUENCE.md`. Move `Play` to `src/screens/Play.tsx`. After a choice, keep the chosen `ChoiceCard` selected and fade the others in place. Show the outcome chips and one Next button. Rebuild the Ask Twinkle hint so it lists each option's costs from its effects and names the lowest meter, never the answer. Replace the level-3 message bar with an SVG Mars–Earth clock with a travelling dot, while Air & Water visibly drains. Record or screenshot a choice before and after, run the five checks, report in the §9.3 format, and stop.
-
----
-
-### A7 — The five hands-on steps (about 2.5 h)
-**Why.** Creativity: it should feel like handling something, not filling a form.
-
-**Build.** Restyle each in `src/components/steps.tsx` (split into files if it grows past about 300 lines):
-- **Crates** (level 1): eight crate tiles at the top. Tap a bin to load the next crate; tap a loaded crate in a bin to take it back. Each bin shows its meter's future value as a ghost segment on a small `MeterBar`.
-- **Stowing** (level 1): four items, two seat-side slots drawn as outlined boxes. Picking an item moves it into a slot. Each item shows what "within reach" and "in the hold" mean.
-- **Landing checklist** (level 2): four cards to tap in order. A small lander drawing (simple SVG, ink lines) moves down one step with each right tap. A wrong tap shakes the card once and resets, at the cost the level data already defines.
-- **Power sliders** (level 4): seven battery blocks shared between three systems that each want three. Blocks are buttons you move. The cost of each missing block is shown in the meter's colour as it changes.
-- **Crew pick** (level 6): five specialist cards; pick three. Each shows the meter it protects in that meter's colour; the Scientist shows a star.
-
-**Done when.**
-- Each works with one thumb on a phone and with Tab/Enter on a keyboard.
-- No step can be finished in an invalid state (the confirm button stays disabled).
-- The engine tests still pass.
-
-> **Prompt — A7.** Do step A7 (the five hands-on steps) from `docs/BUILD_SEQUENCE.md`. Restyle Crates, Stowing, Landing checklist, Power sliders and Crew pick in `src/components/steps.tsx` so each feels like handling objects, as specified. Keep the engine calls (`packCrates`, `stow`, `checkOrder`, `setSliders`, `pickCrew`) exactly as they are. Use meter colours only for their meters, and simple ink-line SVG for the lander. Test each step with one thumb at 375 px and with the keyboard only, and confirm the commit button stays disabled in every invalid state. Run the five checks, show a phone screenshot of each of the five steps, report in the §9.3 format, and stop.
-
----
-
-### A8 — Mission Replay (about 1.5 h)
-**Why.** Validity and Impact: failure teaches instead of punishing.
-
-**Build.**
-- Move `Replay` to `src/screens/Replay.tsx`. Alarm sky. Twinkle `worried`: "Mission paused. Nobody is hurt. Let's see what happened."
-- Three parts:
-  1. **What ran out** (meter icon, name, 0).
-  2. **The choice that cost it most.**
-  3. **What real crews do**, with its source line.
-- **Engine fix for part 2.**
-  - In the store, record each action's label and its `delta` for the current level.
-  - On loss, pick the action in this level with the largest loss to the failed meter. Ties go to the earlier choice. Living costs count only if nothing else cost that meter.
-  - Show that choice's label and reason line.
-- Buttons: **Try this level again** (primary) and **Home** (quiet).
-
-**Done when.**
-- Failing level 2 by choosing "Keep working on the experiment" names that choice as the cause, even if a later choice delivered the final blow.
-- There is a Vitest test for exactly that, plus a test for the tie rule.
-
-> **Prompt — A8.** Do step A8 (Mission Replay) from `docs/BUILD_SEQUENCE.md`. Write the failing tests first in `src/engine/engine.test.ts` (or a new `replay.test.ts`). One: level 2, "Keep working on the experiment" then a later small loss must name the experiment choice. Two: the tie rule. Then record each action's label and delta per level in the store and pick the biggest loss to the failed meter. Move Replay to `src/screens/Replay.tsx` with the three parts and Twinkle `worried`. Do not change level numbers. Run the five checks, show both screenshots of a real level-2 failure, report in the §9.3 format, and stop.
-
----
-
-### A9 — Success and the Outpost Check (about 1.5 h)
-**Why.** Impact: six "I learned" lines a child can repeat to a parent.
-
-**Build.**
-- Move `Success` to `src/screens/Success.tsx`.
-- Keep the success sky and the cheering crew (Nova `cheer`, Twinkle `stars`, Orbit `cheer`).
-- Show the result (Survives / Stable / Thriving) with rank, stars, and which systems are healthy: the four meter icons, ticked or not, at 30 or more.
-- Show the six "I learned" lines, each with its source.
-- Add a `DataCard` for NASA's picture of the day: a sample until B4, from a real saved APOD image with its credit.
-- Two closed cards: **Crew Mode** and **More worlds**, "coming soon".
-- Buttons: **Fly the mission again** (primary) and **Home** (quiet).
-- Save the score (result, stars, meters, date, call-sign once A11 exists) to the store's leaderboard, keeping the best five.
-
-**Done when.**
-- All three results can be reached and read correctly. Produce each one from engine states in a test, then by setting the store in the browser.
-- The score appears once in the saved leaderboard, not twice on reload.
-
-> **Prompt — A9.** Do step A9 (Success and the Outpost Check) from `docs/BUILD_SEQUENCE.md`. Move `Success` to `src/screens/Success.tsx`. Show result, rank, stars and the four systems' health with icons. List the six "I learned" lines with sources. Add the APOD `DataCard` from a real saved image, the two closed teaser cards, and save the score to a best-five leaderboard in the store without double-saving on reload. Add engine tests that produce Survives, Stable and Thriving, and check each in the browser. Run the five checks, show both screenshots of the Thriving result, report in the §9.3 format, and stop.
-
----
-
-### A10 — Quick Run (about 3 h)
-**Why.** Impact and UX: the fast way in for a child who is not ready to read.
-
-**Build.**
-- New file `src/screens/QuickRun.tsx` with a `<canvas>`; add `quickrun` to `BUILT_SCREENS`. Deep-space sky.
-- **The game.** A 60-second, three-lane dodge game. Move between lanes by swiping, by tapping the left or right half, or with the arrow keys. Rocks to dodge, stardust to collect. A hit costs 3 seconds, not the game.
-- **Speed.** "Space weather today: Kp N" sets how fast hazards come: slow for Kp 0–3, medium for 4–6, fast for 7–9 (`docs/06` §3). Fixed at medium until B4; the label says it is a sample.
-- **The loop.** `requestAnimationFrame` with delta time, so speed does not depend on frame rate. It pauses when the tab is hidden (`visibilitychange`) and shows a Resume button.
-- **Drawing.** Simple flat shapes in the palette: paper rocks with an ink outline, gold stardust. The player is Orbit `run` if it reads at small size (Nova has no running pose); otherwise a simple ship shape.
-- **End screen.** Stardust earned, total stardust (saved), **Play again** (primary), **Spend it in Resources** (quiet, locked until A12).
-
-**Done when.**
-- It holds a steady frame rate on a phone (check the Performance panel at 4× CPU slowdown).
-- It pauses when the tab is hidden.
-- It can be played with one thumb.
-- Stardust survives a reload.
-
-> **Prompt — A10.** Do step A10 (Quick Run) from `docs/BUILD_SEQUENCE.md`. Build `src/screens/QuickRun.tsx`: a 60-second three-lane canvas game with a delta-time `requestAnimationFrame` loop. Controls are swipe, tap left or right half, and arrow keys. Rocks cost 3 seconds; stardust is collected and saved in the store. Pause on `visibilitychange`. Show "Space weather today: Kp N (sample)" at medium speed until Phase B. Use palette colours only, no glow. Add the end screen and add `quickrun` to `BUILT_SCREENS`. Check the frame rate at 4× CPU slowdown, play it by keyboard and by touch emulation, run the five checks, show both screenshots mid-game and of the end screen, report in the §9.3 format, and stop.
-
----
-
-### A11 — Profile, "Me" (about 1.5 h)
-**Why.** Impact (no personal data) and Teamwork (credits are reachable).
-
-**Build.**
-- New file `src/screens/Profile.tsx`; add `profile` to `BUILT_SCREENS`. Earth sky.
-- **Choose your astronaut.** Orbit or Nova, shown in `stand`; the unchosen one is faded. Then a **call-sign** from a shuffle list of about 20 friendly space words, such as "Comet", "Nebula", "Rover" and "Quasar", with a "Shuffle" button. No typing, so no personal data.
-- **Progress.** Rank, the six level badges (earned ones in ink, others outlined), and a leaderboard of the best five missions on this device.
-- **Settings.**
-  - Sound on/off (stored; used once sounds exist).
-  - Reduced motion: follow the device, or force it on.
-  - Replay intro.
-  - Reset progress: asks first, inline, with a clear "This deletes your badges and stardust" line.
-  - Sources and credits, which opens `sources` once A14 exists.
-
-**Done when.**
-- Everything survives a page reload.
-- Reset really clears it all, including `seenIntro`.
-
-> **Prompt — A11.** Do step A11 (Profile) from `docs/BUILD_SEQUENCE.md`. Build `src/screens/Profile.tsx` on the Earth sky. Add the Orbit/Nova choice using `Kid` `stand`, the shuffle call-sign list (no typing), rank, six badges, the best-five leaderboard, and settings for sound, reduced motion, replay intro, reset (with an inline confirm) and Sources. Persist all of it in the store, add `profile` to `BUILT_SCREENS`, and use the chosen kid on the hook from now on. Reload-test every setting, test that reset clears everything, run the five checks, show both screenshots, report in the §9.3 format, and stop.
-
----
-
-### A12 — Resources (about 1.5 h)
-**Why.** Relevance: the real systems behind the four meters. No unlimited mode.
-
-**Build.**
-- New file `src/screens/Resources.tsx`; add `resources` to `BUILT_SCREENS`. Mars-day sky.
-- Four system cards: Power, Air & Water, Food, Shield. Each has a left edge in its meter colour, one kid sentence on what the real system does (facts only from `docs/06` §4), and a source line.
-- Two upgrade steps per system, bought with stardust. Each gives +5 to that meter's starting value. Show the price on the button.
-- The rocket carries **four upgrades in total**. Show this as four slots that fill, with the words "Room on the rocket: N of 4".
-- Upgrades apply at the start of the next mission (`startMission` reads them).
-
-**Done when.**
-- Buying is impossible without enough stardust or past the cap; the button explains why.
-- A new mission starts with the upgraded values.
-- There is a test for the cap.
-
-> **Prompt — A12.** Do step A12 (Resources) from `docs/BUILD_SEQUENCE.md`. Build `src/screens/Resources.tsx` on the Mars-day sky: four system cards with one sourced sentence each (`docs/06` §4 facts only), two +5 upgrade steps each priced in stardust, and a visible four-slot rocket cap. Apply upgrades in `startMission` for the next mission only, and add tests for the cap and for the starting values. Add `resources` to `BUILT_SCREENS`. Run the five checks, show both screenshots with one upgrade bought, report in the §9.3 format, and stop.
-
----
-
-### A13 — Training, locked (about 0.5 h)
-**Why.** Shows the roadmap honestly without looking broken.
-
-**Build.**
-- New file `src/screens/Training.tsx`; add `training` to `BUILT_SCREENS` (the screen opens; its content is locked). Mars-day sky.
-- Twinkle `sleepy` with the line "Training opens in the next update."
-- Three closed cards: **Mind** (brain mini-games), **Body** (real astronaut exercise), **Reels** (short NASA clips). Each has a lock icon and "Coming in the next update".
-- Tapping a card makes Twinkle say so; nothing else happens.
-
-**Done when.** Nobody could mistake it for a broken page.
-
-> **Prompt — A13.** Do step A13 (Training, locked) from `docs/BUILD_SEQUENCE.md`. Build `src/screens/Training.tsx` on the Mars-day sky with Twinkle `sleepy` and three locked cards (Mind, Body, Reels). Tapping a card updates Twinkle's line; nothing else happens. Add `training` to `BUILT_SCREENS`. Run the five checks, show both screenshots, report in the §9.3 format, and stop.
-
----
-
-### A14 — Sources and credits (about 1 h)
-**Why.** Validity and NASA data usage: this is the page judges check.
-
-**Build.**
-- New file `src/screens/Sources.tsx`; add `sources` to `BUILT_SCREENS`. Every `SourceLine` becomes a button that opens this page. A Back button returns to the screen it came from (store `returnTo`).
-- A plain, readable list (not a card grid). For each dataset in plan §8.1 plus NOAA: name, agency, where it appears in the game, its badge and date, and a link (opens in a new tab, `rel="noopener"`).
-- Then:
-  - "What we simplified" (`docs/06` §5 table).
-  - The honesty note (plan §4.3, word for word).
-  - The team with roles (placeholders clearly marked "[team to fill]" until §10 supplies names).
-  - A short note on how AI was used.
-  - Image credits for NASA photos.
-  - A line that the characters are the team's own art.
-
-**Done when.**
-- Every dataset in plan §8.1 is listed.
-- Every link opens.
-- Every source line in the app reaches this page and Back returns to the same place.
-
-> **Prompt — A14.** Do step A14 (Sources and credits) from `docs/BUILD_SEQUENCE.md`. Build `src/screens/Sources.tsx` as a plain list. Include every dataset from plan §8.1 plus NOAA SWPC with where it is used, badge, date and link; the "What we simplified" table from `docs/06` §5; the honesty note from plan §4.3 word for word; team and roles (clearly marked placeholders if names are missing); the AI-use note; and image credits. Make every `SourceLine` open it with a working Back (`returnTo`), and add `sources` to `BUILT_SCREENS`. Click every link and every source line, run the five checks, show both screenshots, report in the §9.3 format, and stop.
-
----
-
-## 6. Phase B — real NASA data
-
-Do this only after Phase A, so the screens already have a place for the data.
-
-### B1 — Snapshot (about 1.5 h)
-**Build.**
-- `scripts/nasa-snapshot.mjs`, run as `npm run nasa:snapshot`.
-- It reads the key from `.env` (Node's `--env-file=.env`), calls every endpoint in plan §8.1 once, and saves trimmed answers to `public/data/*.json`, in the eight files listed in `docs/06` §2.2.
-- Each file starts with `{ "fetchedAt", "source" }`. The key is stripped from every saved URL.
-- It includes the fixed DONKI archive window 1–31 May 2024.
-
-**Done when.**
-- Eight files exist and each has a `fetchedAt` date.
-- `grep` for the key across `public/` finds nothing.
-
-> **Prompt — B1.** Do step B1 from `docs/BUILD_SEQUENCE.md`. Write `scripts/nasa-snapshot.mjs` and the `nasa:snapshot` npm script. Follow `docs/06` §2.2 exactly: the eight files, `fetchedAt` and `source` at the top of each, the May 2024 DONKI window, DONKI ranges of 60 days or less, CME/SEP/GST (never FLR), and EPIC from `epic.gsfc.nasa.gov`. Strip the key from every saved string. Run it once, prove the key is in no output file without printing the key, list the files with their sizes, report in the §9.3 format, and stop.
-
-### B2 — Data service (about 1.5 h)
-**Build.**
-- `src/services/nasa.ts` is the only runtime file that reads the key.
-- One function per dataset (`docs/06` §2.3), each returning `{ data, badge, fetchedAt }`.
-- Live calls have a 3-second limit (`AbortController`) and are cached in `sessionStorage`. Any failure, timeout, 429 or empty answer returns the snapshot with `NASA ARCHIVE`.
-
-**Done when.**
-- With the network switched off in the browser, every card still shows real data, marked ARCHIVE.
-- There are unit tests for the fallback using a mocked `fetch`.
-
-> **Prompt — B2.** Do step B2 from `docs/BUILD_SEQUENCE.md`. Write `src/services/nasa.ts` per `docs/06` §2.3: one function per dataset, a 3-second `AbortController` timeout, a `sessionStorage` cache, and a snapshot fallback with the `NASA ARCHIVE` badge on any error. InSight and OSDR are always archive. Add Vitest tests with mocked `fetch` for success, timeout, 429 and empty answers. Run the five checks, then switch the network off in the browser and confirm the archive badges. Report in the §9.3 format and stop.
-
-### B3 — Storms drive the game (about 1.5 h)
-**Build.**
-- Storm size X comes from DONKI and NOAA using the table in `docs/06` §3 (small 10, medium 20, large 30). The mapping is a pure function in `src/engine/`, with tests.
-- Level 2's card shows the real event, its date and its badge. If the Sun is quiet this month, the card says so truthfully and loads May 2024.
-- Level 6 uses the stronger of live and archive.
-
-**Done when.**
-- Changing the loaded event changes the Shield loss in level 2.
-- The mapping test covers each row of the table.
-
-> **Prompt — B3.** Do step B3 from `docs/BUILD_SEQUENCE.md`. Add a pure `stormSize()` in `src/engine/` that maps DONKI and Kp readings to X with the `docs/06` §3 table, with a test per row. Feed it from `nasa.ts` when a mission starts. Show the real event, date and badge on level 2's card, with the quiet-Sun message and the May 2024 fallback. Level 6 uses the stronger of live and archive. Prove in the browser that a different loaded event changes level 2's Shield loss. Run the five checks, report in the §9.3 format, and stop.
-
-### B4 — Cards on every level (about 1.5 h)
-**Build.** Replace every sample with its real source:
-
-| Where | Data |
+| A1 | Lane A preface + the **R2** prompt below. |
+| A2 | Lane A preface + the **R3** prompt. |
+| A3 | Lane A preface + the **R4** prompt. Then you run **M1**. |
+| A4 | Lane A preface + the **R5** prompt. Needs `stormSize()` from M1. |
+| A5 | Lane A preface + "Do step D2 in `docs/BUILD_SEQUENCE.md`, **part b only**: put the real data (from `src/services/nasa.ts`) with the right badge and date on every card, and level 2's alarm and IntelCard show the real event. `stormSize()` and the offline worker are already done in part a. Check, report, stop." |
+| A6 | Lane A preface + the **L1** prompt, then **L2**. |
+
+*Lane B, in this order, each in a fresh chat:*
+
+| Order | Prompt |
 |---|---|
-| Level 1 | EPIC Earth photo |
-| Levels 2–3 | Jezero photo and InSight temperatures |
-| Level 4 | The dust cases |
-| Level 5 | OSDR plant study and lettuce photo |
-| Level 6 | Sample photo |
-| Success | APOD |
-| Story card 1 | NeoWs |
-| Home and Quick Run | Kp |
+| B1 | Lane B preface + the **D1** prompt below. |
+| B2 | Lane B preface + "Do step D2 in `docs/BUILD_SEQUENCE.md`, **part a only**: the pure `stormSize()` in `src/engine/` with a test per table row of `docs/06` §3, fed at mission start, and the offline web-app manifest and service worker. Do **not** change any card or screen; Lane A does that in part b. Check, report, stop." |
+| B3 | Lane B preface + the **S1** prompt. It builds the Sources page; the `SourceLine` part already opens it, so you only add the screen and its two lines. |
+| B4 | Lane B preface + the **S2** prompt (Fly). |
+| B5 | Lane B preface + the **S4** prompt (Resources), then **S3** (Me and Training). Sound stays off (no files with unchecked licences). |
+| B6 | Lane B preface + the **F1** prompt, **docs only** (LICENSE, README, `docs/AI_USE.md`, the key check). It must not push or deploy: you decide that yourself. |
 
-**Done when.**
-- Every card has the right badge and a date.
-- Archive-only data never says LIVE.
-- Facts marked "Confirm" in `docs/06` §4 that the team has not confirmed are left out.
+After both lanes finish: **F2** (Bangla, with a Bangla speaker) → **F3** → **F4** → **F5**, one lane at a time, because they touch everything.
 
-> **Prompt — B4.** Do step B4 from `docs/BUILD_SEQUENCE.md`. Replace every sample data card with its real source through `nasa.ts`, following the table in step B4. Show the correct badge and date on each, never show LIVE for archive-only data, and leave out any `docs/06` §4 fact still marked "Confirm". Visit every card, run the five checks, show both screenshots for three different cards, report in the §9.3 format, and stop.
+### Phase R — rework what's built
 
-### B5 — Offline check (about 0.5 h)
-**Done when.** The whole mission plays with the network off. There are no blank cards and no errors, and every badge reads ARCHIVE.
+#### R0 — Bring the Antigravity work in line (about 45 min)
+**Read:** §4.3a; `src/screens/Story.tsx`, `src/screens/Home.tsx`, `src/screens/Welcome.tsx`; search `src/components/Decision.tsx`, `Dock.tsx` and `LevelChrome.tsx` for `animate-`, `blur`, `shadow-[0_0` and `boxShadow`.
 
-> **Prompt — B5.** Do step B5 from `docs/BUILD_SEQUENCE.md`. With the browser's network set to Offline, play the whole mission from the hook to Success, plus Quick Run. Fix any blank card, error or wrong badge. Report what you found in the §9.3 format and stop.
+**Fix**
+- Story: replace "Impact Risk: 0.00% · Safe Flybys Verified" with the plan's "None will hit us." Remove the looping ping.
+- Home: keep the Kp gauge; cut its sentence under 15 words; no looping beacon. Add the Kp → NOAA G-scale rows to `docs/06` §4 with their source, or drop the G labels.
+- Welcome: loading lines follow §4.3a (mission-prep lines stay; the NASA line waits for D1). Replace `backdrop-blur` with dark 70–85% fills and keep the look. `animate-pulse` goes. The Play button keeps its one halo.
+- Dock (glass), Decision (ping, planet glow), LevelChrome: no blur, no loops, no glow. The shaded planets keep their light edge.
 
-**Facts from testing the endpoints:**
-- DONKI date ranges must be 60 days or less.
-- `DONKI/FLR` returns 404 — use CME, SEP and GST.
-- APOD sometimes returns a server error, and sometimes a video. Show the saved image in both cases.
-- Call EPIC at `epic.gsfc.nasa.gov/api/natural` directly.
-- InSight data ends in 2020, so it is always ARCHIVE.
-- OSDR may refuse calls from a browser, so fetch it in the snapshot only.
-- `DEMO_KEY` is rate-limited. Never demo on it.
+**Done when** `grep` finds no `backdrop-blur`, `animate-ping` or `animate-pulse` in `src/`; every sentence a player sees is under 15 words and in the plan or `docs/06`; tests and build pass.
+
+> **Prompt — R0.** Do step R0 in `docs/BUILD_SEQUENCE.md`. Read §3, §4.3, §4.3a and R0, then only its Read line. Remove the invented asteroid line, blur, extra glow and looping motion, and fix the NASA loading line, keeping the welcome screen's look. Change nothing else. Check, report, stop.
+
+#### R1 — The stage and the new tokens (about 2 h)
+**Read:** `src/index.css`, `src/App.tsx`, `src/main.tsx`, `src/components/*` (not `steps/`), `src/screens/Kit.tsx`, `src/store/game.ts`.
+
+**Build**
+- `Stage` as §4.2 says, wrapped around the app in `App.tsx`. Root font size from stage height. The upright quarter-turn. `stageDelta()` for swipe direction.
+- Swap the tokens in `src/index.css` for §4.3. Keep the meter colours and the old names that still exist, so nothing else breaks at once.
+- Update the shared parts in the "v10 change" column of §4.6. `LevelChrome` gives the three zones; `Dock` becomes the left rail.
+- Guard saved data: wrap the store's storage so a failed read or write starts a fresh game.
+- Show every part on `#kit`, on the stage.
+
+**Done when** `#kit` looks right at 844, 667, 1280 × 720 and upright; a tap on an upright phone hits the button under the finger; old screens still open (they may look rough until R3–R4).
+
+> **Prompt — R1.** Do step R1 in `docs/BUILD_SEQUENCE.md`. Read §3, §4 and R1 first, then only the files on its Read line. Build the landscape `Stage`, swap the tokens, update the shared parts and `#kit`. Don't restyle the screens yet. Check, report, stop.
+
+#### R2 — Finish the welcome screen (about 1 h)
+The screen exists (Antigravity, cleaned in R0). Shown on every load, crossfade, bar → Play, How to Play and the switch already work. What's left:
+
+**Read:** `src/screens/Welcome.tsx`, `src/App.tsx`, `src/content/i18n.ts`, `plan.md` §7 row W.
+
+**Finish**
+- **Tie the bar to real loading.** Today it's a fixed 2.4 s timer. Count real things: fonts ready, each crew image and the first scenes decoded, the save read. At least 1.8 s so the change is seen, at most 5 s, then go on anyway. Reduced motion: one straight cut.
+- **Fit the stage.** Lay it out inside R1's `Stage`: title, Play and How to Play on the left; the crew art on the right two-thirds. Drop the separate upright layout: the turned stage covers it. Fade the placeholder art's left 20% and top 15% into the backdrop so its leftover mock-up text doesn't show. Clean art later must need no code change.
+- **Play** asks for full screen and landscape (§4.2), then goes to the hook the first time and to Home after that (check the `screen === 'hook'` branch in `App.tsx` doesn't skip the hook for a player who quit half-way through it).
+- **How to Play:** three picture panels, one line each: "Watch your four meters." · "Tap a choice to look. Tap GO to pick it." · "If a meter hits zero, you try again."
+- **Strings:** the kit's strings go through `t()` too. Bangla lines Antigravity wrote stay, but mark them "needs a check" for F2.
+
+**Done when** reloading always shows the change then Play; throttled to "Slow 4G" the bar really waits; the hook's first choice is reachable within 15 seconds of load; the switch survives a reload.
+
+> **Prompt — R2.** Do step R2 in `docs/BUILD_SEQUENCE.md`. Read §3, §4 and R2, then only its Read line. Tie the welcome bar to real loading, fit the screen into the stage, and finish Play, How to Play and strings. Write no new Bangla. Check, report, stop.
+
+#### R3 — Level screens in landscape, with Look first (about 3 h)
+**Read:** `src/screens/LevelOpening.tsx`, `src/screens/Play.tsx`, `src/components/Decision.tsx`, `src/components/LevelChrome.tsx`, `src/components/Hud.tsx`, `src/components/steps/*`, `src/content/icons.ts`. Search `src/engine/engine.ts` for how a choice's changes are worked out; don't read it all.
+
+**Build**
+- **Level opening:** the scene fills the stage. Left: the crew. Right: ribbon ("LEVEL 3 · FIRST BREATH"), one line, the task list as three or four icon chips, the IntelCard, **GO!**. Carry-over costs still play onto the HUD one by one with their reason.
+- **Decision:** Twinkle's bubble on top of the right zone; three `ChoiceCard`s in a row under it.
+  - **Look first:** the first tap selects a card. It lifts, and every meter it will touch wiggles and shows arrows: one ▲/▼ for 5–10, two for 15–20, three for 25 or more (no numbers; stars show a star). Tapping another card moves the selection. **GO** confirms. Keyboard: arrows move, Enter confirms.
+  - After GO: stamp, the others slide off, the HUD plays the real changes, the kid reacts, and the result (reason line, chips, **Next**) takes the cards' place.
+  - Ask Twinkle stays: it names your lowest meter. It never says "best", "right" or "answer".
+- **Hands-on steps:** crates, stowing, landing order, battery sharing, crew pick each use the full right zone (and the left when they need the room, with the kid shrinking to a corner). Same engine calls. Crew pick: five cards in one row.
+- The level-3 message clock runs across the top of the right zone: Mars on one side, Earth on the other.
+
+**Done when** all six levels play start to finish at 844 and 667 with nothing scrolling; a stranger watching a silent 10-second clip can say what was picked and what it cost; engine tests are untouched and green.
+
+> **Prompt — R3.** Do step R3 in `docs/BUILD_SEQUENCE.md`. Read §3, §4 and R3, then only its Read line. Lay out the level opening, the decision and the five hands-on steps in the three landscape zones, and add Look first (tap to see which meters move, GO to confirm). No rule, number or word changes. Play all six levels, check, report, stop.
+
+#### R4 — The other screens in landscape (about 2.5 h)
+**Read:** `src/screens/Hook.tsx`, `Story.tsx`, `Home.tsx`, `MissionMap.tsx`, `Replay.tsx`, `Success.tsx`.
+
+| Screen | In landscape |
+|---|---|
+| **Hook** | Dust scene, alarm banner, a big countdown ring in the middle, the kid on the left, two large cards on the right (fold / leave out). One tap, two meters jolt. No Look first here: it's the 15-second taste |
+| **Story** | One comic panel at a time: the picture on the left half, three short lines on the right, the `FICTION` ribbon, the NeoWs counter on card 1 |
+| **Home** | The crew on a launch pad on the left; on the right one huge **PLAY** / "Continue — Level N", the space-weather IntelCard under it; stars and stardust top right; the Dock rail |
+| **Map** | The trail runs **left to right**, Earth to the outpost, six round stops, your kid on the current one. Scrolls sideways only if it must |
+| **Replay** | Alarm scene, banner "MISSION PAUSED — NOBODY IS HURT", Twinkle worried on the left; on the right three small panels side by side: what ran out · what cost the most · what real crews do; **Try again** |
+| **Success** | Dawn scene, the crate and result badge on the left with the kids cheering; on the right the six "I learned" badges in two rows of three, APOD card, the two locked teasers; **Fly again** |
+
+**Done when** hook → story → Home → map → six levels → Success, and a forced loss → Replay, all work at 844, 667 and upright with no scrolling page.
+
+> **Prompt — R4.** Do step R4 in `docs/BUILD_SEQUENCE.md`. Read §3, §4 and R4, then only its Read line. Re-lay the six screens for the landscape stage as the table says. No rule or word changes. Play welcome to Success once and force one loss, check, report, stop.
+
+#### R5 — Make it seen, not read (about 4 h)
+The step that turns a reading game into a watching-and-touching game. Spec: §4.1a.
+
+**Read:** §4.1a; `src/components/Decision.tsx`, `src/components/Scene.tsx`, `src/content/icons.ts`; search `src/content/levels.ts` for option labels and reason lines only.
+
+**Build**
+- **Event moments:** `src/components/events/`, one small SVG/CSS animation per row of the §4.1a table, played in the `Scene` before the choices appear. 2–3 s, tap to skip, reduced motion shows the end frame. Storm and dust read their size (X, D) from the store, so a bigger real storm draws a bigger wave.
+- **Picture cards:** each option gets a short label (2–5 words) and an icon scene in `src/content/icons.ts` (`short`, `scene`). The full sentence stays in `levels.ts` for Read-to-me and the result. Words change only by shortening; no new meaning.
+- **Result in the scene, then the chain:** after GO, a 1.5 s acted result (reusing the event's parts), then the chain reaction: two or three icons linking left to right and ending in the meter chips, from a `chain` map per option written from its reason line. The reason sentence is one line under it.
+- **Live pressure in level 3:** during the leak, Air & Water ticks down until a choice is made (display only; the engine's numbers still decide the cost).
+- **Word budget:** a test counts the words on every decision, result and opening against the §4.1a table and fails if any is over.
+
+**Done when** the silent test (§4.1a) passes on all six levels; the word-budget test passes; a bigger storm visibly draws a bigger wave; engine tests are untouched.
+
+> **Prompt — R5.** Do step R5 in `docs/BUILD_SEQUENCE.md`. Read §3, §4.1a and R5, then only its Read line. Add an event moment before each decision, picture-first cards with short labels, the acted result plus chain reaction after GO, and the word-budget test. Change no rule, number or fact. Do the silent test on all six levels, check, report, stop.
+
+### Phase F1 — get it online early
+
+#### F1 — Licence, README, publish (about 1 h)
+**Read:** `.gitignore`, `package.json`, `vite.config.ts`, `plan.md` §1 and §8.1.
+
+**Build**
+- `LICENSE` (Apache-2.0). `README.md`: the plan §1 sentence, how to run, every dataset with its link. `docs/AI_USE.md`: each AI tool, what it did, what the team did. A credits line for the generated crew and welcome art.
+- Confirm `.env` is ignored and the key is in no tracked file (without printing it).
+- Show the commit; wait for a yes; push; deploy on the host the team names with `VITE_NASA_API_KEY` in its settings.
+
+**Done when** the link opens in a private window on a phone, and the repo opens without login.
+
+> **Prompt — F1.** Do step F1 in `docs/BUILD_SEQUENCE.md`. Read §3 and F1, then only its Read line. Add the licence, README and AI-use note, prove the key is in no tracked file without printing it, show me the commit and wait for my yes before pushing or deploying. Host: [name it]. Report, stop.
+
+### Phase D — real NASA data
+
+#### D1 — Snapshot and data service (about 2.5 h)
+**Read:** `docs/06_SCIENCE_AND_NASA_DATA.md` §1–§2, `src/content/samples/`, `src/content/apod.ts`, the IntelCard in `src/components/Panel.tsx`.
+
+**Build**
+- `scripts/nasa-snapshot.mjs` (`npm run nasa:snapshot`): calls every endpoint in `docs/06` §2.2 once and saves trimmed answers to `public/data/*.json`, each with `fetchedAt` and `source`, key stripped. Includes DONKI for 1–31 May 2024.
+- `src/services/nasa.ts`: one function per dataset, each returning `{ data, badge, fetchedAt }`. 3-second timeout, `sessionStorage` cache, fall back to the snapshot with badge `NASA ARCHIVE`. InSight and OSDR are archive only.
+- IntelCard shows a shimmer while loading, never a blank.
+- Tests with a mocked `fetch`: success, timeout, 429, empty answer.
+
+Endpoint notes (tested): DONKI ranges 60 days or less · `DONKI/FLR` is 404, use CME, SEP, GST · APOD sometimes errors or sends a video, show the saved image · EPIC lives at `epic.gsfc.nasa.gov/api/natural` · OSDR may refuse browser calls, snapshot only · never demo on `DEMO_KEY`.
+
+**Done when** the eight files exist with dates and no key, and with the network off every card still shows real data marked ARCHIVE.
+
+> **Prompt — D1.** Do step D1 in `docs/BUILD_SEQUENCE.md`. Read §3 and D1, then only its Read line. Write the snapshot script and `src/services/nasa.ts` with timeout, cache and archive fallback, plus the mocked-fetch tests. Run the snapshot, prove the key is in no output without printing it. Check, report, stop.
+
+#### D2 — Storms drive the game; real cards; offline (about 2.5 h)
+*Split for §5a: **part a** (Lane B) is `stormSize()` and its tests, plus the offline manifest and worker. **Part b** (Lane A, after merge M1) is every card and screen showing real data.*
+
+**Read:** `docs/06` §3–§4, `src/services/nasa.ts`, `src/store/game.ts` (mission start), `src/screens/LevelOpening.tsx`, `src/screens/Home.tsx`, `src/screens/Story.tsx`, `src/screens/Success.tsx`.
+
+**Build**
+- A pure `stormSize()` in `src/engine/` from DONKI and Kp to X, with a test per row of the `docs/06` §3 table. Fed at mission start.
+- Level 2's alarm and IntelCard show the real event, its date and its badge. A quiet Sun says so and loads May 2024. Level 6 uses the stronger of live and archive.
+- Every sample card becomes real: EPIC (level 1), Jezero photo and InSight (2–3), dust cases (4), OSDR and lettuce (5), sample photo (6), APOD (Success), NeoWs (story card 1), Kp (Home). Right badge and date on each; archive-only data never says LIVE; unconfirmed `docs/06` facts stay out.
+- **Offline:** a web-app manifest (landscape, name, icon) and a service worker that caches the build, the art and `public/data`. Use `vite-plugin-pwa` if it supports our Vite; otherwise a small hand-written worker.
+
+**Done when** loading a different storm changes level 2's Shield loss in the browser; after one visit, the whole game plays with the network off, every badge reading ARCHIVE.
+
+> **Prompt — D2.** Do step D2 in `docs/BUILD_SEQUENCE.md`. Read §3 and D2, then only its Read line. Add `stormSize()` with a test per table row, put real data with the right badge on every card, and make the game open offline after one visit. Prove a different storm changes the Shield loss. Check, report, stop.
+
+### Phase S1 — the page judges check
+
+#### S1 — Sources and credits (about 1 h)
+**Read:** `plan.md` §4.3, §8.1, §8.3; `docs/06` §5; the `SourceLine` part.
+
+**Build** `src/screens/Sources.tsx`: the one calm page, on `paper`, that may scroll. Every `SourceLine` opens it and Back returns where you were. In order: every dataset (name, agency, where used, badge, date, link) · "What we simplified" · the honesty note, word for word · image credits · **credits for generated content** (crew and welcome art tool; Claude for drafts) · the team with roles (marked placeholders until supplied) · "Use it in class" (plan §5.4).
+
+**Done when** every dataset in plan §8.1 plus NOAA is listed, every link opens, and every source line in the game gets here and back.
+
+> **Prompt — S1.** Do step S1 in `docs/BUILD_SEQUENCE.md`. Read §3 and S1, then only its Read line. Build the Sources page and wire every source line to it with a working Back. Click every link. Check, report, stop.
+
+**— The film line. Everything the 240-second video shows now exists. Record before building further. —**
+
+### Phase L — the learning layer (plan §5.4)
+
+#### L1 — The four Try-it toys (about 2 h)
+**Read:** `plan.md` §5.4; `src/content/icons.ts`; `src/content/levels.ts` (reason lines only: search for them); the result part of `src/components/Decision.tsx`; `src/screens/LevelOpening.tsx`.
+
+**Build**
+- The chain reaction is built in R5.
+- **Try it:** one toy each for levels 2–5, in `src/components/toys/`, shown after the level opening and before the first decision. Ten seconds, no score, no meter change, a **Skip**. The four toys and what the hand should feel are in plan §5.4. Each ends with one line from that level's "I learned" sentence.
+- The level-3 toy reuses the message clock.
+
+**Done when** each toy works with one thumb and with the keyboard, can be skipped, and changes no meter (a test proves the store is untouched).
+
+> **Prompt — L1.** Do step L1 in `docs/BUILD_SEQUENCE.md`. Read §3, §4 and L1, then only its Read line. Add the four ten-second Try-it toys. They teach only what the plan already says and never change a meter. Check, report, stop.
+
+#### L2 — Space Words and Read to me (about 2 h)
+**Read:** `docs/06` §4; `src/components/Twinkle.tsx`; `src/content/strings.en.ts`; `src/store/game.ts`.
+
+**Build**
+- **Space Words:** `src/content/words.ts` holds up to 12 words (sol, radiation, solar panel, recycler, carbon dioxide, launch window…), each with an icon and one sentence **taken from `docs/06` §4 or the plan**. Leave out any word with no sourced sentence, and list it in the report. The first time a word appears it's underlined; a tap opens a small card and adds it to the Space Book (saved).
+- **Read to me:** a speaker button on every speech bubble, using the browser's own speech. Pick a voice for the current language; if there is none, hide the button. One tap speaks, another stops. Leaving the screen stops it.
+
+**Done when** words collect and survive a reload; speech works in English in the preview and the button hides when no voice exists.
+
+> **Prompt — L2.** Do step L2 in `docs/BUILD_SEQUENCE.md`. Read §3 and L2, then only its Read line. Add tappable Space Words with sourced one-line meanings and a saved Space Book, and a Read-to-me button on speech bubbles. Invent no definitions. Check, report, stop.
+
+### Phase S — the side screens
+
+#### S2 — Fly, the endless runner (about 4 h)
+**Read:** `plan.md` §7 row 2; `src/services/nasa.ts` (Kp); `src/store/game.ts`; `src/components/stageMath.ts`.
+
+**Build** `src/screens/Fly.tsx` and `src/fly/` (game logic, kept apart from drawing so it can be tested), a `<canvas>` on the stage. Seen from behind Orbit (or Nova): three lanes running into the distance, forever.
+- **Controls (all four work):** tap the **left or right half** of the screen to change lane · swipe **up** (read through `stageDelta`) or tap the round **Hop** button, or ↑ / Space, to hop low rocks · ← / → keys. Two thumbs, no reading.
+- **Things:** tall rocks (change lane), low rocks (hop over), debris, stardust in lines and arcs with a "+1" pop.
+- **Powers** (glowing pickups, switch on by themselves, about 6 s, one at a time, a shrinking ring around the pilot and one icon with its ring in the corner): **Shield** (takes one hit) · **Magnet** (pulls stardust in) · **Boost** (fast, can't be hit, stardust worth double). Each has an icon and a name, never colour alone.
+- **Run:** three hull pips; a hit costs one and a stumble; at zero the run ends. It speeds up with distance. Starting speed and speed-up from today's Kp: slow 0–3, medium 4–6, fast 7–9, shown as "Space weather today: Kp N" with its badge (docs/06 §4).
+- **End:** a card with distance and stardust, the best distance on this device, the stardust bursting into the saved total, **Fly again**. The first screen is one **Fly** button, not a menu.
+- **Engine:** a fixed-step update with a delta-time loop that pauses when the tab is hidden. The spawn, hit and power rules are pure functions with tests; the same seed gives the same run. Our own Mars look; copy no existing game's art, names or sounds.
+
+**Done when** it holds a steady frame rate at 4× CPU slowdown, pauses when hidden, works upright (turned stage), the rule tests pass, and stardust and best distance survive a reload.
+
+> **Prompt — S2.** Do step S2 in `docs/BUILD_SEQUENCE.md`. Read §3, §4 and S2, then only its Read line. Build Fly: an endless three-lane canvas runner (tap left/right half, swipe up or Hop to hop, three auto-powers Shield / Magnet / Boost, three hull pips, speeds up, start speed from real Kp). Pure tested rules. Our own Mars look; copy no existing game. Check at 4× slowdown, report, stop.
+
+#### S3 — Me, and Training locked (about 2 h)
+**Read:** `plan.md` §7 rows 3 and 5; `src/store/game.ts`; `src/store/leaderboard.ts`; `src/components/Twinkle.tsx`.
+
+**Build**
+- `src/screens/Profile.tsx`: Orbit on a teal podium and Nova on a pink one; the picked one cheers and becomes "you" everywhere. A call-sign shuffle (about 20 space words, no typing). Trophies: rank, six badges, the Space Book, best five runs. Big toggles: language, sound, reduced motion, replay intro, reset (inline "Are you sure?"), Sources.
+- Sound only from files whose licence the team has checked (§7), off by default.
+- `src/screens/Training.tsx`: Twinkle `sleepy`, three padlocked cards (Mind, Body, Reels) that wiggle when tapped.
+
+**Done when** everything survives a reload, reset clears all of it, and nobody could take Training for a broken page.
+
+> **Prompt — S3.** Do step S3 in `docs/BUILD_SEQUENCE.md`. Read §3, §4 and S3, then only its Read line. Build the Me screen (pick Orbit or Nova, call-sign shuffle, trophies, toggles) and the locked Training screen. Check, report, stop.
+
+#### S4 — Resources (about 1.5 h)
+**Read:** `plan.md` §7 row 4; `docs/06` §4; `src/store/game.ts` (`startMission`).
+
+**Build** `src/screens/Resources.tsx`: four system cards in a row, each framed in its meter colour with one sourced kid sentence and two +5 upgrades priced in stardust. Four cargo slots across the top: four upgrades in total, then the rocket is full. Upgrades apply to the next mission. Tests for the cap and the starting values.
+
+**Done when** you can't buy without stardust or past four, and the button says why.
+
+> **Prompt — S4.** Do step S4 in `docs/BUILD_SEQUENCE.md`. Read §3, §4 and S4, then only its Read line. Build the four upgrade cards with the four-slot cap and tests. Check, report, stop.
+
+### Phase F — finish
+
+#### F2 — Bangla (about 2 h, with a Bangla speaker)
+**Read:** `src/content/strings.en.ts`, `strings.bn.ts`.
+
+Move any remaining player-facing text into strings, level text included (keys only; English words unchanged). Then fill Bangla in the plan §7.2 order. Claude drafts; **a team member reads and fixes every line before it ships.** Keep NASA names and dataset names in English. Check that no Bangla line overflows its card at 667 wide.
+
+> **Prompt — F2.** Do step F2 in `docs/BUILD_SEQUENCE.md`. Read §3 and F2, then only its Read line. Move remaining text into strings without changing the English, then draft Bangla in the plan §7.2 order in batches of about 40 lines and stop after each batch for my corrections.
+
+#### F3 — Balance (about 1.5 h)
+`src/engine/balance.ts` (`npm run balance`) plays every path and prints the win rate, the usual losing meter per level, and any option in more than 70% of winning paths. Target: 20–60% of paths win, no option always right, a careful player can win level 6. Numbers change in `levels.ts` only, after a yes.
+
+> **Prompt — F3.** Do step F3 in `docs/BUILD_SEQUENCE.md`. Read §3 and F3, plus `src/engine/types.ts`; search the engine for what you need. Write the balance script, propose the smallest number changes as a before/after table, and change nothing until I say yes.
+
+#### F4 — Child play-test fixes (about 1 h)
+One child aged 7–12, no help. Note every word they stumble on, every tap that misses, what they say. Ask: "What was this?" If they say "a quiz" or "a test", that's the top bug. Film hands and screen only.
+
+> **Prompt — F4.** Do step F4 in `docs/BUILD_SEQUENCE.md`. My play-test notes: [paste]. Fix each stumble and missed tap, keep sentences under 15 words, list each note with what you changed. Check, report, stop.
+
+#### F5 — Final pass (about 1 h)
+A keyboard-only run, a reduced-motion run, an upright-phone run, an offline run. One 844 × 390 screenshot of every screen into `docs/screenshots/final/`. Tick plan §13; write down any gap.
+
+> **Prompt — F5.** Do step F5 in `docs/BUILD_SEQUENCE.md`. Read §3 and F5, and `plan.md` §13 only. Do the four runs and the screenshots, fix only blocking problems, list the rest against plan §13. Report, stop.
 
 ---
 
-## 7. Phase C — make it ready to judge
-
-### C1 — Balance (about 1.5 h)
-**Build.** `src/engine/balance.ts`, run as `npm run balance`. It plays every path and prints:
-- the win rate,
-- the usual losing meter per level,
-- any option present in more than 70% of winning paths.
-
-Tune numbers in `levels.ts` only.
-
-**Done when.**
-- 20–60% of paths win.
-- No option is always right.
-- Tests still pass.
-- Level 6 is winnable by a careful player who is low on Air & Water (see §2, known problem 3).
-
-> **Prompt — C1.** Do step C1 from `docs/BUILD_SEQUENCE.md`. Write `src/engine/balance.ts` and an `npm run balance` script that enumerates every path through the six levels (for the storm and dust sizes in play) and prints the win rate, the usual losing meter per level, and any option in more than 70% of winning paths. Propose the smallest number changes in `src/content/levels.ts` that reach a 20–60% win rate with no dominant option. Show me the before and after table, and change the numbers only after I say yes. Report in the §9.3 format and stop.
-
-### C2 — Child play-test (about 1 h)
-**Build.** One child aged 7–12, no help. Note every sentence they stumble on and every tap that misses. Then rewrite and fix.
-
-**Done when.**
-- They finish level 1 in under 3 minutes.
-- They can say what level 2 taught.
-
-> **Prompt — C2.** Here are my notes from the child play-test: [paste]. Do step C2 from `docs/BUILD_SEQUENCE.md`: fix every stumble and missed tap in the notes, rewriting text to under 15 words per sentence. List each note with what you changed, run the five checks, report in the §9.3 format, and stop.
-
-### C3 — Publish (about 1 h)
-**Build.**
-- Add a licence (MIT for code; state that the character art belongs to the team).
-- Write a README that opens with the solution sentence (plan §1), then how to run it and the data sources.
-- Commit and push to `main` (only with the team's go-ahead).
-- Deploy on GitHub Pages or Vercel, with `VITE_NASA_API_KEY` set in the host's settings. `.env` stays out; `.env.example` goes in. `vite.config.ts` already uses `base: './'`.
-
-**Done when.**
-- The link opens in a private window on a phone.
-- The repository opens without login.
-
-> **Prompt — C3.** Do step C3 from `docs/BUILD_SEQUENCE.md`. Add `LICENSE` and a `README.md` that opens with the plan §1 sentence. Confirm `.env` is ignored and that the key is in no tracked file (without printing it). Then show me the commit you will make and wait for my yes before pushing. After the push, set up the deploy on the host I name, with the key in the host's environment settings. Open the live link in a private window at phone width. Report in the §9.3 format and stop.
-
-### C4 — Final pass (about 1 h)
-**Build.**
-- A keyboard-only run and a reduced-motion run.
-- 375 px and 1280 px screenshots of every screen.
-- A clean console.
-- The plan's "Finished means" list (§13) ticked.
-- The `docs/human design standards.md` §13 checklist and §14 scores (each 1–5).
-
-**Done when.** Every box is ticked, or the gap is written down.
-
-> **Prompt — C4.** Do step C4 from `docs/BUILD_SEQUENCE.md`. Run the whole app keyboard-only, then with reduced motion forced on. Take 375 px and 1280 px screenshots of every screen into `docs/screenshots/`. Confirm the console is clean. Tick plan §13 and the design-standards §13 checklist, and score §14 honestly. Fix only blocking problems, and list the rest. Report in the §9.3 format and stop.
-
----
-
-## 8. Time and cuts
-
-About 31 hours of build in total:
+## 6. Time and cuts
 
 | Phase | Hours |
 |---|---|
-| A | 22 (A0 done) |
-| B | 6.5 |
-| C | 4.5 |
+| R0–R5 | about 13 |
+| F1 | 1 |
+| D1–D2 | 5 |
+| S1 | 1 |
+| **To the film line** | **about 20** (about 12 with two people after R1) |
+| L1–L2 | 4 |
+| S2–S4 | 7.5 |
+| F2–F5 | 5.5 |
 
-**Parallel work.** Once A0 is done (it is), two people can work at the same time:
+**If time runs short, cut in this order:** sound → Bangla level text (keep the switch and buttons) → Resources upgrades → Space Words → Try-it toys → leaderboard (keep badges) → Fly → the welcome picture change (keep the screen).
 
-| Track | Steps | Files |
-|---|---|---|
-| 1 | A1 → A9 | Hook, story, home, map, level and play screens |
-| 2 | A10 → A13 | Quick Run, Profile, Resources, Training |
+**Never cut:** the six levels · the four meters and the HUD · landscape · the hook · Look first · the level-2 storm and level-4 dust event moments · the chain reaction · Mission Replay · source lines · live DONKI in level 2 · the Sources page · the crew reacting.
 
-Each step lives in its own `src/screens/` file, so the tracks rarely touch the same file. `BUILT_SCREENS` and the store are the shared spots: merge those by hand.
-
-**If time runs short, cut in this order:**
-1. Sound
-2. Bangla
-3. Resources upgrades (keep the four info cards)
-4. Leaderboard (keep badges)
-5. Orbit/Nova choice
-6. Quick Run's stardust link
-7. The landing checklist
-
-**Never cut:** the six levels · the four meters · the hook · Mission Replay · source lines · live DONKI in level 2 · the Sources page · the crew on Home, Replay and Success.
-
-**Freeze** when Phase C starts. After that, only fixes.
+Real deadlines are in plan §12.1: the 240-second video on **Fri 13 Nov, 6:30 PM**; the 30-second video and the finished project page on **Sat 14 Nov, 12:00**; freeze **Sat 09:00**.
 
 ---
 
-## 9. Prompts
-
-### 9.1 Kickoff prompt (paste once, at the start of a new chat)
-
-> You are continuing the build of **CrewReady**, a browser game for the NASA Space Apps 2026 challenge "Build a Junior Astronaut Mission Trainer". Kids aged 7–12 command a Mars mission in which every choice costs power, air and water, food or radiation shielding, and real NASA data sizes the events.
->
-> Two files are attached: the plan (what the game is) and `docs/BUILD_SEQUENCE.md` (how to build it). Read both fully before doing anything. Then read, in the project: `docs/06_SCIENCE_AND_NASA_DATA.md` (the only allowed facts and data), `docs/human design standards.md` (the quality bar), `src/engine/types.ts`, `src/engine/engine.ts`, `src/content/levels.ts`, `src/store/game.ts`, `src/components/ui.tsx`, `src/components/Twinkle.tsx` and `src/App.tsx`. Section 2 of the build sequence says what already exists. A0 is done. Do not rewrite the engine or the level content.
->
-> Rules for the whole build:
-> - Work strictly in the order of the build sequence. Do one step, then stop and wait for me to say "next" or name a step.
-> - Follow the design direction in §4 exactly: paper mission cards on a coloured sky, the listed tokens and fonts, lucide icons, the team's character art from `public/art/` placed per the §4.3 pose table, no glow, no glass, no emoji, no NASA logo.
-> - Reuse the shared parts in §4.4. Do not make look-alikes.
-> - Never invent a fact or a number. Use only what the plan and `docs/06` contain, and leave out anything missing and tell me.
-> - Never print, log or screenshot the API key.
-> - End every step with the five checks in §3 and a report in the §9.3 format.
->
-> Start by telling me in three lines what you understood the next step to be. Then begin it.
-
-### 9.2 For each step
-
-Paste that step's **Prompt** from §5–§7, or just say **"next"**. To jump, say **"do A8"**. To fix something from the last step, describe it plainly; that is a fix, not a new step.
-
-### 9.3 Report format (what Claude sends back after each step)
-
-```
-Step: A_ — <name>
-Built: <2–5 lines, plain words>
-Files: <created / changed>
-Checks: tests ✓/✗ · build ✓/✗ · clicked through ✓/✗ · 375 + 1280 ✓/✗ · keyboard ✓/✗ · console ✓/✗
-Screenshots: <phone> <laptop>
-Not verified / left out: <anything not checked, any fact left out and why>
-Next: <the next step's name>
-```
-
----
-
-## 10. Things only the team can supply
+## 7. Things only the team can supply
 
 | Needed | By step | If missing |
 |---|---|---|
-| ~~Cut-outs of Orbit, Nova and Twinkle~~ | — | **Supplied** (sheets in `ui reference/characters cutout/`, cut into `public/art/`) |
-| A decision on Orbit's shoulder patch: does the blue oval with a red streak look too much like NASA's insignia? If yes, repaint the patch on the sheet and re-run the cut | Before C3 | Keep as is; it reads as a dot at game size |
-| The licence of each audio file in `public/assets/audio/` (UI clicks, ambience, the Artemis II recordings) | Before sound is added | No sound |
-| The five real names and roles | A14 | Placeholders, clearly marked |
-| Confirmation of each "Confirm" fact in `docs/06` §4 | B4 | The sentence is left out |
-| One chosen OSDR Veggie study (accession number, title, one plain sentence) | B4 | Level 5 shows the lettuce photo only |
-| A child aged 7–12 for 20 minutes | C2 | Test with the youngest person available and say so |
-| A go-ahead to push to GitHub, and a hosting choice | C3 | The build stays local |
+| **Wide welcome pictures** (nice to have): the same two scenes as 16:9, at least 1920 × 1080, no text, crew on the right two-thirds, same framing | R2 | The cleaned upright pictures ship, with the backdrop fade |
+| The name of the AI image tool used for the crew and welcome art | F1, S1 | Credited as "AI-generated by the team" |
+| A hosting choice, and a yes before each push | F1 | The build stays local |
+| Confirmation of each "Confirm" fact in `docs/06` §4 | D2, L2 | The sentence stays out |
+| One chosen OSDR Veggie study (accession number, title, one plain sentence) | D2 | Level 5 shows the lettuce photo only |
+| The five real names and roles; who is under 18; the Local Lead's answer on naming them | S1, videos | Placeholders, clearly marked |
+| A narrator aged 18 or older | Video | An adult member reads |
+| A Bangla speaker to check every line | F2 | Bangla stays on the switch and buttons only |
+| The licence of each file in `public/assets/audio/` | S3 | No sound |
+| Orbit's shoulder patch: does it look too much like NASA's insignia? | Before filming | Keep it; it's a dot at game size |
+| A child aged 7–12 for 20 minutes | F4 | The youngest person available, and say so |
+
+---
+
+## 8. Where the ideas come from
+
+- The team's welcome mock-ups ("CrewReady Astronaut Training Interface" 1 and 2): the deep-space look, the cyan Play button, the EN / বাংলা switch.
+- `improvement-suggestions.md` (Antigravity session, 12 Nov): what was kept and dropped is in §4.3a.
+- `docs/human design standards.md`: the quality bar; its §3 and §5 are why glass and glow stay out.
+- `nasa guidelines/space-apps-2026-bangladesh-build-guide.md`, challenge 03: the 15-second demo, the Relevance trap, offline, Bangla, touch targets, the under-18 rule.
+- `nasa guidelines/Space Apps Challenge Participants Guide.md` §02 and §08: the run of show and the three videos.
+- Supercell on the Clash of Clans interface: a few big things, each in a fixed place. https://supercell.com/en/games/clashofclans/blog/news/weve-revamped-the-clash-of-clans-user-interface/
+- Game feel: squash on pointer-down, about 95%, quick springy release, big effects only for big moments. https://itch.io/blog/1059831/making-a-game-feel-juicy-with-simple-effects

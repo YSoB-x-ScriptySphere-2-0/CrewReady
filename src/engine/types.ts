@@ -24,6 +24,8 @@ export interface Extra extends Cond {
   effects?: Effects;
   stars?: number;
   reason: string;
+  /** The meter a no-change reminder is about (so the level opening can colour it). */
+  about?: Meter;
 }
 
 export interface Option {
@@ -42,6 +44,8 @@ export interface Option {
 }
 
 interface StepBase {
+  /** Two to four words for the level's task list ("Pack the rocket"). */
+  task: string;
   prompt: string;
   hint: string;
 }

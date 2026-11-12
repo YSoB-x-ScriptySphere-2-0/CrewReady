@@ -1,0 +1,30 @@
+{
+  "fetchedAt": "2026-11-12T09:28:42.041Z",
+  "source": "https://images-api.nasa.gov/search",
+  "items": [
+    {
+      "nasaId": "PIA24320",
+      "title": "Mars Landing Sites, Including Perseverance (Illustration)",
+      "description": "Perseverance landing site at Jezero Crater on Mars.",
+      "url": "https://images-assets.nasa.gov/image/PIA24320/PIA24320~medium.jpg"
+    },
+    {
+      "nasaId": "KSC-20170808-PH_CSH01_0092",
+      "title": "Seed Planting in Veggie Pillows ",
+      "description": "Astronauts sample red romaine lettuce grown inside the Veggie facility aboard the ISS.",
+      "url": "https://images-assets.nasa.gov/image/KSC-20170808-PH_CSH01_0092/KSC-20170808-PH_CSH01_0092~medium.jpg"
+    },
+    {
+      "nasaId": "GSFC_20171208_Archive_e000971",
+      "title": "Combined Images",
+      "description": "A massive coronal mass ejection erupts from the solar surface.",
+      "url": "https://images-assets.nasa.gov/image/GSFC_20171208_Archive_e000971/GSFC_20171208_Archive_e000971~small.jpg"
+    },
+    {
+      "nasaId": "PIA23202",
+      "title": "InSight Images a Sunset on Mars",
+      "description": "NASA InSight lander on the Martian surface with its solar arrays deployed.",
+      "url": "https://images-assets.nasa.gov/image/PIA23202/PIA23202~small.jpg"
+    }
+  ]
+}

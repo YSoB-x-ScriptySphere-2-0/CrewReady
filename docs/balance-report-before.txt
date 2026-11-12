@@ -1,0 +1,156 @@
+CrewReady balance check (BUILD_SEQUENCE F3)
+
+The mission has about 10^19 paths, too many to list, so this plays random missions: every step picks any of its
+moves with equal chance (200,000 missions for each of the 9 storm and dust cases), and separately searches every
+path for a winning one. The real engine and the real levels are used. A mission is WON when all six levels are
+finished with no meter at 0. Target: 20–60% win, no option in over 70% of wins, a careful player can win level 6.
+
+RANDOM PLAYER, by real storm size X and dust case D
+  X   D        won   reach L6     L6 won
+  10  5        7.1%      22.1%      32.4%
+  10  15       5.1%      18.3%      28.0%
+  10  25       3.1%      13.1%      23.6%
+  20  5        4.9%      18.3%      26.9%
+  20  15       3.3%      14.9%      22.3%
+  20  25       2.0%      10.4%      19.0%
+  30  5        3.0%      13.3%      22.2%
+  30  15       1.9%      10.6%      18.2%
+  30  25       1.0%       7.0%      14.5%
+  all          3.5%      14.2%      24.6%
+
+WHERE PLAYERS LOSE (share of lost missions)
+  Level 1:   0.0% of losses
+  Level 2:   7.1% of losses, usually Shield 86.5%, Power 9.9%, Air & Water 3.7%
+  Level 3:  24.7% of losses, usually Power 51.8%, Air & Water 26.0%, Shield 12.3%, Food 9.9%
+  Level 4:  34.2% of losses, usually Food 33.1%, Power 27.6%, Air & Water 20.4%, Shield 19.0%
+  Level 5:  22.2% of losses, usually Food 56.8%, Air & Water 34.0%, Shield 5.1%, Power 4.1%
+  Level 6:  11.9% of losses, usually Shield 48.5%, Food 20.5%, Air & Water 20.0%, Power 11.1%
+
+EVERY CHOICE: its share of winning missions (a step with 3 options is balanced when each is near 33%)
+  L1 · Fill the last seat
+       20.4% of wins     2.1% of its tries won   Science lab kit
+       43.5% of wins     4.5% of its tries won   Box of spare parts
+       36.1% of wins     3.8% of its tries won   Seeds and soil
+  L2 · Storm alert
+       37.6% of wins     3.9% of its tries won   Build a shelter from water bags and food boxes
+       34.9% of wins     3.7% of its tries won   Keep working on the experiment
+       27.4% of wins     2.9% of its tries won   Turn the fuel tanks to the Sun and power down
+  L2 · Fix the water filter
+       36.4% of wins     3.9% of its tries won   Run the cleaning machine now
+       14.5% of wins     1.5% of its tries won   Drink less until Mars
+       49.0% of wins     5.2% of its tries won   Put in the spare filter
+  L2 · Pick a landing spot
+       35.9% of wins     3.8% of its tries won   The flat plain — smooth and sunny
+       41.0% of wins     4.4% of its tries won   Next to the crater cliff — sheltered
+       23.1% of wins     2.5% of its tries won   The old river bed — best rocks, bumpy
+  L3 · Protect the base
+       19.4% of wins     2.2% of its tries won   Leave it and start exploring
+       38.7% of wins     4.4% of its tries won   Pile bags of Mars soil over the bedroom
+       41.9% of wins     4.8% of its tries won   Bury the whole base
+  L3 · Stop the air leak
+       36.6% of wins     4.5% of its tries won   Ask Mission Control what to do
+       42.5% of wins     5.2% of its tries won   Patch it yourself, right now
+       20.8% of wins     2.5% of its tries won   Close off the leaking room
+  L3 · Make oxygen
+       35.7% of wins     4.6% of its tries won   Run it day and night
+       41.1% of wins     5.4% of its tries won   Run it only in sunlight
+       23.2% of wins     3.0% of its tries won   Turn it off and use the tanks
+  L4 · Save the panels
+       27.0% of wins     4.4% of its tries won   Fold them away and use the battery
+       37.5% of wins     6.0% of its tries won   Leave them out to catch the last light
+       35.5% of wins     5.7% of its tries won   Fold half of them, in the rising wind
+  L4 · Clean the panels
+       27.4% of wins     7.2% of its tries won   Go outside and brush them
+       30.2% of wins     7.9% of its tries won   Wait for the wind to clean them
+       42.4% of wins    11.2% of its tries won   Send the little robot
+  L5 · Plan the farm
+       38.2% of wins    13.9% of its tries won   A big farm
+       51.7% of wins    18.7% of its tries won   A small garden
+       10.2% of wins     3.7% of its tries won   No farm — eat packed food
+  L5 · Find water
+       45.8% of wins    25.3% of its tries won   Clean used water at full power
+       31.9% of wins    17.7% of its tries won   Drill for ice under the ground
+       22.4% of wins    12.4% of its tries won   Give the plants less water
+  L5 · Save the lettuce
+       35.3% of wins    22.9% of its tries won   Give the plants your drinking water
+       43.0% of wins    27.9% of its tries won   Pick the lettuce early
+       21.7% of wins    14.2% of its tries won   Fix the pump first
+  L6 · Survive two storms
+       37.1% of wins    32.1% of its tries won   Everyone into the shelter
+       35.0% of wins    30.1% of its tries won   Two hide, one keeps the panels clean
+       27.9% of wins    23.9% of its tries won   Finish the experiment first
+  L6 · Fix the air
+       37.5% of wins    60.9% of its tries won   Build a new one from spare parts
+       30.1% of wins    48.8% of its tries won   Close the greenhouse and use its air
+       32.4% of wins    52.9% of its tries won   Everyone rests to breathe less
+  L6 · Collect rocks
+       27.9% of wins    65.5% of its tries won   The whole crew drives to the old river bed
+       33.6% of wins    79.2% of its tries won   Send the rover
+       38.5% of wins    90.6% of its tries won   Collect rocks near the base
+
+OPTIONS IN MORE THAN 70% OF WINNING MISSIONS (an always-right choice)
+  none
+
+OTHER STEPS (share of winning missions)
+  L1 · Stow your gear:  17.3%  Water bags + Spare water filter
+  L1 · Stow your gear:  15.3%  Water bags + First-aid kit
+  L1 · Stow your gear:  15.6%  Water bags + Tool kit
+  L1 · Stow your gear:  17.9%  Spare water filter + First-aid kit
+  L1 · Stow your gear:  18.0%  Spare water filter + Tool kit
+  L1 · Stow your gear:  15.9%  First-aid kit + Tool kit
+  L2 · Land on Mars:  63.8%  Right order first time
+  L2 · Land on Mars:  36.2%  Wrong once, then right
+  L6 · Pick your crew:   7.6%  Engineer + Air and Water Expert + Plant Expert
+  L6 · Pick your crew:  14.2%  Engineer + Air and Water Expert + Doctor
+  L6 · Pick your crew:   6.9%  Engineer + Air and Water Expert + Scientist
+  L6 · Pick your crew:  14.5%  Engineer + Plant Expert + Doctor
+  L6 · Pick your crew:   6.6%  Engineer + Plant Expert + Scientist
+  L6 · Pick your crew:  12.5%  Engineer + Doctor + Scientist
+  L6 · Pick your crew:  12.0%  Air and Water Expert + Plant Expert + Doctor
+  L6 · Pick your crew:   5.1%  Air and Water Expert + Plant Expert + Scientist
+  L6 · Pick your crew:  10.2%  Air and Water Expert + Doctor + Scientist
+  L6 · Pick your crew:  10.4%  Plant Expert + Doctor + Scientist
+  crates (best 5)
+        7.5% of its tries won   2×P 2×L 3×F 1×S
+        7.2% of its tries won   2×P 2×L 2×F 2×S
+        6.9% of its tries won   3×P 2×L 2×F 1×S
+        6.9% of its tries won   2×P 3×L 2×F 1×S
+        6.8% of its tries won   2×P 1×L 2×F 3×S
+  battery sliders (best 5)
+       11.8% of its tries won   3/3/1 blocks
+       11.6% of its tries won   2/3/2 blocks
+       11.3% of its tries won   1/3/3 blocks
+       11.3% of its tries won   3/2/2 blocks
+       10.9% of its tries won   2/2/3 blocks
+
+PLAYERS WHO ARE CAREFUL PART OF THE TIME (careful = looks at every move, takes the safest; otherwise a random move)
+  careful on     all steps   only the choices   only the hands-on steps
+  0%              3.4%               3.4%                      3.6%
+  25%            15.9%              11.0%                      5.5%
+  50%            44.0%              27.3%                      8.2%
+  75%            80.7%              54.6%                     11.0%
+  100%          100.0%              88.6%                     14.5%
+
+A CAREFUL PLAYER (looks at every move, takes the one that leaves the safest state)
+  10  5    wins
+  10  15   wins
+  10  25   wins
+  20  5    wins
+  20  15   wins
+  20  25   wins
+  30  5    wins
+  30  15   wins
+  30  25   wins
+
+CAN ANY PLAYER WIN? (search of every path, safest first)
+  10  5    yes, a winning path exists  (0 dead-end states looked at)
+  10  15   yes, a winning path exists  (0 dead-end states looked at)
+  10  25   yes, a winning path exists  (0 dead-end states looked at)
+  20  5    yes, a winning path exists  (0 dead-end states looked at)
+  20  15   yes, a winning path exists  (0 dead-end states looked at)
+  20  25   yes, a winning path exists  (0 dead-end states looked at)
+  30  5    yes, a winning path exists  (0 dead-end states looked at)
+  30  15   yes, a winning path exists  (0 dead-end states looked at)
+  30  25   yes, a winning path exists  (0 dead-end states looked at)
+
+351.9 s

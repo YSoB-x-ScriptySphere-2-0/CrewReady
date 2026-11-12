@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#1C2B63" />
+      <stop offset="100%" stop-color="#0B1437" />
+    </radialGradient>
+    <linearGradient id="visor" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#22D7E6" />
+      <stop offset="100%" stop-color="#0F8F9C" />
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F5B700" />
+      <stop offset="100%" stop-color="#E8A100" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background tile -->
+  <rect width="512" height="512" rx="104" fill="url(#bgGlow)" />
+  <rect width="512" height="512" rx="104" fill="none" stroke="#3A4A8C" stroke-width="8" />
+
+  <!-- Outer Orbit Ring -->
+  <ellipse cx="256" cy="256" rx="200" ry="70" fill="none" stroke="#22D7E6" stroke-width="4" stroke-dasharray="14 10" transform="rotate(-25 256 256)" opacity="0.6" />
+
+  <!-- Central Astronaut Helmet -->
+  <g transform="translate(0, -10)">
+    <!-- Helmet Outer Shell -->
+    <path d="M 176 160 C 176 100, 336 100, 336 160 C 368 180, 376 270, 344 320 L 328 350 C 310 370, 202 370, 184 350 L 168 320 C 136 270, 144 180, 176 160 Z" fill="#F4F7FF" stroke="#3A4A8C" stroke-width="8" stroke-linejoin="round" />
+
+    <!-- Helmet Collar -->
+    <path d="M 180 345 L 160 395 C 190 415, 322 415, 352 395 L 332 345 Z" fill="#14204D" stroke="#3A4A8C" stroke-width="8" stroke-linejoin="round" />
+
+    <!-- Cyan Visor -->
+    <path d="M 184 195 C 184 150, 328 150, 328 195 C 342 225, 342 275, 328 300 C 310 325, 202 325, 184 300 C 170 275, 170 225, 184 195 Z" fill="url(#visor)" stroke="#06202B" stroke-width="6" />
+
+    <!-- Visor Reflection Highlight -->
+    <path d="M 200 185 C 220 170, 260 170, 275 175 C 255 185, 220 195, 200 225 C 195 210, 195 195, 200 185 Z" fill="#FFFFFF" opacity="0.65" />
+
+    <!-- Star Badge on Collar -->
+    <path d="M 256 365 L 261 378 L 275 378 L 264 386 L 268 399 L 256 391 L 244 399 L 248 386 L 237 378 L 251 378 Z" fill="url(#gold)" />
+  </g>
+</svg>

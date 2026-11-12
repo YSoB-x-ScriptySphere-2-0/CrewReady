@@ -1,10 +1,26 @@
-# CrewReady: Beyond Us — Final Plan v9
+# CrewReady: Beyond Us — Final Plan v10.1
 
 NASA Space Apps Challenge 2026 · Challenge: **Build a Junior Astronaut Mission Trainer** · Team CrewReady, Bangladesh
 
-This is the plan the whole team follows for the game and the videos. It replaces every earlier plan. If another file disagrees with this one, this one wins.
+This is the plan the whole team follows for the game and the videos. It replaces every earlier plan (v9 included). If another file disagrees with this one, this one wins.
 
 **How to read it.** Sections 1–3 say what we are building and why it can win. Sections 4–6 are the heart: the story, the rules, and all six levels in full — what happens, what the player can choose, what each choice does, what wins and what fails. Sections 7–9 cover the rest of the app, the data and the sources. Sections 10–13 are the team, the videos, the schedule and the final checklist.
+
+### What changed in v10 (12 Nov 2026)
+
+The story, the four meters, the six levels and every number are **unchanged**. What changed is how the game is shown, taught and shipped.
+
+| # | Change | Where |
+|---|---|---|
+| 1 | **Landscape everywhere.** One wide stage on phones, tablets and laptops. A phone held upright shows the same stage turned sideways, so nobody is blocked | §7.1 |
+| 2 | **Welcome screen on every launch.** While the game loads, the real-looking crew turns into the game crew. Then Play and How to Play | §7, part 0 |
+| 3 | **See it, don't read it.** Every decision opens with the danger happening in the scene; choices are pictures with 2–5 words; results are acted out, then drawn as a chain. A word budget per screen. Text only labels | `docs/BUILD_SEQUENCE.md` §4.1a |
+| 3b | **New look: deep space, cinematic.** Dark navy scenes, the 3D crew large in the frame, a cyan main button. The paper-card look is retired | `docs/BUILD_SEQUENCE.md` §4 |
+| 4 | **Nova wears pink.** Orbit is teal, Nova is pink, Twinkle is cyan | §7, done |
+| 5 | **A learning layer.** See what a choice touches before you pick, watch the chain reaction after, try one small toy per idea, collect Space Words, have any text read aloud | §5.4 |
+| 6 | **English and Bangla.** A switch on the welcome screen | §7.2 |
+| 7 | **Works offline after the first visit** (installable web app) | §9 |
+| 8 | **Rules from the Bangladesh guides we had missed:** nobody under 18 seen, heard or named in a video; AI-made art credited; real deadlines; a judge playing within 15 seconds | §3.3, §10, §11, §12 |
 
 ---
 
@@ -27,11 +43,12 @@ These points come from the written challenge and from the briefing by its author
 | "There is no unlimited resource mode in space" | Every option changes at least two things. The game refuses to load a level that breaks this rule | Any choice, any level |
 | Five systems: life support, radiation shielding, power budgeting, food production, communication delay | Each is the main subject of one level and all five return in level 6 | Section 6 |
 | Coupled systems: a decision in one must visibly hit another | A reason line after every choice, and choices that come back in later levels | "Remember the panels you left out?" |
-| Use NASA DONKI so today's solar weather shifts in-game risk | Live DONKI sets the storm size in levels 2 and 6 and the speed of Quick Run | DONKI card with today's date |
+| Use NASA DONKI so today's solar weather shifts in-game risk | Live DONKI sets the storm size in levels 2 and 6 and the speed of Fly | DONKI card with today's date |
 | Real data, attributed, never static shown as live | A source line under every screen; a LIVE / ARCHIVE / GAME ESTIMATE badge on every data card | Bottom of every screen |
 | Browser-friendly, no install, no account | A static web app that opens from a link on a phone | The link |
 | Replayable; failure teaches | Mission Replay instead of Game Over; storm, dust and crew change between runs | Fail any level |
 | "Fun and accurate are the same goal" | The fun part — deciding under pressure — is the accurate part | The whole mission |
+| "Teaches by doing rather than by telling" (challenge summary) | One touch toy per idea, a preview of what each choice touches, a picture chain after it | §5.4 |
 
 ---
 
@@ -67,6 +84,25 @@ Local judges tick which global category they nominate a project for, and global 
 | Most Inspirational | Capturing hearts | A child commanding a crew; the Nazrul line | A real play-test moment (hands only) |
 | Local Impact | Greatest potential for local impact | Low-end phones, no login, Bangla planned | Say it in the Impact section |
 | Best Mission Concept | Most plausible concept and design | Decisions follow real mission logic | Sources and the "what we simplified" page |
+
+### 3.3 What the Bangladesh build guide says about this challenge
+
+From the event's own build guide (`nasa guidelines/space-apps-2026-bangladesh-build-guide.md`, challenge 03). Each line is a risk it names, and our answer.
+
+| The guide says | Our answer |
+|---|---|
+| **Killer demo:** hand a judge a phone; within 15 seconds they are playing, failing, then succeeding, with no explanation | Welcome → Play → the Sol 214 hook. One tap and two meters drop. Target: first choice made within 15 seconds of the link opening |
+| **The trap:** education projects score low on Relevance because NASA data ends up as decoration. Make one mission depend on real data, and name the dataset on camera | Level 2's storm size comes from DONKI. The video says "NASA DONKI" and "NOAA" out loud |
+| Points sit in **User experience and Presentation** | Landscape stage, big crew, one main button per screen, footage that fills a 16:9 video |
+| "Game design on the night is what kills these projects" | The design is frozen in this plan. On the night we only build and film |
+| Works with the wifi off; assets cached by a service worker | §9 |
+| English and Bangla strings | §7.2 |
+| Touch targets 44 px or more, keyboard playable, reduced motion respected, **colour never the only signal** | Every meter has an icon and a name as well as a colour. Build sequence §3 |
+| Saved progress must never crash the game | Every read and write of saved data is guarded; an empty save starts a fresh game |
+| Credit every NASA image with its source link | Sources page |
+| **No recognisable name, voice or face of anyone under 18** in a video or the submission | §10 and §11.2 |
+| Open source; with no licence named, NASA applies Apache 2.0 | We name **Apache-2.0** ourselves |
+| `docs/AI_USE.md`: every AI tool, what it was used for, and what we did ourselves | Written in the publish step |
 
 ---
 
@@ -128,8 +164,8 @@ Why four and not six: the challenge says two or three core resources work better
 ### 5.2 How time and supplies work
 
 - **Sols.** A sol is a Mars day. Each level covers a stretch of the mission, and a sol counter runs on screen.
-- **Living costs.** A crew eats and breathes whether or not anything goes wrong. On entering levels 2–6: Air & Water −5, Food −5. The player watches the meters tick down.
-- **Sunlight.** On Mars the panels recharge the batteries. On entering levels 4, 5 and 6: Power +10 — unless the panels are buried in dust.
+- **Living costs.** A crew eats and breathes whether or not anything goes wrong. On entering levels 2–6: Air & Water −2, Food −2. The player watches the meters tick down.
+- **Sunlight.** On Mars the panels recharge the batteries. On entering levels 4, 5 and 6: Power +15 — unless the panels are buried in dust.
 - **No free choices.** Every option changes at least two things: two meters, or a meter and stars, or a meter now and a consequence later.
 - **Consequences come back.** Some choices set a marker that pays or costs in a later level. When it triggers, Twinkle says so: "Remember the panels you left out in the storm?"
 - **Real data sets the size of events.** Storm size X (levels 2 and 6) comes from DONKI: small 10, medium 20, large 30. Dust size D (level 4) is one of three real cases: 5, 15 or 25.
@@ -148,6 +184,33 @@ Why four and not six: the challenge says two or three core resources work better
 
 The success screen then lists the six things the player learned (section 6.8), each with its source, and NASA's picture of the day as the reward.
 
+### 5.4 How the game teaches (new in v10)
+
+A 7-year-old does not learn "coupled systems" from a sentence. They learn it by touching one thing and seeing another thing move. Six tools do that. None of them changes a meter or adds a fact: each one shows what sections 5 and 6 already say.
+
+| Tool | What the child does | The idea it makes easy | Where |
+|---|---|---|---|
+| **Event moment** | Watches the danger happen before choosing: a wave of storm light, a dust wall, air hissing out (2–3 s, no reading) | Space hazards are real things you can see coming | Every decision |
+| **Look first** | Taps a choice once. The meters it will touch wiggle and show an up or down arrow, with no numbers. A second tap on **GO** confirms | Every choice touches more than one system | Every decision |
+| **Chain reaction** | Watches three pictures link up after a choice: lights dim → plants slow → Food −5 | Why one system hits another | Every result |
+| **Try it** | Plays a 10-second toy before the level's first decision. No score, no cost, can be skipped | The level's one big idea, felt by hand | Levels 2–5 (below) |
+| **Space Words** | Taps an underlined word and gets a picture and one short sentence. The word goes into the Space Book | Hard words: sol, radiation, recycler, carbon dioxide | Wherever the word first appears |
+| **Read to me** | Taps the speaker on any speech bubble to hear it | Reading is not a barrier | Every bubble (hidden if the device has no voice for the language) |
+| **I learned** | Flips six badges at the end, one true sentence each | Something to say to a parent | Success screen |
+
+**The four Try-it toys.** Each uses only a fact already in section 6.
+
+| Level | Toy | What the hand feels |
+|---|---|---|
+| 2 | Drag water bags between the Sun's rays and the crew | The rays stop at the water. Thick things are armour |
+| 3 | Tap **Send**. A dot crawls to Earth and back while the cabin clock runs | Help from Earth arrives late |
+| 4 | Dust falls on a solar panel and the power bar sinks. Wipe it and the bar climbs | Solar power depends on a clear panel and a clear sky |
+| 5 | Tap to water a plant. The water bar drops as the plant grows | Food costs water |
+
+Levels 1 and 6 need no toy: packing crates and picking a crew are the lesson.
+
+**For grown-ups.** The Sources page ends with a short "Use it in class" note: 15 minutes, six things a child can say afterwards (§6.8), no login, no data collected.
+
 All numbers in section 6 are starting values. The balance script in hours 16–22 plays every possible path and tunes them so that careful play wins, greedy play fails, and no single option is always best.
 
 ---
@@ -164,7 +227,7 @@ For each level: what it teaches, what happens, every choice and its outcome, how
 
 **What happens.** The launch window closes tomorrow, and the next one is 26 months away. The player sees the cargo bay, four empty bins and eight crates. Twinkle: "Eight crates, four needs. What will you run short of?"
 
-**Step 1 — Pack (hands-on).** Every meter starts at 40. The player drags 8 crates into four bins. Each crate adds 10 to that meter.
+**Step 1 — Pack (hands-on).** Every meter starts at 40. The player drags 8 crates into four bins. Each crate adds 15 to that meter.
 
 | Bin | Adds to | What is in the crate |
 |---|---|---|
@@ -433,14 +496,38 @@ Build order is top to bottom. If time runs short, cut from the bottom (section 1
 
 | # | Part | Priority | What it is, and why |
 |---|---|---|---|
-| 0 | **Opening hook** | Must | First launch only, about 15 seconds. Alarm, red light: "SOL 214 · JEZERO BASE. Commander — dust storm in 60 seconds. Fold the panels or leave them out?" One tap, two meters jolt. Then: "Every choice costs something. How did we get here?" → the three story cards → Home. It throws the child into the best moment of the game before explaining anything, and it is the same footage that opens both videos |
+| W | **Welcome** | Must | **Every time the game opens.** While it loads, the picture of two real-looking young astronauts turns into Orbit, Nova and Twinkle, in step with the loading bar. Then the bar becomes **Play**, with **How to Play** under it and the **EN / বাংলা** switch top right. It says "you become the astronaut" without a word, and it gives the videos their title shot. Play goes to the hook the first time and to Home after that |
+| 0 | **Opening hook** | Must | First Play only, about 15 seconds. Alarm, red light: "SOL 214 · JEZERO BASE. Commander — dust storm in 60 seconds. Fold the panels or leave them out?" One tap, two meters jolt. Then: "Every choice costs something. How did we get here?" → the three story cards → Home. It throws the child into the best moment of the game before explaining anything, and it is the same footage that opens both videos |
 | 1 | **Missions → Mars** | Must — most important | The six levels. A mission map shows six stops from Earth to the outpost; other worlds appear locked |
-| 2 | **Quick Run** | Must — second | A 60-second, three-lane dodge game. Dodge debris, collect stardust. Today's real storm index sets the hazard speed, shown as "Space weather today: Kp 3". It is the fast, easy way in for a child who is not ready to read |
-| 3 | **Profile** | Important | Call-sign chosen from a list (no typed personal data), rank, six level badges, a **leaderboard** of the best runs on this device, and settings: sound, reduced motion, replay intro, reset, Sources & credits |
+| 2 | **Fly** | Must — second | An **endless** three-lane runner in space, in the spirit of Subway Surfers but with our own look. Orbit or Nova flies on and on: **tap the left or right half of the screen** to change lane, **swipe up** (or tap the Hop button) to hop low rocks. Dodge rocks and debris, grab stardust. Three **powers** appear as glowing pickups and switch on by themselves for about 6 seconds, one at a time: **Shield** (takes one hit), **Magnet** (pulls stardust in), **Boost** (fast and can't be hit). Three hull pips; a hit costs one and the run ends at zero, with distance and stardust counted. It speeds up the further you fly. Today's real storm index sets the starting speed and how fast it speeds up, shown as "Space weather today: Kp 3". Best distance and stardust are saved on the device. It is the fast, easy way in for a child who is not ready to read |
+| 3 | **Profile** | Important | Pick your astronaut — **Orbit (teal suit) or Nova (pink suit)**. Call-sign chosen from a list (no typed personal data), rank, six level badges, the **Space Book** of collected words, a **leaderboard** of the best runs on this device, and settings: sound, reduced motion, replay intro, reset, Sources & credits |
 | 4 | **Resources** | Important | The outpost's four systems as cards: one kid sentence on what each does, its source, and two upgrade steps bought with stardust (+5 to that meter's starting value). The rocket carries **only 4 upgrades in total** — no unlimited mode here either |
 | 5 | **Training** | Locked — "Coming in the next update" | Three locked cards: **Mind** (mini brain games), **Body** (real astronaut exercise), **Reels** (short NASA clips) |
 
-Twinkle appears on the hook, the home screen, hints and Mission Replay.
+Twinkle appears on the welcome screen, the hook, the home screen, hints and Mission Replay.
+
+### 7.1 One wide screen (landscape)
+
+**Decision: the whole game is landscape, on every device.** Reasons:
+
+- **It looks like a game.** The games kids call "real games" are wide: a place you look into, the crew on one side, the action on the other. Our upright layout stacked text over buttons, and that is what a quiz looks like.
+- **Short height forces short text.** There is no room for a paragraph, so there is one idea per screen.
+- **One layout, not two.** Phone, tablet, laptop and projector show the same stage at different sizes. Half the layout work, half the bugs.
+- **It films well.** Game footage fills a 16:9 video with no black bars. Presentation is 20 points.
+- **Two thumbs.** Crew and meters stay visible while both thumbs reach the choices.
+
+**What it costs, and the fix.** A website cannot force a phone to turn (iPhones never allow it). So:
+
+1. Phone held sideways: the stage fills the screen.
+2. Phone held upright: the same stage is drawn turned a quarter-turn, filling the screen, with a 2-second "Turn your phone" hint from Twinkle. The child turns the phone and carries on. Nobody meets a blocking screen, even with rotation lock on.
+3. On Android, tapping Play also asks for full screen and a landscape lock. If the phone says no, nothing breaks.
+4. Installed as an app, it opens in landscape by itself.
+
+**Stage rules.** Smallest stage 640 × 360. Everything scales with the stage height. Every level screen has the same three zones: meters across the top, the crew and their speech on the left, the thing you touch on the right.
+
+### 7.2 English and Bangla
+
+The switch sits on the welcome screen and in Profile. All text a player sees lives in one strings file per language. A line with no Bangla yet shows in English, so the switch can ship early and fill up. Order of translation: welcome and buttons → the hook and story → Twinkle's lines → level text. **A Bangla speaker on the team checks every line**; AI drafts are not shipped unread. Baloo Da 2, our display font, already draws Bangla.
 
 ---
 
@@ -452,8 +539,8 @@ All endpoints were tested with our key on 12 Nov 2026.
 
 | Data | Agency | Endpoint | Key? | Where in the game | Live or archive |
 |---|---|---|---|---|---|
-| DONKI — CME, SEP, GST, notifications | NASA | `https://api.nasa.gov/DONKI/CME?startDate=…&endDate=…&api_key=KEY` (same for `SEP`, `GST`, `notifications`) | Yes | Levels 2 and 6, Quick Run, home | Live, archive fallback |
-| Planetary K index | NOAA SWPC | `https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json` | No | Quick Run, level 2 | Live, archive fallback |
+| DONKI — CME, SEP, GST, notifications | NASA | `https://api.nasa.gov/DONKI/CME?startDate=…&endDate=…&api_key=KEY` (same for `SEP`, `GST`, `notifications`) | Yes | Levels 2 and 6, Fly, home | Live, archive fallback |
+| Planetary K index | NOAA SWPC | `https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json` | No | Fly, level 2 | Live, archive fallback |
 | NeoWs — near-Earth asteroids | NASA | `https://api.nasa.gov/neo/rest/v1/feed?start_date=…&end_date=…&api_key=KEY` | Yes | Story card 1 | Live, archive fallback |
 | EPIC Earth photo | NASA | `https://epic.gsfc.nasa.gov/api/natural` | No | Level 1 | Live, archive fallback |
 | InSight Mars weather | NASA | `https://api.nasa.gov/insight_weather/?api_key=KEY&feedtype=json&ver=1.0` | Yes | Level 3 | Archive only (2020) |
@@ -488,6 +575,8 @@ The full fact sheet, with a source and a "confirmed" mark for every sentence a p
 4. **Tapping a source line** opens the Sources page: every dataset, its link, where it is used, the "what we simplified" table and the honesty note (section 4.3).
 5. **In the videos,** whenever a fact or dataset is spoken, a small citation sits in the lower-left corner for at least 2 seconds, above the subtitles.
 6. No source, no sentence.
+7. **Generated and third-party content is credited** on the Sources page and both end cards: the character and welcome art (made by the team with an AI image tool — name the tool), fonts, icons, sounds.
+8. **No NASA logo anywhere**, including on suits in any artwork. Some early mock-ups show one on a backpack; that art is not used.
 
 ### 8.4 The NASA API key — when and how
 
@@ -504,7 +593,14 @@ The full fact sheet, with a source and a "confirmed" mark for every sentence a p
 
 ## 9. Technology
 
-Vite + React + TypeScript + Tailwind + Zustand. A static site: no server, no accounts, no personal data. Each level is a JSON file in `src/content/levels/`, so the Science and Story leads can change words and numbers without touching code. The game rules are plain functions with tests, including one that rejects any choice that changes fewer than two things. Code layout and ready-to-paste Claude prompts are in `docs/08_MVP_SCOPE_AND_BUILD_SEQUENCE.md`.
+Vite + React + TypeScript + Tailwind + Zustand. A static site: no server, no accounts, no personal data. Each level is a JSON file in `src/content/levels/`, so the Science and Story leads can change words and numbers without touching code. The game rules are plain functions with tests, including one that rejects any choice that changes fewer than two things.
+
+New in v10:
+- **One stage.** A single landscape stage component wraps every screen (§7.1).
+- **Offline.** A service worker caches the built game, the art and the saved NASA answers, so after one visit it opens with no connection. A web-app manifest sets landscape and the icon.
+- **Safe saving.** Every read and write of saved progress is wrapped so a blocked or broken store starts a fresh game instead of a blank page.
+- **Strings.** `src/content/strings.en.ts` and `strings.bn.ts`; missing Bangla falls back to English.
+- **Licence.** Apache-2.0. `docs/AI_USE.md` lists each AI tool, what it did and what we did. Code layout and ready-to-paste Claude prompts are in `docs/08_MVP_SCOPE_AND_BUILD_SEQUENCE.md`.
 
 ---
 
@@ -516,14 +612,18 @@ Write the real names here once and use them everywhere.
 |---|---|---|
 | **Captain** | [NAME 1] | Scope, schedule, check-ins, Profile and Resources screens, project page, submission |
 | **Engine Dev** | [NAME 2] | Game rules, consequences, NASA service, tests, balance |
-| **UI Dev** | [NAME 3] | Hook, story cards, home, mission screens, Quick Run, publishing |
+| **UI Dev** | [NAME 3] | Hook, story cards, home, mission screens, Fly, publishing |
 | **Science & Data Lead** | [NAME 4] | NASA data, every number and fact, source lines, Sources page |
 | **Story & Video Lead** | [NAME 5] | Story, kid-level text, Twinkle, both videos, subtitles |
 | Sixth member | [NAME 6] | Play-testing if available; named in credits |
 
 **Working rules.** One board (To do / Doing / Done). A 10-minute check-in every 6 hours. Each person works in their own folder. Only the Captain merges after the freeze.
 
-**The teamwork log.** At every check-in, write one line in a shared note: who found or decided what, who they talked it through with, and what changed because of it. Grab a 10-second screen recording too. The teamwork part of the video is written from this log, so that it is true and specific — judges score "evidence of genuine collaboration", and a list of job titles is not evidence. Members under 18: check the event's rule on showing minors, and if in doubt use first names, hands and screens only.
+**The teamwork log.** At every check-in, write one line in a shared note: who found or decided what, who they talked it through with, and what changed because of it. Grab a 10-second screen recording too. The teamwork part of the video is written from this log, so that it is true and specific — judges score "evidence of genuine collaboration", and a list of job titles is not evidence. **The under-18 rule (Participants Guide §08, build guide).** "No recognisable names, voices, or faces of anyone under 18" in any video or submission. For us that means:
+- The narrator is 18 or older.
+- Play-test footage shows hands and the screen only. The child is never named; "a nine-year-old" is fine.
+- Orbit and Nova are drawn characters, not real children, so they are fine.
+- **Ask the Local Lead on Friday morning:** the same guide says every member must be named in both videos. If a member is under 18, which rule wins, and how should they be listed?
 
 ---
 
@@ -538,10 +638,15 @@ Write the real names here once and use them everywhere.
 - **Cite sources** as small lower-left text whenever a fact or dataset is mentioned.
 - **Name the future:** Crew Mode after level 6, more worlds, and the Training tab.
 - **Carry burned-in English subtitles** and name every team member.
+- **Say the NASA data out loud** ("NASA DONKI", "NOAA") and show the team name and the challenge name. The guide lists these as required content.
+- **Open on the welcome screen's change** (real crew → game crew, 2 seconds), then cut to the Sol 214 alarm.
+- **Credit generated content** on the end card: the art tool, and Claude for code and text drafts.
+
+**Deadlines (Participants Guide).** The 240-second local-judging video: **Friday 13 Nov, 6:30 PM** — YouTube link in the form, and the file in the Drive folder. The 30-second global video: **Saturday 14 Nov, 12:00 noon** — YouTube or Vimeo, link in the form and on the NASA project page, with the page finished. All game footage is now landscape, full frame.
 
 ### 11.2 Voice
 
-The narrator is one of us — a girl on the team, speaking as herself. First person, warm, a little playful, the way you would explain the game to a friend. Short sentences. Contractions. One smile in the voice at the hook and one at the close. No announcer voice and no long technical words; where a NASA name is needed, say it plainly and move on.
+The narrator is one of us — a woman on the team, **aged 18 or older**, speaking as herself. If nobody fits, an adult member narrates and the script's "I" lines move to them. First person, warm, a little playful, the way you would explain the game to a friend. Short sentences. Contractions. One smile in the voice at the hook and one at the close. No announcer voice and no long technical words; where a NASA name is needed, say it plainly and move on.
 
 ### 11.3 The 240-second video (target 215 s, about 470 words)
 
@@ -584,53 +689,66 @@ The narrator is one of us — a girl on the team, speaking as herself. First per
 - [ ] Future plans: Crew Mode, more worlds, Training
 - [ ] Under 235 s and under 30.0 s on the exported files
 - [ ] The API key never visible
+- [ ] Team name shown; NASA data named out loud
+- [ ] No name, voice or face of anyone under 18
+- [ ] Generated art and AI use credited on the end card
+- [ ] Each link opened in a private window
 
 ---
 
-## 12. The 40-hour schedule
+## 12. The schedule
 
-### 12.1 Build and video in parallel
+### 12.1 The real clock
 
-Working hours from the start. Plan two sleep breaks between blocks. The video track starts at hour 0, because teamwork footage cannot be made afterwards.
+v9 planned 40 free hours. The event's run of show (Participants Guide §02, §08) is tighter: **the 240-second video is due at 6:30 PM on day one.** So the game shown in that video has to exist before we walk in. Step names (R1, D1…) are from `docs/BUILD_SEQUENCE.md`.
 
-| Hours | Build track | Video track | Must be true at the end |
+| When | Build | Video and page | Must be true at the end |
 |---|---|---|---|
-| **0–2** | Captain: repo, board, names, scope frozen. Engine Dev: project set up and an empty app published. UI Dev: home layout. Science: reading list, facts to confirm | Story lead: lock both scripts, start the teamwork log, choose subtitle and citation styles | A public link shows a home screen |
-| **2–8** | Game rules and tests; packing, stowing and decision screens; level 1; NASA snapshot run | Scratch narration; title, role and end cards; first teamwork clips | **Level 1 playable on the public link** |
-| **8–16** | Levels 2–6; consequences; NASA service and badges; landing checklist; message clock; power sliders; crew pick; Mission Replay; Outpost Check | Storyboard every shot; film the Science lead and Engine Dev on the storm data; draft the problem section | **All six levels playable** |
-| **16–22** | Hook and story cards; Quick Run; Profile; Resources; balance script; play-test with a child; rewrite hard sentences; source lines everywhere | Film the play-test (hands only); rough-cut the parts that need no final footage: problem, teamwork, future | A first-timer finishes level 1 in 3 minutes unaided |
-| **22–26** | Training locked cards; Sources page; phone layout; bug fixes. **Freeze at hour 26** | Final narration; teamwork paragraph rewritten from the log | **Freeze — the published build is the filmed build** |
-| **26–32** | Bug fixes only. Captain: project page, AI-use note, README | Record all game footage (1080p, internet on, LIVE badge showing); edit the 240 s | Rough cut watched by all five |
-| **32–36** | Science lead checks every claim and citation in the video against `docs/06` | Finish the 240 s: subtitles, citations, sound; export | **240 s final** |
-| **36–38** | Captain: submission form; every link tested in a private window | Cut the 30 s from the same footage; subtitles; export | **30 s final** |
-| **38–40** | Submit; re-open everything in a private window | Upload both videos | **Submitted with time to spare** |
+| **Thu 12 Nov, today** | R0–R5: landscape stage, welcome, every built screen in the new look, event moments and chain reactions. F1: publish. D1–D2: real storm data. S1: Sources | Lock both scripts. Narrator chosen (18+). Scratch narration | **The film line:** a public link plays welcome → hook → six levels → Replay → Sources, with a real DONKI card |
+| **Fri 13, 07:00–11:30** | Bug fixes only. Register every member and role on the NASA site (08:30) | Record all game footage: 1080p, landscape, internet on, LIVE badge showing. Ask the Local Lead the §10 question | Footage in hand |
+| **Fri 13, 11:30–15:00** | L1: the learning layer, if the footage is done | Edit the 240 s: subtitles, citations, names. Rough cut ready for the 15:00 mentor round | A full rough cut |
+| **Fri 13, 15:00–18:30** | Fixes from mentor feedback | Apply feedback at the 18:00 round. Export. **Upload by 18:30:** YouTube link in the form, file in Drive | **240 s submitted** |
+| **Fri 13, evening** | L2, S2 (Fly), S3–S4, F2 (Bangla), in that order, as far as time allows | NASA project page, `docs/AI_USE.md`, README. Draft the 30 s for the 22:00 mentor round | Project page complete |
+| **Sat 14, to 09:00** | F3–F5: balance, play-test fixes, final pass. **Freeze at 09:00** | Re-record any shot the new build improves | The published build is the judged build |
+| **Sat 14, 09:00–12:00** | Nothing but emergencies | Finish the 30 s. **Upload by 12:00**; link in the form and on the project page. Open every link in a private window | **30 s and page submitted** |
+
+Confirm with the Local Lead: when the local event closes on Saturday, and that code written before Friday is accepted.
 
 ### 12.2 If we fall behind
 
 Three checkpoints decide cuts, so nobody argues at 3 a.m.
 
-- **Hour 8, level 1 not playable:** Resources upgrades are cut (the info cards stay).
-- **Hour 16, fewer than six levels:** Quick Run and Profile get their simplest versions; levels 5 and 6 lose one decision each.
-- **Hour 26:** freeze, no exceptions.
+- **Thursday midnight, the film line not reached:** stop restyling. Film what works on Friday morning; side screens wait.
+- **Friday 11:30, footage not recorded:** nobody builds until it is.
+- **Saturday 09:00:** freeze, no exceptions.
 
-Cut in this order: Bangla text → sound → Resources upgrades → leaderboard (keep badges) → the landing checklist → the third decision of level 5.
-**Never cut:** the six levels, the four meters, the hook, Mission Replay, source lines, live DONKI in level 2.
+Cut in this order: sound → Bangla level text (keep the switch and the buttons) → Resources upgrades → Space Words → Try-it toys → leaderboard (keep badges) → Fly → the welcome picture change (keep the screen).
+**Never cut:** the six levels, the four meters, landscape, the hook, Look first, Mission Replay, source lines, live DONKI in level 2, the Sources page.
 
 ---
 
 ## 13. Finished means
 
 - [ ] The public link opens with no login on a phone and a laptop
-- [ ] The hook and the three story cards play on first launch, with the FICTION tag
+- [ ] The hook and the three story cards play on the first Play, with the FICTION tag
 - [ ] A new player can finish all six levels; losing always offers a replay
 - [ ] Every option changes at least two things and shows a reason
 - [ ] At least four choices come back in a later level
 - [ ] Level 2 shows real DONKI data with a correct LIVE or ARCHIVE badge
 - [ ] The Outpost Check gives one of three results, and the six "I learned" lines appear
 - [ ] Every screen with a fact has a source line; the Sources page lists every dataset and the honesty note
-- [ ] Quick Run, Profile and Resources work; Training shows as locked
+- [ ] Fly, Profile and Resources work; Training shows as locked
 - [ ] The game still works with the internet off
 - [ ] `.env` is not in the repository; `.env.example` is
 - [ ] Both videos uploaded: hook, solution first, all members named, subtitles, citations, future plans
 - [ ] Project page complete: challenge named, datasets with links, AI use disclosed, every member with a role
 - [ ] The repository opens in a private window
+- [ ] The welcome screen plays on every launch, and its switch changes the language
+- [ ] The game is landscape on a phone held either way, with no blocking screen
+- [ ] A new player makes their first choice within 15 seconds of opening the link
+- [ ] Every decision shows what it touches before the player confirms
+- [ ] Every decision opens with an event moment; with the sound off and the words covered, a player can still tell what happened and what it cost
+- [ ] Nova wears pink everywhere; no NASA logo in any artwork
+- [ ] After one visit the game opens with the internet off
+- [ ] `LICENSE` (Apache-2.0) and `docs/AI_USE.md` exist; generated art is credited
+- [ ] No name, voice or face of anyone under 18 in any video or on the project page

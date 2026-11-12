@@ -1,0 +1,20 @@
+{
+  "name": "CrewReady: Beyond Us",
+  "short_name": "CrewReady",
+  "description": "Pack, survive the solar storm, and reach Mars. Real NASA data, 4 vital meters.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "theme_color": "#0B1437",
+  "background_color": "#0B1437",
+  "categories": ["education", "games"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

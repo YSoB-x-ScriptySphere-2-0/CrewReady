@@ -5,6 +5,7 @@ import {
   chooseOption,
   crewMods,
   enterLevel,
+  enterSteps,
   outpostCheck,
   packCrates,
   pickCrew,
@@ -26,7 +27,7 @@ describe('content', () => {
   it('rejects an option that changes only one thing', () => {
     const bad: Level = {
       ...LEVELS[2],
-      steps: [{ kind: 'choice', prompt: 'p', hint: 'h', options: [
+      steps: [{ kind: 'choice', task: 't', prompt: 'p', hint: 'h', options: [
         { label: 'free lunch', effects: { F: 10 }, reason: 'r' },
         { label: 'ok', effects: { F: 10, P: -5 }, reason: 'r' },
       ] }],
@@ -52,9 +53,9 @@ describe('amounts sized by real data', () => {
 });
 
 describe('level 1', () => {
-  it('each crate adds 10', () => {
+  it('each crate adds 15', () => {
     const out = packCrates(startMission(), step<CratesStep>(1, 0), [4, 2, 1, 1]);
-    expect(out.state.meters).toEqual({ P: 80, L: 60, F: 50, S: 50 });
+    expect(out.state.meters).toEqual({ P: 100, L: 70, F: 55, S: 55 });
   });
   it('needs exactly 8 crates', () => {
     expect(() => packCrates(startMission(), step<CratesStep>(1, 0), [4, 2, 1, 0])).toThrow();
@@ -90,7 +91,7 @@ describe('consequences come back', () => {
     expect(enterLevel(buried, LEVELS[4]).delta.P).toBeUndefined();
     const saved = chooseOption(withFlags(startMission(), 'spareParts'), leave).state;
     expect(saved.flags).not.toContain('panelsBuried');
-    expect(enterLevel(saved, LEVELS[4]).delta.P).toBe(10);
+    expect(enterLevel(saved, LEVELS[4]).delta.P).toBe(15);
   });
   it('the cliff landing reduces dust; a buried habitat reduces the last storm', () => {
     expect(enterLevel(withFlags(startMission(20, 15), 'cliff'), LEVELS[3]).state.D).toBe(10);
@@ -190,5 +191,57 @@ describe('the mission can be won and lost', () => {
     let i = 0;
     const r = play(() => picks[i++], [2, 2, 2, 2], ['scientist', 'engineer', 'botanist'], 30, 25);
     expect(r.lostAt).toBeDefined();
+  });
+
+  // A9: each Outpost Check result is reached by really playing all six levels (storm X 20, dust D 15,
+  // two crates per meter, water bags and tool kit in reach, landing checklist right, power split 3/2/2).
+  // `picks` is one option index per choice, in play order:
+  // L1 last seat · L2 storm, water, landing · L3 radiation, leak, oxygen · L4 panels, cleaning ·
+  // L5 farm, water, pump · L6 storm, air machine, samples.
+  const reach = (picks: number[], crewIds: string[]) => {
+    let i = 0;
+    const r = play(() => picks[i++], [2, 2, 2, 2], crewIds);
+    expect(r.state, `lost at level ${r.lostAt}`).toBeDefined();
+    expect(i).toBe(15);
+    return outpostCheck(r.state!);
+  };
+  it('reaches Outpost Survives: 3 stars, only Food healthy', () => {
+    // (F3 re-tuned the numbers, so this is a new path found by search.) Greedy-ish picks all the way:
+    // the last seat, storm, filter, landing, radiation, leak, oxygen, panels, cleaning, farm, water, pump, storm, air, rocks
+    const out = reach([2, 2, 2, 1, 0, 1, 2, 1, 1, 0, 1, 0, 0, 2, 1], ['scientist', 'engineer', 'medic']);
+    expect(out.result).toBe('survives');
+    expect(out.healthy).toEqual(['F']);
+  });
+  it('reaches Outpost Stable through stars: 10 stars, only Air & Water healthy', () => {
+    // (F3 re-tuned the numbers, so this is a new path found by search.) A star-chasing crew with a scientist:
+    const out = reach([0, 1, 2, 1, 0, 0, 1, 1, 0, 1, 2, 2, 1, 0, 1], ['scientist', 'medic', 'lifesupport']);
+    expect(out.result).toBe('stable');
+    expect(out.healthy).toEqual(['L']);
+  });
+  it('reaches Outpost Thriving: all four systems healthy and 6+ stars', () => {
+    // seeds; experiment, drink less, plain; bury the base, patch, sunlight; fold, robot;
+    // small garden, full-power cleaning, lettuce early; finish the experiment, new machine, rover
+    const out = reach([2, 1, 1, 0, 2, 1, 1, 0, 2, 1, 0, 1, 2, 0, 1], ['scientist', 'engineer', 'medic']);
+    expect(out.result).toBe('thriving');
+    expect(out.healthy).toHaveLength(4);
+  });
+});
+
+describe('enterSteps (level opening plays carry-overs one by one)', () => {
+  it('ends where enterLevel ends, for every level and flag mix', () => {
+    const flagSets = [[], ['panelsBuried'], ['cliff', 'buried'], ['panelsBuried', 'cliff', 'buried']];
+    for (const l of LEVELS)
+      for (const f of flagSets) {
+        const s = withFlags(startMission(20, 15), ...f);
+        const steps = enterSteps(s, l);
+        const end = steps.length ? steps[steps.length - 1].meters : s.meters;
+        expect(end).toEqual(enterLevel(s, l).state.meters);
+        expect(steps.map((x) => x.reason)).toEqual(enterLevel(s, l).reasons);
+      }
+  });
+  it('gives each carry-over its own change and the meter it is about', () => {
+    const steps = enterSteps(withFlags(startMission(20, 15), 'panelsBuried', 'cliff'), LEVELS[3]);
+    expect(steps.map((s) => s.delta)).toEqual([{ L: -2, F: -2 }, {}, {}]);
+    expect(steps.map((s) => s.about)).toEqual([['L', 'F'], ['P'], ['P']]);
   });
 });
