@@ -1,106 +1,72 @@
-// The story cards (BUILD_SEQUENCE.md A2, restyled in G2): three FICTION comic panels from plan §4.2
-// (shortened 12 Nov 2026 to read aloud in ~25 s), with one real NASA data card as the bridge from fiction to fact.
-// Landscape (R4): one comic panel at a time, the picture on the left, the words and Next on the right.
-// Card 1 carries the NeoWs counter over its picture. Nothing scrolls.
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { ArrowLeft, ArrowRight, Rocket, SkipForward } from 'lucide-react';
+// The story cards (BUILD_SEQUENCE.md A2, modernized with 3Dviz Pro Max):
+// 3D Earth Crisis & Hero Junior Astronaut preparation for humanity.
+import { useEffect, useRef, useState } from 'react';
+import { ArrowLeft, ArrowRight, Rocket, SkipForward, Globe, Shield, Sparkles } from 'lucide-react';
 import { GameButton, RoundButton } from '../components/GameButton';
 import { useCountTo } from '../components/motion';
 import { Badge, Panel, SourceLine } from '../components/Panel';
 import { isStageTurned, stageDelta } from '../components/stageMath';
-import { Scene, type ScenePlace } from '../components/Scene';
+import { Scene } from '../components/Scene';
 import { Kid, Twinkle } from '../components/Twinkle';
 import neows from '../content/samples/neows.json';
 import { useGame } from '../store/game';
 import { fmtDate, useSpace } from '../store/space';
-
-const CARDS: { title: string; body: ReactNode; place: ScenePlace; picture: ReactNode }[] = [
-  {
-    title: 'The Near Miss',
-    body: 'An asteroid flew at Earth. Most of it was pushed away. One piece hit the ocean. Its dust dimmed the Sun for a year.',
-    place: 'space',
-    // Twinkle's size is in px; the wrapper sizes it in rem so it scales with the stage.
-    // Small enough to stand clear of the NeoWs counter laid over the top of this picture.
-    picture: (
-      <span className="block [&_img]:!h-[6rem]">
-        <Twinkle mood="surprised" size={120} />
-      </span>
-    ),
-  },
-  {
-    title: 'The Lesson',
-    body: 'Earth is healing. But we learned that one planet is not enough.',
-    place: 'earth',
-    picture: <Kid who="nova" pose="think" height="13rem" />,
-  },
-  {
-    title: 'Your Mission',
-    body: (
-      <>
-        Mission Control starts the <strong>Mars Continuity Programme</strong>. Fly to Mars and build a base. Keep it going for 500 sols — Mars days. You are
-        the commander.
-      </>
-    ),
-    place: 'mars',
-    picture: (
-      <span className="flex items-end gap-[1rem]">
-        <Kid who="nova" pose="arms" height="12.5rem" />
-        <Kid who="orbit" pose="arms" height="12.5rem" />
-      </span>
-    ),
-  },
-];
-
+import { t, useI18n } from '../content/i18n';
+import { CrisisEarth3D } from '../components/3d/CrisisEarth3D';
+import { HeroCadetRocket3D } from '../components/3d/HeroCadetRocket3D';
 
 /** A number that ticks up from 0 when the card opens. */
 function CountUp({ to }: { to: number }) {
   const [target, setTarget] = useState(0);
   useEffect(() => {
-    const t = setTimeout(() => setTarget(to), 250);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setTarget(to), 250);
+    return () => clearTimeout(timer);
   }, [to]);
   return <>{useCountTo(target, 1200)}</>;
 }
 
-/** Planetary defense readout with the real NASA tracking count. Dark, still (no beacon). */
+/** Planetary defense radar with real NASA asteroid tracking count */
 function AsteroidRadarFigure({ count }: { count: number }) {
+  const lang = useI18n((s) => s.lang);
   return (
     <div className="flex flex-col items-start gap-[0.25rem]">
       <div className="flex items-center gap-[0.5rem] rounded-full border-2 border-line bg-panel-up px-[0.75rem] py-[0.0625rem] font-display text-[0.8125rem] font-extrabold tracking-wider text-text uppercase">
         <span className="inline-flex h-[0.625rem] w-[0.625rem] rounded-full bg-good" aria-hidden />
-        <span>Planetary Defense Radar</span>
+        <span>{lang === 'bn' ? 'নাসা প্ল্যানেটারি ডিফেন্স রাডার' : 'Planetary Defense Radar'}</span>
       </div>
       <div className="flex flex-wrap items-baseline gap-x-[0.5rem] gap-y-[0.25rem]">
         <span className="font-display text-[2rem] leading-none font-extrabold text-text tabular-nums">
           <CountUp to={count} />
         </span>
-        <span className="font-display text-[1.25rem] font-bold text-muted">tracked</span>
-        <span className="rounded-[0.5rem] border-2 border-line bg-space-deep px-[0.5rem] font-display text-[1rem] font-bold text-text">None will hit us.</span>
+        <span className="font-display text-[1.125rem] font-bold text-muted">
+          {lang === 'bn' ? 'গ্রহাণু নজরদারিতে' : 'tracked this week'}
+        </span>
+        <span className="rounded-[0.5rem] border-2 border-line bg-space-deep px-[0.5rem] font-display text-[0.875rem] font-bold text-good">
+          {lang === 'bn' ? 'সব নিরাপদ' : 'All clear'}
+        </span>
       </div>
     </div>
   );
 }
 
-/**
- * The NeoWs counter, laid over card 1's picture: the radar figure, the badge, the date and the source line.
- * The full sentence of the old Intel card is kept for screen readers.
- */
 function NeowsStrip() {
-  // Live data once it arrives; until then the saved sample, always badged ARCHIVE with its own date.
   const res = useSpace((s) => s.neows);
   const count = res?.data.count ?? neows.count;
   const badge = res?.badge ?? 'NASA ARCHIVE';
   const fetched = fmtDate(res?.fetchedAt ?? neows.fetchedAt);
+  const lang = useI18n((s) => s.lang);
+
   return (
-    <article aria-label="Planetary Defense" className="rounded-[1rem] border-2 border-line bg-panel/85 p-[0.5rem] text-text">
+    <article aria-label="Planetary Defense" className="mt-2 rounded-[1rem] border-2 border-line bg-panel/85 p-2.5 text-text">
       <AsteroidRadarFigure count={count} />
-      <p className="sr-only">{`NASA's Planetary Defense Coordination Office is tracking ${count} near-Earth asteroids this week. None will hit us.`}</p>
-      <div className="mt-[0.375rem] flex flex-wrap items-center gap-x-[0.5rem] gap-y-[0.125rem]">
+      <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
         <Badge kind={badge} />
-        <span className="text-[0.8125rem] font-bold text-muted">{badge === 'NASA LIVE' ? 'From NASA, just now' : `Real NASA data from ${fetched}`}</span>
+        <span className="text-xs font-bold text-muted">
+          {badge === 'NASA LIVE' ? (lang === 'bn' ? 'সরাসরি নাসা লাইভ তথ্য' : 'From NASA, just now') : `NASA: ${fetched}`}
+        </span>
       </div>
-      <div className="mt-[0.25rem]">
-        <SourceLine text={`NASA NeoWs (Near Earth Object Web Service) · ${badge === 'NASA LIVE' ? 'LIVE' : 'ARCHIVE'} · ${fetched}`} bare />
+      <div className="mt-1">
+        <SourceLine text={`NASA NeoWs · ${badge === 'NASA LIVE' ? 'LIVE' : 'ARCHIVE'} · ${fetched}`} bare />
       </div>
     </article>
   );
@@ -108,13 +74,36 @@ function NeowsStrip() {
 
 export function Story() {
   const go = useGame((s) => s.go);
+  const lang = useI18n((s) => s.lang);
   const [i, setI] = useState(0);
+  const [selectedHero, setSelectedHero] = useState<'orbit' | 'nova'>('orbit');
+
+  const CARDS = [
+    {
+      title: t('story.1.title'),
+      badge: lang === 'bn' ? 'পৃথিবীর সংকট' : 'Earth Crisis Alert',
+      body: t('story.1.text'),
+      hint: lang === 'bn' ? '৩ডি পৃথিবী ঘুরিয়ে বিভিন্ন মহাদেশের সংকট দেখো!' : 'Spin the 3D Earth to inspect global crisis zones!',
+    },
+    {
+      title: t('story.2.title'),
+      badge: lang === 'bn' ? 'বীর মহাকাশচারী ডাক' : 'Hero Astronaut Call',
+      body: t('story.2.text'),
+      hint: lang === 'bn' ? 'তোমার প্রিয় মহাকাশ বীরকে বেছে নাও!' : 'Choose your favorite junior astronaut hero!',
+    },
+    {
+      title: t('story.3.title'),
+      badge: lang === 'bn' ? 'লঞ্চ প্যাড প্রস্তুতি' : 'Launch Pad Readiness',
+      body: t('story.3.text'),
+      hint: lang === 'bn' ? '৩ডি রকেট ঘুরিয়ে থ্রাস্টার ও ঢাল পরীক্ষা করো!' : 'Spin your 3D rocket, test fire thrusters and shields!',
+    },
+  ];
+
   const last = i === CARDS.length - 1;
   const next = () => (last ? go('home') : setI(i + 1));
   const back = () => setI((n) => Math.max(0, n - 1));
   const forward = () => setI((n) => Math.min(CARDS.length - 1, n + 1));
 
-  // Arrow keys move between cards.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight') forward();
@@ -124,7 +113,6 @@ export function Story() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  // Swipe on touch screens.
   const start = useRef<{ x: number; y: number } | null>(null);
   const onPointerDown = (e: React.PointerEvent) => {
     if (e.pointerType !== 'mouse') start.current = { x: e.clientX, y: e.clientY };
@@ -133,62 +121,186 @@ export function Story() {
     const s = start.current;
     start.current = null;
     if (!s) return;
-    // Read direction through stageDelta so "left" stays left on the turned (upright-phone) stage.
     const { dx, dy } = stageDelta(e.clientX - s.x, e.clientY - s.y);
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) (dx < 0 ? forward : back)();
   };
 
   const card = CARDS[i];
+
   return (
     <Scene bare place="space">
+      {/* Top Header Bar */}
       <div className="flex items-center justify-between gap-[0.75rem] px-[0.75rem] pt-[0.5rem]">
-        <ol className="flex items-center gap-[0.5rem]" aria-label={`Story card ${i + 1} of ${CARDS.length}`}>
-          {CARDS.map((c, n) => (
-            <li
-              key={c.title}
-              aria-hidden
-              className={`h-[1rem] rounded-full border-2 border-line transition-all ${n === i ? 'w-[2.5rem] bg-go' : n < i ? 'w-[1rem] bg-text' : 'w-[1rem] bg-transparent'}`}
-            />
-          ))}
-        </ol>
-        <GameButton variant="small" icon={SkipForward} onClick={() => go('home')} className="!mb-0 !min-h-[2.75rem] !px-[0.875rem] !text-[1rem]">
-          Skip
+        <div className="flex items-center gap-2">
+          <div className="grid h-8 w-8 place-items-center rounded-full border border-go/40 bg-go/20 text-go">
+            <Globe size={18} />
+          </div>
+          <ol className="flex items-center gap-[0.5rem]" aria-label={`Story card ${i + 1} of ${CARDS.length}`}>
+            {CARDS.map((c, n) => (
+              <li
+                key={c.title}
+                aria-hidden
+                className={`h-[0.875rem] rounded-full border-2 border-line transition-all ${
+                  n === i ? 'w-[2.25rem] bg-go' : n < i ? 'w-[0.875rem] bg-text' : 'w-[0.875rem] bg-transparent'
+                }`}
+              />
+            ))}
+          </ol>
+        </div>
+
+        <GameButton
+          variant="small"
+          icon={SkipForward}
+          onClick={() => go('home')}
+          className="!mb-0 !min-h-[2.5rem] !px-3.5 !text-xs sm:!text-sm"
+        >
+          {t('btn.skip')}
         </GameButton>
       </div>
 
+      {/* Main Content Area */}
       <div
-        className="flex min-h-0 flex-1 gap-[0.75rem] px-[0.75rem] pt-[0.5rem] pb-[0.75rem]"
+        className="flex min-h-0 flex-1 gap-[0.75rem] px-[0.75rem] pt-[0.35rem] pb-[0.75rem]"
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
         style={{ touchAction: isStageTurned() ? 'pan-x' : 'pan-y' }}
       >
-        {/* left: the comic picture, filling the column */}
-        <div key={`pic-${card.title}`} className="relative min-h-0 w-[45%] shrink-0 overflow-hidden rounded-[1.25rem] border-2 border-line">
-          <div className="h-full" aria-hidden>
-            <Scene place={card.place} fill={false} bare className="h-full">
-              <div className={`flex min-h-0 flex-1 items-end pb-[0.5rem] ${i === 0 ? 'justify-end pr-[0.75rem]' : 'justify-center'}`}>
-                <span className="anim-pop-in">{card.picture}</span>
-              </div>
-            </Scene>
-          </div>
+        {/* Left Column: Interactive 3D Scenes */}
+        <div className="relative min-h-0 w-[52%] shrink-0 overflow-hidden rounded-[1.25rem] border-2 border-line bg-space-deep/80 shadow-2xl">
           {i === 0 ? (
-            <div className="absolute inset-x-[0.5rem] top-[0.5rem]">
-              <NeowsStrip />
+            <CrisisEarth3D height="100%" />
+          ) : i === 1 ? (
+            <div className="flex h-full flex-col items-center justify-between p-3 select-none">
+              <div className="flex w-full items-center justify-between">
+                <span className="flex items-center gap-1.5 rounded-full border border-go/40 bg-panel px-3 py-1 font-display text-xs font-extrabold text-go">
+                  <Sparkles size={14} />
+                  <span>{lang === 'bn' ? 'স্পেস হিরো নির্বাচন' : 'Choose Your Space Hero'}</span>
+                </span>
+                <span className="text-xs font-bold text-muted">
+                  {lang === 'bn' ? 'যেকোনো একজনকে বেছে নাও' : 'Tap to suit up!'}
+                </span>
+              </div>
+
+              {/* Both Hero & Heroine Avatars side by side */}
+              <div className="flex w-full flex-1 items-end justify-center gap-4 py-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedHero('orbit')}
+                  className={`group flex flex-col items-center rounded-2xl border-2 p-2.5 transition active:scale-95 ${
+                    selectedHero === 'orbit'
+                      ? 'border-go bg-go/20 shadow-[0_0_20px_rgba(34,215,230,0.4)]'
+                      : 'border-line/60 bg-panel/50 hover:border-text/40'
+                  }`}
+                >
+                  <Kid who="orbit" pose="wave" height="8.5rem" bob className="object-contain" />
+                  <span className="mt-1.5 rounded-full bg-go px-3 py-0.5 font-display text-xs font-extrabold text-go-text">
+                    {lang === 'bn' ? 'ক্যাডেট অরবিট' : 'Hero Orbit'}
+                  </span>
+                  <span className="text-[10px] text-muted">{lang === 'bn' ? 'নীল নিয়ন স্যুট' : 'Teal Hero Suit'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedHero('nova')}
+                  className={`group flex flex-col items-center rounded-2xl border-2 p-2.5 transition active:scale-95 ${
+                    selectedHero === 'nova'
+                      ? 'border-nova bg-nova/20 shadow-[0_0_20px_rgba(232,51,139,0.4)]'
+                      : 'border-line/60 bg-panel/50 hover:border-text/40'
+                  }`}
+                >
+                  <Kid who="nova" pose="wave" height="8.5rem" bob className="object-contain" />
+                  <span className="mt-1.5 rounded-full bg-nova px-3 py-0.5 font-display text-xs font-extrabold text-white">
+                    {lang === 'bn' ? 'ক্যাডেট নোভা' : 'Heroine Nova'}
+                  </span>
+                  <span className="text-[10px] text-muted">{lang === 'bn' ? 'গোলাপি স্টার স্যুট' : 'Pink Star Suit'}</span>
+                </button>
+              </div>
+
+              {/* Readiness status pills */}
+              <div className="flex flex-wrap justify-center gap-2 text-xs">
+                <span className="flex items-center gap-1 rounded-full border border-good/50 bg-good/20 px-2.5 py-0.5 text-good font-bold">
+                  ✓ {lang === 'bn' ? 'স্পেসস্যুট সিলড' : 'Spacesuit Sealed'}
+                </span>
+                <span className="flex items-center gap-1 rounded-full border border-star/50 bg-star/20 px-2.5 py-0.5 text-star font-bold">
+                  ★ {lang === 'bn' ? 'সাহস ১০০%' : 'Courage 100%'}
+                </span>
+              </div>
             </div>
-          ) : null}
+          ) : (
+            <HeroCadetRocket3D height="100%" who={selectedHero} onSelectWho={setSelectedHero} />
+          )}
         </div>
 
-        {/* right: the words, then Back and Next */}
-        <Panel key={card.title} ribbon="Fiction" tone="go" as="article" compact className="!mt-[0.875rem] flex min-h-0 min-w-0 flex-1 flex-col">
-          <p className="text-[0.875rem] font-bold text-muted">A story made for this game</p>
-          <h1 className="mt-[0.125rem] font-display text-[1.75rem] leading-tight font-extrabold" aria-live="polite">
-            {card.title}
-          </h1>
-          <p className="mt-[0.25rem] min-h-0 flex-1 text-[1rem] leading-snug">{card.body}</p>
-          <div className="mt-[0.5rem] flex items-center gap-[0.5rem]">
-            {i > 0 ? <RoundButton icon={ArrowLeft} label="Back" onClick={back} /> : null}
-            <GameButton variant="go" icon={last ? Rocket : ArrowRight} onClick={next} className="!min-h-[3rem] !px-[1rem] !text-[1.125rem]">
-              {last ? 'Accept the mission' : 'Next'}
+        {/* Right Column: Hero Narrative, NASA Intel & Next/Back buttons */}
+        <Panel
+          key={card.title}
+          ribbon={card.badge}
+          tone="go"
+          as="article"
+          compact
+          className="!mt-[0.5rem] flex min-h-0 min-w-0 flex-1 flex-col justify-between"
+        >
+          <div className="overflow-y-auto pr-1">
+            <div className="flex items-center gap-2">
+              <span className="rounded-full bg-go/20 px-2.5 py-0.5 font-display text-xs font-extrabold text-go uppercase tracking-wider">
+                {lang === 'bn' ? `ধাপ ${i + 1} / ৩` : `Step ${i + 1} of 3`}
+              </span>
+              <span className="text-xs font-bold text-muted">{card.hint}</span>
+            </div>
+
+            <h1 className="mt-1 font-display text-xl sm:text-2xl leading-snug font-extrabold text-text" aria-live="polite">
+              {card.title}
+            </h1>
+
+            <p className="mt-1.5 text-sm sm:text-base leading-relaxed text-text/90 font-medium">
+              {card.body}
+            </p>
+
+            {/* Step 1 includes real NASA Planetary Defense asteroid monitor */}
+            {i === 0 ? <NeowsStrip /> : null}
+
+            {/* Step 2 shows Twinkle's encouragement */}
+            {i === 1 ? (
+              <div className="mt-3 flex items-center gap-3 rounded-2xl border-2 border-line bg-panel-up/70 p-2.5">
+                <Twinkle mood="happy" size={48} />
+                <p className="text-xs sm:text-sm font-bold text-text leading-snug">
+                  {lang === 'bn'
+                    ? 'টুইংকল বলছে: "তুমি হবে আমাদের সবচেয়ে সেরা মহাকাশ বীর! পুরো পৃথিবী তোমার সাথে আছে!"'
+                    : 'Twinkle says: "You are going to be our greatest space hero! All of Earth is cheering for you!"'}
+                </p>
+              </div>
+            ) : null}
+
+            {/* Step 3 shows Launch Checklist */}
+            {i === 2 ? (
+              <div className="mt-3 grid grid-cols-2 gap-2 text-xs font-bold text-text">
+                <div className="flex items-center gap-1.5 rounded-xl border border-line bg-space-deep/80 p-2">
+                  <Rocket size={16} className="text-go shrink-0" />
+                  <span>{lang === 'bn' ? 'রকেট ইঞ্জিন: ফুল' : 'Engines: 100%'}</span>
+                </div>
+                <div className="flex items-center gap-1.5 rounded-xl border border-line bg-space-deep/80 p-2">
+                  <Shield size={16} className="text-shield shrink-0" />
+                  <span>{lang === 'bn' ? 'সুরক্ষা ঢাল: সচল' : 'Shields: Active'}</span>
+                </div>
+              </div>
+            ) : null}
+          </div>
+
+          {/* Action Row */}
+          <div className="mt-2.5 flex items-center justify-between gap-2 border-t border-line/40 pt-2.5">
+            {i > 0 ? (
+              <RoundButton icon={ArrowLeft} label={t('btn.back')} onClick={back} />
+            ) : (
+              <div />
+            )}
+
+            <GameButton
+              variant="go"
+              icon={last ? Rocket : ArrowRight}
+              onClick={next}
+              className="!min-h-[2.875rem] !px-4 sm:!px-6 !text-sm sm:!text-base"
+            >
+              {last ? (lang === 'bn' ? 'মিশন গ্রহণ করো ও চলো!' : 'Accept Mission & Launch!') : t('btn.next')}
             </GameButton>
           </div>
         </Panel>

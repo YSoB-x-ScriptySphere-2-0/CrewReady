@@ -16,7 +16,7 @@ import {
   Star,
 } from 'lucide-react';
 import { useGame } from '../store/game';
-import { useI18n } from '../content/i18n';
+import { t, useI18n } from '../content/i18n';
 import { SPACE_WORDS } from '../content/words';
 import { useWords } from '../store/words';
 import { Kid } from '../components/Twinkle';
@@ -30,6 +30,7 @@ import {
   type Astronaut,
   type ProfileSettings,
 } from '../engine/profile';
+import { spaceMusic } from '../services/audio';
 
 export function Profile() {
   const [profile, setProfile] = useState<ProfileSettings>(() => loadProfile());
@@ -57,6 +58,7 @@ export function Profile() {
     const updated = { ...profile, sound: !profile.sound };
     setProfile(updated);
     saveProfile(updated);
+    spaceMusic.toggleMute();
   };
 
   const handleToggleMotion = () => {
@@ -304,17 +306,17 @@ export function Profile() {
           {/* Big Settings Toggles */}
           <div className="rounded-2xl border-2 border-line bg-panel/70 p-3 sm:p-4">
             <span className="font-display text-xs sm:text-sm font-extrabold uppercase tracking-wide text-text">
-              Settings &amp; Preferences
+              {t('profile.settings')}
             </span>
 
             <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2">
               {/* Language Switch */}
               <button
                 onClick={handleToggleLang}
-                className="flex flex-col items-center justify-center rounded-xl border-2 border-line bg-panel p-2.5 text-center transition hover:border-text active:translate-y-0.5"
+                className="flex flex-col items-center justify-center rounded-xl border-2 border-line bg-panel p-2.5 text-center transition hover:border-text active:translate-y-0.5 leading-snug break-words"
               >
                 <Globe className="h-5 w-5 text-go" />
-                <span className="mt-1 text-xs font-bold text-muted">Language</span>
+                <span className="mt-1 text-xs font-bold text-muted">{t('profile.lang')}</span>
                 <span className="font-display text-xs font-extrabold text-text">
                   {lang === 'en' ? 'English' : 'বাংলা'}
                 </span>
@@ -323,35 +325,35 @@ export function Profile() {
               {/* Sound Toggle */}
               <button
                 onClick={handleToggleSound}
-                className="flex flex-col items-center justify-center rounded-xl border-2 border-line bg-panel p-2.5 text-center transition hover:border-text active:translate-y-0.5"
+                className="flex flex-col items-center justify-center rounded-xl border-2 border-line bg-panel p-2.5 text-center transition hover:border-text active:translate-y-0.5 leading-snug break-words"
               >
                 {profile.sound ? <Volume2 className="h-5 w-5 text-go" /> : <VolumeX className="h-5 w-5 text-muted" />}
-                <span className="mt-1 text-xs font-bold text-muted">Sound</span>
+                <span className="mt-1 text-xs font-bold text-muted">{t('profile.sound')}</span>
                 <span className="font-display text-xs font-extrabold text-text">
-                  {profile.sound ? 'ON' : 'OFF (Silent)'}
+                  {profile.sound ? t('profile.soundOn') : t('profile.soundOff')}
                 </span>
               </button>
 
               {/* Reduced Motion Toggle */}
               <button
                 onClick={handleToggleMotion}
-                className="flex flex-col items-center justify-center rounded-xl border-2 border-line bg-panel p-2.5 text-center transition hover:border-text active:translate-y-0.5"
+                className="flex flex-col items-center justify-center rounded-xl border-2 border-line bg-panel p-2.5 text-center transition hover:border-text active:translate-y-0.5 leading-snug break-words"
               >
                 <Eye className="h-5 w-5 text-go" />
-                <span className="mt-1 text-xs font-bold text-muted">Motion</span>
+                <span className="mt-1 text-xs font-bold text-muted">{t('profile.motion')}</span>
                 <span className="font-display text-xs font-extrabold text-text">
-                  {profile.reducedMotion ? 'Reduced' : 'Full'}
+                  {profile.reducedMotion ? t('profile.motionReduced') : t('profile.motionFull')}
                 </span>
               </button>
 
               {/* Replay Intro */}
               <button
                 onClick={handleReplayIntro}
-                className="flex flex-col items-center justify-center rounded-xl border-2 border-line bg-panel p-2.5 text-center transition hover:border-text active:translate-y-0.5"
+                className="flex flex-col items-center justify-center rounded-xl border-2 border-line bg-panel p-2.5 text-center transition hover:border-text active:translate-y-0.5 leading-snug break-words"
               >
                 <RotateCcw className="h-5 w-5 text-star" />
-                <span className="mt-1 text-xs font-bold text-muted">Intro</span>
-                <span className="font-display text-xs font-extrabold text-text">Replay Hook</span>
+                <span className="mt-1 text-xs font-bold text-muted">{t('profile.intro')}</span>
+                <span className="font-display text-xs font-extrabold text-text">{t('profile.replayIntro')}</span>
               </button>
             </div>
 
@@ -363,22 +365,22 @@ export function Profile() {
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-muted hover:text-loss transition"
                 >
                   <AlertTriangle className="h-3.5 w-3.5" />
-                  <span>Reset All Local Save Data</span>
+                  <span>{t('profile.reset')}</span>
                 </button>
               ) : (
-                <div className="flex items-center gap-3">
-                  <span className="text-xs font-bold text-loss">Are you sure? Clears all progress!</span>
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="text-xs font-bold text-loss">{t('profile.resetConfirm')}</span>
                   <button
                     onClick={handleResetData}
-                    className="rounded-lg border border-loss bg-loss/20 px-3 py-1 text-xs font-extrabold text-loss hover:bg-loss hover:text-white"
+                    className="rounded-lg border border-loss bg-loss/20 px-3 py-1 text-xs font-extrabold text-loss hover:bg-loss hover:text-white leading-snug break-words"
                   >
-                    Yes, Reset Everything
+                    {t('profile.resetYes')}
                   </button>
                   <button
                     onClick={() => setConfirmReset(false)}
-                    className="text-xs font-bold text-muted hover:text-text"
+                    className="text-xs font-bold text-muted hover:text-text leading-snug"
                   >
-                    Cancel
+                    {t('profile.cancel')}
                   </button>
                 </div>
               )}

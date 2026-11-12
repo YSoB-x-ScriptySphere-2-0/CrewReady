@@ -7,6 +7,7 @@ import { GameButton } from '../GameButton';
 import { useReducedMotion } from '../motion';
 import { Panel } from '../Panel';
 import { Bubble } from '../Twinkle';
+import { t } from '../../content/i18n';
 import {
   PANEL_CELLS,
   PLANT_STAGES,
@@ -269,8 +270,8 @@ function PlantToy({ onSolved }: { onSolved: () => void }) {
       </svg>
       <div className="flex flex-col items-start gap-[0.5rem]">
         <ToyBar value={waterShown(stage)} color="var(--color-air)" icon={Droplets} label="Water" />
-        <GameButton variant="small" icon={Droplets} disabled={plantSolved(stage)} onClick={() => setStage(waterPlant)} className="!min-h-[2.75rem]">
-          Water
+        <GameButton variant="small" icon={Droplets} disabled={plantSolved(stage)} onClick={() => setStage(waterPlant)} className="!min-h-[2.75rem] leading-snug break-words">
+          {t('btn.water')}
         </GameButton>
       </div>
     </div>
@@ -297,13 +298,13 @@ export function ToyHost({ levelId, learned, onDone }: { levelId: number; learned
       </div>
       <div className="flex items-center justify-end gap-[0.5rem]">
         {solved ? null : (
-          <GameButton variant="plain" onClick={onDone} className="!min-h-[2.75rem] !px-[1.25rem]">
-            Skip
+          <GameButton variant="plain" onClick={onDone} className="!min-h-[2.75rem] !px-4 sm:!px-6 !text-base sm:!text-lg leading-snug break-words">
+            {t('btn.skip')}
           </GameButton>
         )}
         {solved ? (
-          <GameButton variant="go" icon={ArrowRight} onClick={onDone} className="!min-h-[3rem] !px-[2rem]">
-            Start
+          <GameButton variant="go" icon={ArrowRight} onClick={onDone} className="!min-h-[3rem] !px-6 sm:!px-8 !text-lg sm:!text-xl leading-snug break-words">
+            {t('btn.start')}
           </GameButton>
         ) : null}
       </div>

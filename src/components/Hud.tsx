@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { METERS, METER_NAMES, type Meter } from '../engine/types';
 import { METER_COLOR, MeterBadge, StarIcon } from './meters';
 import { useCountTo } from './motion';
+import { MusicToggle } from './MusicToggle';
 
 let seq = 0;
 type Fx = { dir: 'up' | 'down'; id: number } | null;
@@ -138,6 +139,7 @@ export function Hud({ meters, stars, lead, look }: { meters: Record<Meter, numbe
           ))}
         </div>
         <StarCounter n={stars} />
+        <MusicToggle compact />
       </div>
     </header>
   );

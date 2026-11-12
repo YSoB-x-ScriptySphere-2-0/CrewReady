@@ -8,9 +8,11 @@ import { useGame } from '../store/game';
 import { useSpace } from '../store/space';
 import { MeterBadge } from '../components/meters';
 import { reducedMotion } from '../components/motion';
+import { MusicToggle } from '../components/MusicToggle';
 
 interface WelcomeProps {
   onStart: () => void;
+  onOpenTour?: () => void;
 }
 
 const artPath = (name: string) => `${import.meta.env.BASE_URL}art/${name}.webp`;
@@ -70,7 +72,7 @@ function useRealLoading() {
   return { progress, ready: progress >= 100 };
 }
 
-export function Welcome({ onStart }: WelcomeProps) {
+export function Welcome({ onStart, onOpenTour }: WelcomeProps) {
   const { lang, setLang } = useI18n();
   const { progress, ready } = useRealLoading();
   const [showHowToPlay, setShowHowToPlay] = useState(false);
@@ -127,7 +129,7 @@ export function Welcome({ onStart }: WelcomeProps) {
         <div className="absolute inset-x-0 top-0 h-[15%] bg-gradient-to-b from-space-deep/60 to-transparent" />
       </div>
 
-      {/* Top strip: brand on the left, language switch on the right */}
+      {/* Top strip: brand on the left, music & language switch on the right */}
       <header className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-[1.5rem] pt-[0.75rem]">
         <div className="flex items-center gap-[0.5rem]">
           <div className="grid h-[2.5rem] w-[2.5rem] place-items-center rounded-full border border-go/40 bg-go/20 text-go">
@@ -136,38 +138,41 @@ export function Welcome({ onStart }: WelcomeProps) {
           <span className="font-display text-[0.75rem] font-bold tracking-[0.22em] text-go uppercase">{t('app.tagline')}</span>
         </div>
 
-        <div role="group" aria-label="Language" className="flex items-center rounded-full border border-text/20 bg-panel/80 p-[0.25rem]">
-          {(['en', 'bn'] as const).map((l) => (
-            <button
-              key={l}
-              onClick={() => setLang(l)}
-              aria-pressed={lang === l}
-              className={`min-h-[2.75rem] min-w-[2.75rem] cursor-pointer rounded-full px-[0.875rem] font-display text-[0.9375rem] font-extrabold ${
-                lang === l ? 'bg-go text-go-text' : 'text-text/70 hover:text-text'
-              }`}
-            >
-              {l === 'en' ? 'EN' : 'বাংলা'}
-            </button>
-          ))}
+        <div className="flex items-center gap-[0.5rem]">
+          <MusicToggle />
+          <div role="group" aria-label="Language" className="flex items-center rounded-full border border-text/20 bg-panel/80 p-[0.25rem]">
+            {(['en', 'bn'] as const).map((l) => (
+              <button
+                key={l}
+                onClick={() => setLang(l)}
+                aria-pressed={lang === l}
+                className={`min-h-[2.75rem] min-w-[2.75rem] cursor-pointer rounded-full px-[0.875rem] font-display text-[0.9375rem] font-extrabold ${
+                  lang === l ? 'bg-go text-go-text' : 'text-text/70 hover:text-text'
+                }`}
+              >
+                {l === 'en' ? 'EN' : 'বাংলা'}
+              </button>
+            ))}
+          </div>
         </div>
       </header>
 
-      {/* Left zone: title, Play (or the bar), How to Play */}
-      <main className="absolute inset-y-0 left-0 z-10 flex w-[42%] flex-col justify-center gap-[1rem] pt-[2.5rem] pl-[1.5rem]">
+      {/* Left zone: title, Play (or the bar), How to Play, Twinkle's Tour */}
+      <main className="absolute inset-y-0 left-0 z-10 flex w-[42%] flex-col justify-center gap-[0.875rem] pt-[2.5rem] pl-[1.5rem]">
         <div>
           <h1 className="font-display text-[3.25rem] leading-none font-extrabold tracking-tight text-text drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]">{t('app.name')}</h1>
           <p className="mt-[0.375rem] font-display text-[1.25rem] leading-tight font-semibold text-text/90">{t('app.subtitle')}</p>
         </div>
 
-        <div className="flex w-full max-w-[17rem] flex-col gap-[0.75rem]">
+        <div className="flex w-full max-w-[17rem] flex-col gap-[0.625rem]">
           {ready ? (
             <button
               onClick={handlePlay}
               autoFocus
-              className="anim-pop group flex min-h-[3.5rem] w-full cursor-pointer items-center justify-center gap-[0.625rem] rounded-full bg-gradient-to-b from-[#48e3f0] to-go px-[2rem] font-display text-[1.5rem] font-extrabold text-go-text shadow-[0_0_1.25rem_rgba(34,215,230,0.45),0_0.35rem_0_var(--color-go-lip)] active:translate-y-[0.25rem] active:shadow-[0_0_1.25rem_rgba(34,215,230,0.45),0_0.1rem_0_var(--color-go-lip)]"
+              className="anim-pop group flex min-h-[3.25rem] sm:min-h-[3.5rem] w-full cursor-pointer items-center justify-center gap-[0.5rem] rounded-full bg-gradient-to-b from-[#48e3f0] to-go px-5 sm:px-7 py-2 font-display text-xl sm:text-2xl font-extrabold text-go-text leading-snug break-words text-center shadow-[0_0_1.25rem_rgba(34,215,230,0.45),0_0.35rem_0_var(--color-go-lip)] active:translate-y-[0.25rem] active:shadow-[0_0_1.25rem_rgba(34,215,230,0.45),0_0.1rem_0_var(--color-go-lip)]"
             >
-              <Play size={24} strokeWidth={2.75} fill="currentColor" />
-              <span>{t('welcome.play')}</span>
+              <Play size={22} strokeWidth={2.75} fill="currentColor" className="shrink-0" />
+              <span className="py-0.5 leading-snug">{t('welcome.play')}</span>
             </button>
           ) : (
             <div
@@ -189,13 +194,25 @@ export function Welcome({ onStart }: WelcomeProps) {
             </div>
           )}
 
-          <button
-            onClick={() => setShowHowToPlay(true)}
-            className="flex min-h-[2.75rem] w-full cursor-pointer items-center justify-center gap-[0.5rem] rounded-full border-2 border-text/30 bg-panel/70 px-[1.5rem] font-display text-[1.0625rem] font-bold text-text hover:border-text/50 hover:bg-panel/85"
-          >
-            <BookOpen size={19} strokeWidth={2.2} className="text-go" />
-            <span>{t('welcome.howToPlay')}</span>
-          </button>
+          <div className="flex gap-[0.5rem] w-full">
+            <button
+              onClick={() => setShowHowToPlay(true)}
+              className="flex min-h-[2.5rem] sm:min-h-[2.75rem] flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-full border-2 border-text/30 bg-panel/70 px-2.5 py-1.5 font-display text-xs sm:text-sm font-bold text-text hover:border-text/50 hover:bg-panel/85 text-center leading-snug break-words"
+            >
+              <BookOpen size={16} strokeWidth={2.2} className="text-go shrink-0" />
+              <span className="py-0.5">{t('welcome.howToPlay')}</span>
+            </button>
+
+            {onOpenTour && (
+              <button
+                onClick={onOpenTour}
+                className="flex min-h-[2.5rem] sm:min-h-[2.75rem] flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-full border-2 border-go/40 bg-panel/70 px-2.5 py-1.5 font-display text-xs sm:text-sm font-bold text-go hover:border-go hover:bg-panel/90 shadow-sm text-center leading-snug break-words"
+              >
+                <Sparkles size={15} strokeWidth={2.2} className="shrink-0" />
+                <span className="py-0.5">{t('welcome.tour')}</span>
+              </button>
+            )}
+          </div>
         </div>
       </main>
 
@@ -266,7 +283,7 @@ function HowToPlay({ onClose }: { onClose: () => void }) {
         <button
           onClick={onClose}
           autoFocus
-          className="mt-[1rem] min-h-[2.75rem] w-full cursor-pointer rounded-full bg-gradient-to-b from-[#48e3f0] to-go font-display text-[1.125rem] font-extrabold text-go-text shadow-[0_0.35rem_0_var(--color-go-lip)] active:translate-y-[0.25rem] active:shadow-[0_0.1rem_0_var(--color-go-lip)]"
+          className="mt-[1rem] min-h-[2.75rem] w-full cursor-pointer rounded-full bg-gradient-to-b from-[#48e3f0] to-go px-4 py-2 font-display text-base sm:text-lg font-extrabold text-go-text leading-snug break-words shadow-[0_0.35rem_0_var(--color-go-lip)] active:translate-y-[0.25rem] active:shadow-[0_0.1rem_0_var(--color-go-lip)]"
         >
           {t('howToPlay.close')}
         </button>

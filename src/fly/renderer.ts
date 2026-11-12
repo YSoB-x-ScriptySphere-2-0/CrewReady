@@ -301,7 +301,7 @@ export function renderFly(
     e.draw();
   }
 
-  // 5. Draw the Pilot Astronaut (seen from behind)
+  // 5. Draw the Exploration Spacecraft (seen from behind chasing perspective)
   const pilotPos = projectPoint(state.laneX, 0);
   const pilotScale = pilotPos.scale;
   const jumpOffset = state.hopHeight * 65 * pilotScale;
@@ -312,85 +312,255 @@ export function renderFly(
   const isFlickering = state.stumbleTimer > 0 && Math.floor(state.stumbleTimer * 12) % 2 === 0;
 
   if (!isFlickering) {
-    // Drop shadow on ground (stays on ground during hop)
-    const shadowScale = 1 - state.hopHeight * 0.4;
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    // 5a. Ground Drop Shadow (stays flat on runway during jump)
+    const shadowScale = 1 - state.hopHeight * 0.35;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
     ctx.beginPath();
-    ctx.ellipse(px, pilotPos.y, 28 * pilotScale * shadowScale, 9 * pilotScale * shadowScale, 0, 0, Math.PI * 2);
+    ctx.ellipse(px, pilotPos.y, 44 * pilotScale * shadowScale, 12 * pilotScale * shadowScale, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Active power halo around pilot
+    // Subtle blue ion ground repulsor glow directly beneath craft
+    const groundGlow = ctx.createRadialGradient(px, pilotPos.y, 0, px, pilotPos.y, 35 * pilotScale * shadowScale);
+    groundGlow.addColorStop(0, 'rgba(34, 215, 230, 0.28)');
+    groundGlow.addColorStop(1, 'rgba(34, 215, 230, 0)');
+    ctx.fillStyle = groundGlow;
+    ctx.beginPath();
+    ctx.ellipse(px, pilotPos.y, 35 * pilotScale * shadowScale, 10 * pilotScale * shadowScale, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 5b. Dynamic Bank & Roll Angle
+    // Ship rolls as it shifts between lanes; pitches slightly up when hopping
+    const bankAngle = Math.max(-0.35, Math.min(0.35, (state.targetLane - state.laneX) * 0.48));
+
+    ctx.save();
+    ctx.translate(px, py);
+    ctx.rotate(bankAngle);
+
+    // Active power visual aura around spacecraft
     if (state.activePower) {
       const pColor = state.activePower === 'shield' ? '#22D7E6' : state.activePower === 'magnet' ? '#F5B700' : '#E8338B';
-      // Shrinking outer ring indicating remaining power time
-      const ringRadius = (38 + (state.powerRemaining / 6.0) * 16) * pilotScale;
+      const ringRadius = (44 + (state.powerRemaining / 6.0) * 16) * pilotScale;
+
+      // Pulsing outer power field ring
       ctx.strokeStyle = pColor;
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 2.5;
       ctx.beginPath();
-      ctx.arc(px, py - 32 * pilotScale, ringRadius, 0, Math.PI * 2);
+      ctx.arc(0, -6 * pilotScale, ringRadius, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Shield bubble
+      // Shield Bubble barrier
       if (state.activePower === 'shield') {
-        ctx.fillStyle = 'rgba(34, 215, 230, 0.15)';
+        const shieldGrad = ctx.createRadialGradient(0, -6 * pilotScale, 10 * pilotScale, 0, -6 * pilotScale, 46 * pilotScale);
+        shieldGrad.addColorStop(0, 'rgba(34, 215, 230, 0.08)');
+        shieldGrad.addColorStop(0.7, 'rgba(34, 215, 230, 0.22)');
+        shieldGrad.addColorStop(1, 'rgba(34, 215, 230, 0.6)');
+        ctx.fillStyle = shieldGrad;
         ctx.beginPath();
-        ctx.arc(px, py - 32 * pilotScale, 38 * pilotScale, 0, Math.PI * 2);
+        ctx.arc(0, -6 * pilotScale, 46 * pilotScale, 0, Math.PI * 2);
         ctx.fill();
+
+        // Hex shield ring details
+        ctx.strokeStyle = 'rgba(34, 215, 230, 0.6)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      // Magnet Attractor flux wave
+      if (state.activePower === 'magnet') {
+        const waveR = (36 + Math.sin(state.distance * 0.4) * 8) * pilotScale;
+        ctx.strokeStyle = 'rgba(245, 183, 0, 0.65)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(0, -6 * pilotScale, waveR, 0, Math.PI * 2);
+        ctx.stroke();
       }
     }
 
-    // Pilot Body & Suit (from behind)
-    const suitColor = pilotWho === 'nova' ? '#E8338B' : '#19A7B8'; // pink for Nova, teal for Orbit
-    const suitWidth = 36 * pilotScale;
-    const suitHeight = 54 * pilotScale;
+    // 5c. Spacecraft Thruster Exhaust Flames (Behind the engines)
+    const isBoost = state.activePower === 'boost';
+    const flameBaseLen = (isBoost ? 28 : 14) + Math.random() * (isBoost ? 14 : 7);
+    const flameLen = flameBaseLen * pilotScale;
+    const flameColor = isBoost ? '#E8338B' : '#22D7E6';
+    const flameCoreColor = '#FFFFFF';
 
-    // Thruster Jet Flames
-    const flameHeight = (12 + Math.random() * 8) * pilotScale;
-    ctx.fillStyle = state.activePower === 'boost' ? '#E8338B' : '#22D7E6';
-    // Left nozzle flame
-    ctx.beginPath();
-    ctx.moveTo(px - 10 * pilotScale, py - 18 * pilotScale);
-    ctx.lineTo(px - 6 * pilotScale, py - 18 * pilotScale);
-    ctx.lineTo(px - 8 * pilotScale, py - 18 * pilotScale + flameHeight);
-    ctx.closePath();
-    ctx.fill();
-    // Right nozzle flame
-    ctx.beginPath();
-    ctx.moveTo(px + 6 * pilotScale, py - 18 * pilotScale);
-    ctx.lineTo(px + 10 * pilotScale, py - 18 * pilotScale);
-    ctx.lineTo(px + 8 * pilotScale, py - 18 * pilotScale + flameHeight);
-    ctx.closePath();
-    ctx.fill();
+    // Left & Right engine nozzle positions
+    const nozzleOffsets = isBoost ? [-16, 0, 16] : [-14, 14];
+    for (const nozX of nozzleOffsets) {
+      const nx = nozX * pilotScale;
+      const ny = 12 * pilotScale;
 
-    // Backpack life-support tank
-    ctx.fillStyle = '#14204D'; // dark panel
-    ctx.strokeStyle = '#3A4A8C';
-    ctx.lineWidth = 2 * pilotScale;
+      // Outer plasma flame cone
+      const outerFlm = ctx.createLinearGradient(nx, ny, nx, ny + flameLen);
+      outerFlm.addColorStop(0, flameCoreColor);
+      outerFlm.addColorStop(0.35, flameColor);
+      outerFlm.addColorStop(1, 'rgba(15, 143, 156, 0)');
+      ctx.fillStyle = outerFlm;
+      ctx.beginPath();
+      ctx.moveTo(nx - 4 * pilotScale, ny);
+      ctx.lineTo(nx + 4 * pilotScale, ny);
+      ctx.lineTo(nx, ny + flameLen);
+      ctx.closePath();
+      ctx.fill();
+
+      // Inner white-hot core cone
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.beginPath();
+      ctx.moveTo(nx - 2 * pilotScale, ny);
+      ctx.lineTo(nx + 2 * pilotScale, ny);
+      ctx.lineTo(nx, ny + flameLen * 0.45);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // 5d. Spacecraft Swept Delta Wings
+    const accentColor = pilotWho === 'nova' ? '#E8338B' : '#22D7E6'; // Nova pink / Orbit cyan trim
+
+    // Main delta wing structure (dark titanium composite)
+    const wingGrad = ctx.createLinearGradient(-38 * pilotScale, 0, 38 * pilotScale, 0);
+    wingGrad.addColorStop(0, '#0E172E');
+    wingGrad.addColorStop(0.5, '#1E294B');
+    wingGrad.addColorStop(1, '#0E172E');
+    ctx.fillStyle = wingGrad;
+    ctx.strokeStyle = '#384B7E';
+    ctx.lineWidth = 1.8 * pilotScale;
+
     ctx.beginPath();
-    ctx.roundRect(px - suitWidth * 0.35, py - suitHeight * 0.72, suitWidth * 0.7, suitHeight * 0.5, 6 * pilotScale);
+    ctx.moveTo(0, -32 * pilotScale); // nose tip
+    ctx.lineTo(38 * pilotScale, 8 * pilotScale); // right wingtip
+    ctx.lineTo(32 * pilotScale, 14 * pilotScale);
+    ctx.lineTo(16 * pilotScale, 11 * pilotScale); // right engine root
+    ctx.lineTo(-16 * pilotScale, 11 * pilotScale); // left engine root
+    ctx.lineTo(-32 * pilotScale, 14 * pilotScale);
+    ctx.lineTo(-38 * pilotScale, 8 * pilotScale); // left wingtip
+    ctx.closePath();
     ctx.fill();
     ctx.stroke();
 
-    // Torso Suit
-    ctx.fillStyle = suitColor;
-    ctx.beginPath();
-    ctx.roundRect(px - suitWidth * 0.45, py - suitHeight * 0.75, suitWidth * 0.9, suitHeight * 0.55, 8 * pilotScale);
-    ctx.fill();
+    // Solar Wing Panel Inserts
+    ctx.fillStyle = '#171B36';
+    ctx.strokeStyle = '#3E4E80';
+    ctx.lineWidth = 1 * pilotScale;
 
-    // Helmet back
-    ctx.fillStyle = '#F4F7FF';
-    ctx.strokeStyle = '#3A4A8C';
-    ctx.lineWidth = 2 * pilotScale;
+    // Left solar wing
     ctx.beginPath();
-    ctx.ellipse(px, py - suitHeight * 0.85, 17 * pilotScale, 15 * pilotScale, 0, 0, Math.PI * 2);
+    ctx.moveTo(-10 * pilotScale, -6 * pilotScale);
+    ctx.lineTo(-30 * pilotScale, 7 * pilotScale);
+    ctx.lineTo(-24 * pilotScale, 11 * pilotScale);
+    ctx.lineTo(-10 * pilotScale, 6 * pilotScale);
+    ctx.closePath();
     ctx.fill();
     ctx.stroke();
 
-    // Helmet collar ring
-    ctx.fillStyle = '#14204D';
+    // Right solar wing
     ctx.beginPath();
-    ctx.roundRect(px - 14 * pilotScale, py - suitHeight * 0.68, 28 * pilotScale, 6 * pilotScale, 3 * pilotScale);
+    ctx.moveTo(10 * pilotScale, -6 * pilotScale);
+    ctx.lineTo(30 * pilotScale, 7 * pilotScale);
+    ctx.lineTo(24 * pilotScale, 11 * pilotScale);
+    ctx.lineTo(10 * pilotScale, 6 * pilotScale);
+    ctx.closePath();
     ctx.fill();
+    ctx.stroke();
+
+    // Wing Accent Stripes (Orbit Cyan / Nova Pink)
+    ctx.fillStyle = accentColor;
+    ctx.beginPath();
+    ctx.moveTo(-34 * pilotScale, 6 * pilotScale);
+    ctx.lineTo(-37 * pilotScale, 8 * pilotScale);
+    ctx.lineTo(-31 * pilotScale, 13 * pilotScale);
+    ctx.lineTo(-28 * pilotScale, 11 * pilotScale);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(34 * pilotScale, 6 * pilotScale);
+    ctx.lineTo(37 * pilotScale, 8 * pilotScale);
+    ctx.lineTo(31 * pilotScale, 13 * pilotScale);
+    ctx.lineTo(28 * pilotScale, 11 * pilotScale);
+    ctx.closePath();
+    ctx.fill();
+
+    // Navigation strobe lights (Port Red / Starboard Green)
+    ctx.fillStyle = '#EF4444'; // Red (port)
+    ctx.beginPath();
+    ctx.arc(-37 * pilotScale, 7 * pilotScale, 2 * pilotScale, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#22C55E'; // Green (starboard)
+    ctx.beginPath();
+    ctx.arc(37 * pilotScale, 7 * pilotScale, 2 * pilotScale, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 5e. Engine Bell Thruster Casings (mounted at the rear)
+    for (const nozX of nozzleOffsets) {
+      const nx = nozX * pilotScale;
+      ctx.fillStyle = '#10172A';
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 1.5 * pilotScale;
+      ctx.beginPath();
+      ctx.roundRect(nx - 5 * pilotScale, 5 * pilotScale, 10 * pilotScale, 7 * pilotScale, 2 * pilotScale);
+      ctx.fill();
+      ctx.stroke();
+
+      // Glowing nozzle interior lip
+      ctx.fillStyle = flameColor;
+      ctx.fillRect(nx - 3.5 * pilotScale, 10 * pilotScale, 7 * pilotScale, 2 * pilotScale);
+    }
+
+    // 5f. Central Fuselage Body
+    const fuseGrad = ctx.createLinearGradient(-10 * pilotScale, 0, 10 * pilotScale, 0);
+    fuseGrad.addColorStop(0, '#E2E8F0');
+    fuseGrad.addColorStop(0.3, '#FFFFFF');
+    fuseGrad.addColorStop(0.7, '#CBD5E1');
+    fuseGrad.addColorStop(1, '#94A3B8');
+    ctx.fillStyle = fuseGrad;
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 1.8 * pilotScale;
+
+    ctx.beginPath();
+    ctx.moveTo(0, -34 * pilotScale); // nose
+    ctx.lineTo(10 * pilotScale, -8 * pilotScale);
+    ctx.lineTo(11 * pilotScale, 8 * pilotScale);
+    ctx.lineTo(0, 10 * pilotScale);
+    ctx.lineTo(-11 * pilotScale, 8 * pilotScale);
+    ctx.lineTo(-10 * pilotScale, -8 * pilotScale);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Central Dorsal Fin / Aero Spine
+    ctx.fillStyle = '#1E293B';
+    ctx.beginPath();
+    ctx.moveTo(0, -26 * pilotScale);
+    ctx.lineTo(2.5 * pilotScale, 6 * pilotScale);
+    ctx.lineTo(-2.5 * pilotScale, 6 * pilotScale);
+    ctx.closePath();
+    ctx.fill();
+
+    // 5g. Pilot Cockpit Canopy Glass (Glowing Visor HUD from behind)
+    const canopyGrad = ctx.createLinearGradient(0, -22 * pilotScale, 0, -8 * pilotScale);
+    canopyGrad.addColorStop(0, '#00F2FE');
+    canopyGrad.addColorStop(0.65, '#0284C7');
+    canopyGrad.addColorStop(1, '#0C4A6E');
+    ctx.fillStyle = canopyGrad;
+    ctx.strokeStyle = '#38BDF8';
+    ctx.lineWidth = 1.2 * pilotScale;
+
+    ctx.beginPath();
+    ctx.roundRect(-5.5 * pilotScale, -22 * pilotScale, 11 * pilotScale, 14 * pilotScale, 4 * pilotScale);
+    ctx.fill();
+    ctx.stroke();
+
+    // Specular reflection highlight streak across cockpit glass
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+    ctx.beginPath();
+    ctx.ellipse(-1.5 * pilotScale, -17 * pilotScale, 2.5 * pilotScale, 4.5 * pilotScale, Math.PI / 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Subtle internal cockpit avionics glow
+    ctx.fillStyle = 'rgba(254, 240, 138, 0.6)';
+    ctx.fillRect(-2 * pilotScale, -13 * pilotScale, 4 * pilotScale, 1.5 * pilotScale);
+
+    ctx.restore();
   }
 
   // 6. Floating Text Pops (+1, +2, SMASH, -1 HULL)

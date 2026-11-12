@@ -22,13 +22,22 @@ import { METERS, type Level, type OutpostResult } from '../engine/types';
 import { useGame } from '../store/game';
 import { fmtDate, useSpace } from '../store/space';
 import type { BoardEntry } from '../store/leaderboard';
+import { t } from '../content/i18n';
 
-// Plan §5.3, word for word.
-const RESULT_TEXT: Record<OutpostResult, { title: string; rank: string; line: string; icon: LucideIcon }> = {
-  survives: { title: 'Outpost Survives', rank: 'Cadet', line: 'You made it! The base is weak. The next crew has work to do.', icon: Shield },
-  stable: { title: 'Outpost Stable', rank: 'Pilot', line: 'The base can hold on until the next rocket comes.', icon: Medal },
-  thriving: { title: 'Outpost Thriving', rank: 'Commander', line: 'Earth is cheering. People now have a second home.', icon: Crown },
+const RESULT_ICONS: Record<OutpostResult, LucideIcon> = {
+  survives: Shield,
+  stable: Medal,
+  thriving: Crown,
 };
+
+function getResultText(res: OutpostResult) {
+  return {
+    title: t(`success.${res}.title`),
+    rank: t(`success.${res}.rank`),
+    line: t(`success.${res}.line`),
+    icon: RESULT_ICONS[res],
+  };
+}
 
 const openLabel = (level: Level) => `Level ${level.id}, ${level.title}. I learned: ${level.learned} Source: ${level.source}`;
 const closedLabel = (level: Level) => `Level ${level.id}, ${level.title}. Tap to read what you learned.`;
@@ -136,14 +145,14 @@ function BestRuns({ board, thisRun, onClose }: { board: BoardEntry[]; thisRun: n
         if (e.key === 'Escape') onClose();
       }}
     >
-      <Panel ribbon="Your best runs" tone="ink" compact className="flex h-full flex-col !mt-0">
+      <Panel ribbon={t('success.bestRuns')} tone="ink" compact className="flex h-full flex-col !mt-0">
         <button ref={closeRef} onClick={onClose} aria-label="Close your best runs" className="absolute top-[0.125rem] right-[0.25rem] z-10 grid h-[2.75rem] w-[2.75rem] place-items-center rounded-full text-text">
           <X size={22} strokeWidth={3} />
         </button>
         <ol className="min-h-0 flex-1 space-y-[0.25rem] overflow-y-auto">
           {board.map((e, i) => {
             const mine = e.run === thisRun;
-            const t = RESULT_TEXT[e.result];
+            const resText = getResultText(e.result);
             const day = new Date(e.at);
             return (
               <li
@@ -154,17 +163,17 @@ function BestRuns({ board, thisRun, onClose }: { board: BoardEntry[]; thisRun: n
                   {i + 1}
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block font-display text-[0.9375rem] leading-[1.15] font-extrabold">{t.title}</span>
+                  <span className="block font-display text-[0.9375rem] leading-[1.15] font-extrabold">{resText.title}</span>
                   <span className="flex flex-wrap items-center gap-x-[0.5rem] text-[0.8125rem] leading-tight text-muted">
-                    {mine ? <span className="rounded-full bg-go px-[0.5rem] font-display font-extrabold text-go-text">This run</span> : null}
-                    {e.healthy} of 4 healthy
+                    {mine ? <span className="rounded-full bg-go px-[0.5rem] font-display font-extrabold text-go-text">{t('success.thisRun')}</span> : null}
+                    {e.healthy} / 4 {t('success.healthy')}
                     {Number.isNaN(day.getTime()) ? '' : ` · ${day.toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}`}
                   </span>
                 </span>
                 <span className="flex shrink-0 items-center gap-[0.25rem] font-display text-[1.125rem] font-extrabold tabular-nums">
                   <Star size={18} strokeWidth={2.5} fill="var(--color-star)" className="text-star" aria-hidden />
                   {e.stars}
-                  <span className="sr-only"> stars</span>
+                  <span className="sr-only"> {t('success.stars')}</span>
                 </span>
               </li>
             );
@@ -184,7 +193,7 @@ export function Success() {
   const { game, startMission, goHome, leaderboard, lastSavedRun } = useGame();
   const apod = useSpace((s) => s.apod);
   const { healthy, result } = outpostCheck(game);
-  const text = RESULT_TEXT[result];
+  const text = getResultText(result);
   const [open, setOpen] = useState<number | null>(null);
   const [board, setBoard] = useState(false);
   const badgeRefs = useRef<Record<number, HTMLButtonElement | null>>({});
@@ -210,7 +219,7 @@ export function Success() {
 
   const top = (
     <header className="flex shrink-0 items-center justify-between gap-[0.75rem] border-b-2 border-line bg-space-deep/90 px-[0.75rem] pt-[0.25rem] pb-[0.375rem] text-text">
-      <p className="font-display text-[1.25rem] leading-tight font-extrabold">Sol 500 · Mission complete</p>
+      <p className="font-display text-[1.25rem] leading-tight font-extrabold">{t('success.sol500')}</p>
       <StarCounter n={game.stars} />
     </header>
   );
@@ -231,14 +240,14 @@ export function Success() {
       <div className="rise w-full shrink-0 rounded-panel border-2 border-line bg-panel px-[0.625rem] py-[0.5rem] text-text">
         <p className="font-display text-[1.125rem] leading-tight font-extrabold">{text.title}</p>
         <p className="mt-[0.125rem] flex flex-wrap items-center gap-x-[0.375rem] font-display text-[0.875rem] leading-snug font-bold">
-          <span>Rank: {text.rank}</span>
+          <span>{t('success.rank')}: {text.rank}</span>
           <span aria-hidden>·</span>
           <span className="inline-flex items-center gap-[0.25rem]">
             <Star size={16} strokeWidth={2.5} fill="var(--color-star)" className="text-star" aria-hidden />
-            {game.stars} stars
+            {game.stars} {t('success.stars')}
           </span>
           <span aria-hidden>·</span>
-          <span>{healthy.length} of 4 healthy</span>
+          <span>{healthy.length} / 4 {t('success.healthy')}</span>
         </p>
         <div className="mt-[0.5rem] grid grid-cols-2 gap-x-[0.5rem] gap-y-[0.375rem]">
           {METERS.map((m) => (
@@ -267,7 +276,7 @@ export function Success() {
           <div className="flex shrink-0 items-center gap-[0.5rem] rounded-[1rem] border-2 border-line bg-panel/85 px-[0.5rem] py-[0.25rem] text-text">
             <span className="shrink-0">
               <Ribbon tone="go" small>
-                Outpost check
+                {t('success.outpostCheck')}
               </Ribbon>
             </span>
             <p className="min-w-0 text-[0.875rem] leading-snug font-bold">{text.line}</p>
@@ -276,8 +285,8 @@ export function Success() {
           {/* Caption and shelf share one box: the open badge grows over both and flips. */}
           <div className="relative flex min-h-0 flex-1 flex-col gap-[0.375rem]">
           <p className="flex shrink-0 flex-wrap items-baseline gap-x-[0.5rem] rounded-[1rem] bg-panel/85 px-[0.75rem] text-text">
-            <span className="font-display text-[0.875rem] font-extrabold tracking-wide uppercase">What you learned</span>
-            <span className="text-[0.875rem] text-muted">Six badges. Tap one to flip it.</span>
+            <span className="font-display text-[0.875rem] font-extrabold tracking-wide uppercase">{t('success.whatYouLearned')}</span>
+            <span className="text-[0.875rem] text-muted">{t('success.tapToFlip')}</span>
           </p>
 
           {/* The shelf: six badges, two rows of three (inert under the open card). */}
@@ -341,17 +350,17 @@ export function Success() {
           <div className="flex shrink-0 items-center gap-[0.5rem]">
             {leaderboard.length ? (
               <span ref={boardBtn} className="shrink-0">
-                <GameButton variant="small" onClick={() => setBoard(true)} className="!min-h-[2.75rem] !px-[0.75rem] !text-[0.9375rem] whitespace-nowrap">
-                  Your best runs
+                <GameButton variant="small" onClick={() => setBoard(true)} className="!min-h-[2.75rem] !px-3 !text-sm leading-snug break-words">
+                  {t('success.bestRuns')}
                 </GameButton>
               </span>
             ) : null}
             <span className="flex-1" aria-hidden />
-            <GameButton variant="go" icon={Rocket} onClick={() => startMission()} className="!min-h-[2.75rem] !px-[1rem] !text-[1.25rem]">
-              Fly again
+            <GameButton variant="go" icon={Rocket} onClick={() => startMission()} className="!min-h-[2.75rem] !px-4 sm:!px-6 !text-base sm:!text-xl leading-snug break-words">
+              {t('btn.flyAgain')}
             </GameButton>
-            <GameButton variant="plain" icon={House} onClick={goHome} className="!min-h-[2.75rem] !px-[0.875rem] !text-[1.125rem]">
-              Home
+            <GameButton variant="plain" icon={House} onClick={goHome} className="!min-h-[2.75rem] !px-3 sm:!px-4 !text-sm sm:!text-base leading-snug break-words">
+              {t('btn.home')}
             </GameButton>
           </div>
          </div>

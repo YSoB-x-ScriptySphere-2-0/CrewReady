@@ -8,16 +8,20 @@ import { reducedMotion, usePress } from './motion';
 
 type Variant = 'go' | 'plain' | 'small';
 
-const SIZE: Record<Variant, string> = { go: 'min-h-[3.5rem] px-7 text-[1.375rem]', plain: 'min-h-[3rem] px-5 text-xl', small: 'min-h-[3rem] px-4 text-[1.1875rem]' };
+const SIZE: Record<Variant, string> = {
+  go: 'min-h-[3.25rem] sm:min-h-[3.5rem] px-4 sm:px-7 py-2 text-[1.125rem] sm:text-[1.375rem]',
+  plain: 'min-h-[2.75rem] sm:min-h-[3rem] px-3.5 sm:px-5 py-1.5 text-base sm:text-xl',
+  small: 'min-h-[2.5rem] sm:min-h-[2.75rem] px-3 sm:px-4 py-1 text-sm sm:text-[1.0625rem]',
+};
 /** Locked look for any variant: dark and flat, so it never looks like a live main action. */
 const LOCKED = 'bg-locked text-muted [--lip:var(--color-locked-lip)]';
 
 const LOOK: Record<Variant, string> = {
   // go: the one main action per screen. Cyan, a gentle top-to-bottom gradient, its lip, one soft halo.
-  go: 'min-h-[3.5rem] px-7 text-[1.375rem] bg-gradient-to-b from-[#4fe6f2] to-go text-go-text border-go-lip [--lip:var(--color-go-lip)] halo',
+  go: 'min-h-[3.25rem] sm:min-h-[3.5rem] px-4 sm:px-7 py-2 text-[1.125rem] sm:text-[1.375rem] bg-gradient-to-b from-[#4fe6f2] to-go text-go-text border-go-lip [--lip:var(--color-go-lip)] halo',
   // second: an outlined pill, dark fill, white text.
-  plain: 'min-h-[3rem] px-5 text-xl bg-panel/70 text-text border-text/30',
-  small: 'min-h-[3rem] px-4 text-[1.1875rem] bg-panel/70 text-text border-text/30',
+  plain: 'min-h-[2.75rem] sm:min-h-[3rem] px-3.5 sm:px-5 py-1.5 text-base sm:text-xl bg-panel/70 text-text border-text/30',
+  small: 'min-h-[2.5rem] sm:min-h-[2.75rem] px-3 sm:px-4 py-1 text-sm sm:text-[1.0625rem] bg-panel/70 text-text border-text/30',
 };
 /** `go` is a rounded rectangle; the other two are pills. */
 const SHAPE: Record<Variant, string> = { go: 'rounded-tile', plain: 'rounded-full', small: 'rounded-full' };
@@ -51,10 +55,10 @@ export function GameButton({
       disabled={disabled}
       aria-label={ariaLabel}
       {...press}
-      className={`toy shine inline-flex items-center justify-center gap-2 ${SHAPE[variant]} font-display leading-none font-extrabold tracking-wide ${disabled ? `${SIZE[variant]} ${LOCKED}` : LOOK[variant]} ${full ? 'w-full' : ''} ${className}`}
+      className={`toy shine inline-flex items-center justify-center gap-2 ${SHAPE[variant]} font-display leading-snug font-extrabold tracking-wide text-center max-w-full break-words ${disabled ? `${SIZE[variant]} ${LOCKED}` : LOOK[variant]} ${full ? 'w-full' : ''} ${className}`}
     >
-      {Icon ? <Icon size={variant === 'small' ? 20 : 24} strokeWidth={2.5} aria-hidden /> : null}
-      <span className="pt-0.5">{children}</span>
+      {Icon ? <Icon size={variant === 'small' ? 18 : 22} strokeWidth={2.5} aria-hidden className="shrink-0" /> : null}
+      <span className="py-0.5 max-w-full text-center leading-snug break-words">{children}</span>
     </button>
   );
 }
@@ -146,8 +150,8 @@ export function ChoiceTile({
         </span>
       ) : null)}
       <span className="min-w-0 flex-1">
-        <span className="block font-display text-xl leading-tight font-extrabold sm:text-[22px]">{label}</span>
-        {note ? <span className="mt-0.5 block font-sans text-base text-muted">{note}</span> : null}
+        <span className="block font-display text-lg sm:text-[22px] leading-snug font-extrabold break-words">{label}</span>
+        {note ? <span className="mt-0.5 block font-sans text-sm sm:text-base leading-snug text-muted break-words">{note}</span> : null}
         {costs?.length ? (
           <span className="mt-2 flex flex-wrap gap-1.5">
             {costs.map((c) => (
@@ -218,16 +222,16 @@ export function ChoiceCard({
       aria-hidden={state === 'gone' ? true : undefined}
       tabIndex={state === 'gone' ? -1 : undefined}
       {...press}
-      className={`toy flex min-h-[6.5rem] min-w-0 flex-1 flex-col items-center justify-center gap-[0.375rem] rounded-tile p-[0.5rem] text-center text-text ${
+      className={`toy flex min-h-[5.5rem] sm:min-h-[6.5rem] min-w-0 flex-1 flex-col items-center justify-center gap-[0.25rem] rounded-tile p-[0.375rem] sm:p-[0.5rem] text-center text-text overflow-hidden ${
         disabled ? LOCKED : marked ? '-translate-y-1 border-[3px] border-go bg-panel-up [--lip:var(--color-go-lip)]' : 'bg-panel'
       } ${state === 'chosen' ? 'anim-stamp' : ''} ${state === 'gone' ? 'is-gone' : ''} ${state !== 'idle' ? 'cursor-default' : ''} ${className}`}
     >
       {picture ?? (Icon ? (
-        <span className="grid h-[3rem] w-[3rem] shrink-0 place-items-center rounded-full bg-space" aria-hidden>
-          <Icon size={28} strokeWidth={2.25} />
+        <span className="grid h-[2.5rem] w-[2.5rem] sm:h-[3rem] sm:w-[3rem] shrink-0 place-items-center rounded-full bg-space" aria-hidden>
+          <Icon size={24} strokeWidth={2.25} />
         </span>
       ) : null)}
-      <span className="block font-display text-[0.875rem] leading-[1.15] font-extrabold">{label}</span>
+      <span className="block font-display text-[0.8125rem] sm:text-[0.875rem] leading-[1.18] font-extrabold px-0.5 break-words line-clamp-2 max-w-full">{label}</span>
       {children}
     </button>
   );

@@ -17,6 +17,7 @@ import { LEVELS } from '../content/levels';
 import type { LogEntry } from '../engine/engine';
 import { METER_NAMES, type Meter } from '../engine/types';
 import { useGame } from '../store/game';
+import { t } from '../content/i18n';
 
 const HEAD_TONE = { danger: 'bg-danger text-white', ink: 'bg-panel-up text-text', space: 'bg-sky-space text-text' } as const;
 
@@ -78,7 +79,7 @@ export function Replay() {
   return (
     <Scene bare place="alarm" top={<LevelHud meters={game.meters} stars={game.stars} />}>
       <div className="shrink-0">
-        <AlarmBanner title="Mission paused" sub="Nobody is hurt" />
+        <AlarmBanner title={t('replay.paused')} sub={t('replay.nobodyHurt')} />
       </div>
 
       <div className="flex min-h-0 flex-1 gap-[0.75rem] px-[0.75rem] pt-[0.375rem] pb-[0.25rem]">
@@ -92,11 +93,11 @@ export function Replay() {
         {/* Right: three panels side by side, then the source, Try again and Home. */}
         <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-[0.375rem]">
           <div className="grid min-h-0 flex-1 grid-cols-3 grid-rows-[minmax(0,1fr)] gap-[0.375rem]">
-            <ReplayPanel title="What ran out" tone="danger">
+            <ReplayPanel title={t('replay.whatRanOut')} tone="danger">
               <CrackedMeter meter={lost.meter} />
             </ReplayPanel>
 
-            <ReplayPanel title="What cost the most" tone="ink">
+            <ReplayPanel title={t('replay.whatCostMost')} tone="ink">
               {blame ? (
                 <>
                   <BlameTile entry={blame} meter={lost.meter} />
@@ -113,18 +114,18 @@ export function Replay() {
               )}
             </ReplayPanel>
 
-            <ReplayPanel title="What real crews do" tone="space">
+            <ReplayPanel title={t('replay.realCrews')} tone="space">
               <p className="text-[1rem] leading-snug">{level.replay[lost.meter] ?? level.replay.default}</p>
             </ReplayPanel>
           </div>
 
           <div className="flex shrink-0 items-center gap-[0.5rem]">
             <SourceStrip text={level.source} className="min-w-0 flex-1" />
-            <GameButton variant="go" icon={RotateCcw} onClick={retryLevel} className="!min-h-[2.75rem] !px-[1.25rem] !text-[1.25rem]">
-              Try again
+            <GameButton variant="go" icon={RotateCcw} onClick={retryLevel} className="!min-h-[2.75rem] !px-4 sm:!px-6 !text-base sm:!text-xl leading-snug break-words">
+              {t('btn.tryAgain')}
             </GameButton>
-            <GameButton variant="plain" icon={House} onClick={goHome} className="!min-h-[2.75rem] !px-[1rem] !text-[1.125rem]">
-              Home
+            <GameButton variant="plain" icon={House} onClick={goHome} className="!min-h-[2.75rem] !px-3 sm:!px-4 !text-sm sm:!text-base leading-snug break-words">
+              {t('btn.home')}
             </GameButton>
           </div>
         </div>

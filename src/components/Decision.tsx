@@ -16,6 +16,7 @@ import { arrowCount } from './Hud';
 import { outcomeChanges } from './LevelChrome';
 import { MeterBadge } from './meters';
 import { reducedMotion, useReducedMotion } from './motion';
+import { t } from '../content/i18n';
 
 /** Each leg of the message clock: Mars → Earth, then Earth → Mars. */
 export const LEG_MS = 2000;
@@ -199,8 +200,8 @@ export function Decision({
       </div>
       {eventDone && !waiting ? (
         <div className="flex justify-end">
-          <GameButton variant="go" icon={PlayIcon} disabled={sel === null || picked !== null} onClick={confirm} className="!min-h-[3rem] !px-[2rem]">
-            GO
+          <GameButton variant="go" icon={PlayIcon} disabled={sel === null || picked !== null} onClick={confirm} className="!min-h-[3rem] !px-6 sm:!px-8 !text-lg sm:!text-xl leading-snug break-words">
+            {t('btn.go')}
           </GameButton>
         </div>
       ) : null}

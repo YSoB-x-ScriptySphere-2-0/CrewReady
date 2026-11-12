@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useGame } from '../store/game';
 import { getFlyStats, spendStardust } from '../fly/storage';
+import { t, useI18n } from '../content/i18n';
 import {
   loadUpgrades,
   countTotalSlots,
@@ -71,6 +72,7 @@ const SYSTEMS: SystemConfig[] = [
 ];
 
 export function Resources() {
+  const lang = useI18n((s) => s.lang);
   const [upgrades, setUpgrades] = useState<UpgradesState>(() => loadUpgrades());
   const [stardust, setStardust] = useState<number>(() => getFlyStats().totalStardust);
 
@@ -131,17 +133,17 @@ export function Resources() {
           <button
             onClick={() => useGame.getState().go('home')}
             className="inline-flex items-center gap-1.5 rounded-xl border-2 border-line bg-panel/80 px-3 py-1.5 text-xs font-bold text-muted transition hover:bg-panel hover:text-text active:translate-y-0.5"
-            aria-label="Back to Mission Control"
+            aria-label={t('nav.home')}
           >
             <ArrowLeft className="h-4 w-4" />
-            <span className="hidden sm:inline">Mission Control</span>
+            <span className="hidden sm:inline">{t('nav.home')}</span>
           </button>
           <div>
-            <h1 className="font-display text-lg sm:text-2xl font-extrabold uppercase tracking-wider text-text">
-              Rocket Cargo &amp; Resources
+            <h1 className="font-display text-base sm:text-2xl font-extrabold uppercase tracking-wider text-text">
+              {t('resources.title')}
             </h1>
             <p className="text-[11px] text-muted sm:text-xs">
-              Pack up to 4 upgrades for your next Mars mission
+              {t('resources.subtitle')}
             </p>
           </div>
         </div>
@@ -156,10 +158,10 @@ export function Resources() {
           <button
             onClick={() => useGame.getState().go('fly')}
             className="inline-flex items-center gap-1.5 rounded-full border-2 border-line bg-panel/70 px-3 py-1 text-xs font-bold text-muted transition hover:bg-panel hover:text-text"
-            title="Earn stardust in Fly runner"
+            title={lang === 'bn' ? 'ফ্লাই রানারে স্টারডাস্ট আয় করো' : 'Earn stardust in Fly runner'}
           >
             <Plane className="h-3.5 w-3.5 text-go" />
-            <span className="hidden md:inline">Earn in Fly</span>
+            <span className="hidden md:inline">{lang === 'bn' ? 'স্টারডাস্ট আয়' : 'Earn in Fly'}</span>
           </button>
         </div>
       </header>
@@ -212,10 +214,10 @@ export function Resources() {
             <button
               onClick={handleRefund}
               className="inline-flex items-center gap-1 rounded-xl border-2 border-line bg-panel px-2.5 py-1.5 text-xs font-bold text-muted hover:border-text hover:text-text active:translate-y-0.5"
-              title="Unload all cargo and refund stardust"
+              title={t('resources.refund')}
             >
               <RotateCcw className="h-3.5 w-3.5" />
-              <span className="hidden lg:inline">Unload</span>
+              <span className="hidden sm:inline">{lang === 'bn' ? 'খালি করো' : 'Unload'}</span>
             </button>
           )}
         </div>
@@ -278,13 +280,19 @@ export function Resources() {
                 <button
                   disabled={!check.allowed}
                   onClick={() => handleBuy(sys.key)}
-                  className={`w-full rounded-xl border-2 py-2 px-3 text-center font-display text-xs sm:text-sm font-extrabold tracking-wide transition ${
+                  className={`w-full rounded-xl border-2 py-2 px-2.5 text-center font-display text-xs sm:text-sm font-extrabold tracking-wide transition leading-snug break-words ${
                     check.allowed
                       ? 'border-go bg-go text-go-text shadow-[0_0.25rem_0_#0F8F9C] hover:brightness-105 active:translate-y-0.5 active:shadow-none'
                       : 'border-line/40 bg-panel-up/60 text-muted/60 cursor-not-allowed'
                   }`}
                 >
-                  {check.reason}
+                  {check.allowed
+                    ? `+5 ${sys.name} (25 ✦)`
+                    : isBayFull
+                      ? t('resources.full')
+                      : check.reason.includes('Need')
+                        ? (lang === 'bn' ? 'দরকার ২৫ ✦' : 'Need 25 ✦')
+                        : (lang === 'bn' ? 'সর্বোচ্চ র‍্যাংক' : 'Max Rank')}
                 </button>
               </div>
             </div>
@@ -294,16 +302,18 @@ export function Resources() {
 
       {/* Bottom Action Footer */}
       <footer className="mt-3 flex flex-shrink-0 items-center justify-between border-t-2 border-line/40 pt-3">
-        <span className="text-[11px] text-muted">
-          All packed resources automatically apply to your next mission start.
+        <span className="text-[11px] text-muted max-w-[60%] leading-tight">
+          {lang === 'bn'
+            ? 'প্যাক করা সমস্ত উপাদান পরবর্তী মিশনের শুরুতে স্বয়ংক্রিয়ভাবে যুক্ত হবে।'
+            : 'All packed resources automatically apply to your next mission start.'}
         </span>
 
         <button
           onClick={handleLaunchMission}
-          className="inline-flex min-h-[2.75rem] items-center gap-2 rounded-xl border-2 border-go bg-go px-5 py-2 font-display text-sm sm:text-base font-extrabold uppercase tracking-wide text-go-text shadow-[0_0.25rem_0_#0F8F9C,0_0_1.25rem_rgba(34,215,230,0.45)] transition hover:brightness-105 active:translate-y-0.5 active:shadow-none"
+          className="inline-flex min-h-[2.75rem] items-center gap-2 rounded-xl border-2 border-go bg-go px-4 sm:px-6 py-2 font-display text-xs sm:text-base font-extrabold uppercase tracking-wide text-go-text shadow-[0_0.25rem_0_#0F8F9C,0_0_1.25rem_rgba(34,215,230,0.45)] transition hover:brightness-105 active:translate-y-0.5 active:shadow-none leading-snug break-words"
         >
-          <Rocket className="h-4 w-4" />
-          <span>Launch Mission</span>
+          <Rocket className="h-4 w-4 shrink-0" />
+          <span>{t('resources.launch')}</span>
         </button>
       </footer>
     </div>

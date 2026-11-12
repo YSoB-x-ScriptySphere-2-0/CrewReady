@@ -8,6 +8,7 @@ import { ChangeChip, GameButton } from '../GameButton';
 import { METER_COLOR, MeterBadge, StarIcon } from '../meters';
 import { usePress } from '../motion';
 import type { Done } from './shared';
+import { useI18n } from '../../content/i18n';
 
 type Member = CrewStep['members'][number];
 
@@ -57,6 +58,7 @@ function CrewCard({ m, picked, full, nudge, onClick }: { m: Member; picked: bool
 }
 
 export function CrewPick({ step, game, onDone }: { step: CrewStep; game: GameState; onDone: Done }) {
+  const lang = useI18n((s) => s.lang);
   const [sel, setSel] = useState<string[]>([]);
   const [nudge, setNudge] = useState(0);
   const full = sel.length >= step.pick;
@@ -78,18 +80,32 @@ export function CrewPick({ step, game, onDone }: { step: CrewStep; game: GameSta
 
       <div className="flex items-center gap-[0.5rem]">
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-[0.5rem] gap-y-[0.125rem] rounded-tile border-2 border-line bg-panel px-[0.625rem] py-[0.25rem]" aria-live="polite">
-          <span className="font-display text-[0.9375rem] font-extrabold">{full ? 'Team full. Tap a card to swap.' : `Pick ${step.pick - sel.length} more.`}</span>
+          <span className="font-display text-[0.875rem] sm:text-[0.9375rem] font-extrabold leading-snug">
+            {full
+              ? (lang === 'bn' ? 'দল পূর্ণ! পরিবর্তন করতে ট্যাপ করো।' : 'Team full. Tap a card to swap.')
+              : (lang === 'bn' ? `আরও ${step.pick - sel.length} জন বেছে নাও।` : `Pick ${step.pick - sel.length} more.`)}
+          </span>
           {sel.length ? (
             <span className="flex flex-wrap items-center gap-[0.25rem]">
-              <span className="text-[0.75rem] text-muted">They eat and breathe:</span>
+              <span className="text-[0.75rem] text-muted">
+                {lang === 'bn' ? 'খাবার ও বাতাসের খরচ:' : 'They eat and breathe:'}
+              </span>
               {cost.map((c) => (
                 <ChangeChip key={c.meter} change={c} size="sm" />
               ))}
             </span>
           ) : null}
         </div>
-        <GameButton variant="go" icon={UsersRound} disabled={!full} onClick={() => onDone(pickCrew(game, step, sel))} className="!min-h-[3rem] !px-[1rem] !text-[1rem]">
-          Welcome aboard ({sel.length}/{step.pick})
+        <GameButton
+          variant="go"
+          icon={UsersRound}
+          disabled={!full}
+          onClick={() => onDone(pickCrew(game, step, sel))}
+          className="!min-h-[2.875rem] !px-3 sm:!px-4 !text-xs sm:!text-sm leading-snug break-words max-w-[14rem]"
+        >
+          {lang === 'bn'
+            ? `দলে স্বাগত (${sel.length}/${step.pick})`
+            : `Welcome aboard (${sel.length}/${step.pick})`}
         </GameButton>
       </div>
     </div>

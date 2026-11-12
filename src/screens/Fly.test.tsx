@@ -21,4 +21,20 @@ describe('Fly screen (S2)', () => {
     // Controls explanation
     expect(html).toContain('Tap left or right to change lanes');
   });
+
+  it('renders flight briefing with obstacles and power-ups instructions', () => {
+    const html = renderToString(<Fly />);
+
+    // Obstacles section
+    expect(html).toContain('Martian Obstacles');
+    expect(html).toContain('Low Rock Ridge');
+    expect(html).toContain('Tall Spire Monolith');
+    expect(html).toContain('Orbital Space Debris');
+
+    // Power-ups section
+    expect(html).toContain('Spacecraft Power-Ups');
+    expect(html).toContain('Shield (Cyan)');
+    expect(html).toContain('Magnet (Gold)');
+    expect(html).toContain('Boost (Magenta)');
+  });
 });

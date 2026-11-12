@@ -46,10 +46,10 @@ function TurnHint({ show }: { show: boolean }) {
   return (
     <div
       role="status"
-      className="pointer-events-none absolute bottom-[1rem] left-1/2 z-[70] flex -translate-x-1/2 items-center gap-[0.75rem] rounded-full border-2 border-line bg-panel/85 py-[0.25rem] pr-[1.25rem] pl-[0.5rem] text-text"
+      className="pointer-events-none absolute bottom-[1rem] left-1/2 z-[70] flex max-w-[90vw] -translate-x-1/2 items-center gap-[0.75rem] rounded-full border-2 border-line bg-panel/85 py-[0.25rem] pr-[1.25rem] pl-[0.5rem] text-text"
     >
-      <img src="/art/twinkle-question.webp" alt="" className="h-[3rem] w-[3rem] object-contain" />
-      <span className="font-display text-[1.125rem] leading-none font-extrabold whitespace-nowrap">{t('stage.turnPhone')}</span>
+      <img src="/art/twinkle-question.webp" alt="" className="h-[3rem] w-[3rem] shrink-0 object-contain" />
+      <span className="font-display text-sm sm:text-base leading-snug font-extrabold">{t('stage.turnPhone')}</span>
     </div>
   );
 }

@@ -1,8 +1,6 @@
 // Mission map (BUILD_SEQUENCE.md A4, restyled in G2, re-laid for the landscape stage in R4):
 // a trail running left to right, from Earth to the Mars outpost. Stops are chunky round nodes; your kid
-// stands beside the current one; earned badges sit on finished ones. The row height never changes:
-// a finished stop's "I learned" line and the locked note show in one panel under the trail.
-// The trail scrolls sideways only if it must. Every stop says its state to screen readers too.
+// stands beside the current one; earned badges sit on finished ones.
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Award, Flag, Globe, House, Lock } from 'lucide-react';
 import { Dock } from '../components/Dock';
@@ -13,6 +11,7 @@ import { Scene } from '../components/Scene';
 import { Kid } from '../components/Twinkle';
 import { LEVELS } from '../content/levels';
 import { missionInProgress, useGame } from '../store/game';
+import { t, useI18n } from '../content/i18n';
 
 type State = 'done' | 'current' | 'locked';
 
@@ -57,10 +56,7 @@ function Node({ state, children, bounce }: { state: State | 'start' | 'goal' | '
   );
 }
 
-/**
- * One stop on the trail: the node on the line (with the segments either side), and its label under it.
- * `kid` stands on the trail just left of the node.
- */
+/** One stop on the trail */
 function Stop({
   node,
   before,
@@ -71,9 +67,7 @@ function Stop({
   children,
 }: {
   node: ReactNode;
-  /** The segment coming in: travelled, ahead, or none (the first stop). */
   before: boolean | null;
-  /** The segment going out. */
   after: boolean | null;
   wide?: boolean;
   kid?: ReactNode;
@@ -81,7 +75,7 @@ function Stop({
   children: ReactNode;
 }) {
   return (
-    <li ref={innerRef} className={`flex shrink-0 flex-col items-center gap-[0.25rem] ${wide ? 'w-[8.5rem]' : 'w-[6.5rem]'}`}>
+    <li ref={innerRef} className={`flex shrink-0 flex-col items-center gap-[0.25rem] ${wide ? 'w-[8.5rem] sm:w-[9.5rem]' : 'w-[6.5rem]'}`}>
       <div className="flex h-[4.25rem] w-full items-center">
         <Rail travelled={!!before} hidden={before === null} />
         <span className="relative flex shrink-0">
@@ -99,7 +93,7 @@ function Stop({
 function StopLabel({ children, dashed }: { children: ReactNode; dashed?: boolean }) {
   return (
     <p
-      className={`w-full rounded-[0.75rem] border-2 bg-panel/85 px-[0.5rem] py-[0.25rem] text-center font-display text-[0.9375rem] leading-tight font-bold ${
+      className={`w-full rounded-[0.75rem] border-2 bg-panel/85 px-[0.5rem] py-[0.25rem] text-center font-display text-[0.875rem] sm:text-[0.9375rem] leading-snug font-bold break-words ${
         dashed ? 'border-dashed border-line text-muted' : 'border-line text-text'
       }`}
     >
@@ -133,7 +127,7 @@ function StopCard({
       aria-controls={controls}
       aria-disabled={st === 'locked' || undefined}
       {...press}
-      className={`toy relative w-full rounded-tile px-[0.5rem] py-[0.375rem] text-left text-text ${
+      className={`toy relative w-full rounded-tile px-[0.5rem] py-[0.375rem] text-left text-text overflow-hidden ${
         st === 'current' ? 'border-go bg-panel-up [--lip:var(--color-go-lip)]' : st === 'done' ? (expanded ? 'border-go bg-panel-up' : 'bg-panel') : ''
       }`}
     >
@@ -144,9 +138,9 @@ function StopCard({
 
 export function MissionMap() {
   const { levelIndex, badges, game, startMission, go } = useGame();
+  const lang = useI18n((s) => s.lang);
   const inProgress = useGame(missionInProgress);
   const finished = badges.length >= LEVELS.length;
-  // Which stop is "you are here": the level in play, or level 1 before any mission starts.
   const current = finished ? -1 : inProgress ? levelIndex : 0;
   const [open, setOpen] = useState<number | null>(null);
   const [note, setNote] = useState<string | null>(null);
@@ -154,7 +148,6 @@ export function MissionMap() {
   const trailRef = useRef<HTMLOListElement>(null);
   const hereRef = useRef<HTMLLIElement>(null);
 
-  // Scroll the trail (and only the trail) so the current stop is in the middle.
   useEffect(() => {
     const ol = trailRef.current;
     const here = hereRef.current;
@@ -163,20 +156,22 @@ export function MissionMap() {
   }, []);
 
   const stateOf = (i: number): State => (badges.includes(LEVELS[i].id) && i !== current ? 'done' : i === current ? 'current' : 'locked');
-  const travelled = (i: number) => i <= current || finished; // segment leading up to stop i
+  const travelled = (i: number) => i <= current || finished;
 
   const press = (i: number) => {
     const st = stateOf(i);
     setNote(null);
     if (st === 'current') {
-      // The node bounces, then the level opens.
       setBounce((b) => b + 1);
       setTimeout(() => (inProgress ? go('level') : startMission()), reducedMotion() ? 0 : 320);
     } else if (st === 'done') setOpen(open === i ? null : i);
     else {
-      // The note takes the panel under the trail, so a learned line there closes.
       setOpen(null);
-      setNote(`Level ${i + 1} is locked. Finish level ${current + 1} first.`);
+      setNote(
+        lang === 'bn'
+          ? `লেভেল ${i + 1} লক করা। আগে লেভেল ${current + 1} সম্পন্ন করো!`
+          : `Level ${i + 1} is locked. Complete level ${current + 1} first!`
+      );
     }
   };
 
@@ -185,21 +180,25 @@ export function MissionMap() {
   return (
     <Scene bare place="mars" rail={<Dock />}>
       <div className="flex min-h-0 flex-1 flex-col gap-[0.375rem] px-[0.75rem] pt-[0.5rem] pb-[0.5rem]">
-        {/* Top row: Home, the title and progress, the stars. */}
+        {/* Top row: Home, title and progress, stars */}
         <header className="flex items-center gap-[0.625rem]">
-          <RoundButton icon={House} label="Home" onClick={() => go('home')} className="!mb-[0.3rem] !h-[2.75rem] !w-[2.75rem]" />
+          <RoundButton icon={House} label={t('nav.home')} onClick={() => go('home')} className="!mb-[0.3rem] !h-[2.75rem] !w-[2.75rem]" />
           <div className="min-w-0 flex-1">
             <div className="w-fit max-w-full rounded-[1rem] bg-panel/85 px-[0.75rem] py-[0.25rem] text-text">
-              <h1 className="font-display text-[1.5rem] leading-none font-extrabold">Mission map</h1>
-              <p className="font-display text-[0.9375rem] leading-snug font-bold">
-                {finished ? 'Mission complete! All six badges earned.' : `${badges.length} of ${LEVELS.length} badges. From Earth to the Mars outpost.`}
+              <h1 className="font-display text-[1.25rem] sm:text-[1.5rem] leading-none font-extrabold">{t('map.title')}</h1>
+              <p className="font-display text-[0.875rem] sm:text-[0.9375rem] leading-snug font-bold">
+                {finished
+                  ? (lang === 'bn' ? 'মিশন সম্পন্ন! ৬টি ব্যাজই অর্জিত।' : 'Mission complete! All six badges earned.')
+                  : (lang === 'bn'
+                      ? `${badges.length} / ${LEVELS.length} ব্যাজ অর্জিত। পৃথিবী থেকে মঙ্গল ঘাঁটি পর্যন্ত যাত্রা।`
+                      : `${badges.length} of ${LEVELS.length} badges. From Earth to the Mars outpost.`)}
               </p>
             </div>
           </div>
           <StarCounter n={game.stars} />
         </header>
 
-        {/* The trail: one row, left to right. Scrolls sideways only if it must. */}
+        {/* The trail */}
         <div className="flex min-h-0 flex-1 items-center">
           <ol
             ref={trailRef}
@@ -216,12 +215,15 @@ export function MissionMap() {
                 </Node>
               }
             >
-              <StopLabel>Earth · start</StopLabel>
+              <StopLabel>{lang === 'bn' ? 'পৃথিবী · শুরু' : 'Earth · Start'}</StopLabel>
             </Stop>
 
             {LEVELS.map((l, i) => {
               const st = stateOf(i);
-              const label = `Level ${l.id}, ${l.title}, ${st === 'done' ? 'badge earned' : st === 'current' ? 'you are here' : 'locked'}`;
+              const title = t(`level${l.id}.title`) || l.title;
+              const place = t(`level${l.id}.place`) || l.place;
+              const label = `Level ${l.id}, ${title}, ${st === 'done' ? 'badge earned' : st === 'current' ? 'you are here' : 'locked'}`;
+
               return (
                 <Stop
                   key={l.id}
@@ -238,12 +240,12 @@ export function MissionMap() {
                 >
                   <StopCard st={st} label={label} onClick={() => press(i)} expanded={st === 'done' ? open === i : undefined} controls={st === 'done' ? 'map-detail' : undefined}>
                     {st === 'current' ? (
-                      <span className="mb-[0.125rem] inline-block rounded-full bg-go px-[0.5rem] font-display text-[0.8125rem] leading-snug font-extrabold text-go-text">
-                        {inProgress ? 'You are here' : 'Start here'}
+                      <span className="mb-[0.125rem] inline-block rounded-full bg-go px-[0.5rem] font-display text-[0.75rem] sm:text-[0.8125rem] leading-snug font-extrabold text-go-text">
+                        {inProgress ? t('map.youAreHere') : t('map.startHere')}
                       </span>
                     ) : null}
-                    <span className="block font-display text-[1rem] leading-[1.1] font-extrabold">{l.title}</span>
-                    <span className="block text-[0.8125rem] leading-tight text-muted">{l.place}</span>
+                    <span className="block font-display text-[0.875rem] sm:text-[0.9375rem] leading-snug font-extrabold break-words line-clamp-2">{title}</span>
+                    <span className="block text-[0.75rem] sm:text-[0.8125rem] leading-tight text-muted break-words">{place}</span>
                   </StopCard>
                 </Stop>
               );
@@ -260,11 +262,12 @@ export function MissionMap() {
                 </Node>
               }
             >
-              <StopLabel>The Mars outpost · Sol 500</StopLabel>
+              <StopLabel>{t('map.goal')}</StopLabel>
             </Stop>
-            {['Crew Mode', 'More worlds'].map((t, k) => (
+
+            {['Crew Mode', 'More worlds'].map((tk, k) => (
               <Stop
-                key={t}
+                key={tk}
                 before={false}
                 after={k ? null : false}
                 node={
@@ -274,27 +277,38 @@ export function MissionMap() {
                 }
               >
                 <StopLabel dashed>
-                  {t} <span className="font-sans text-[0.8125rem] font-normal">— coming soon</span>
+                  {tk} <span className="font-sans text-[0.75rem] font-normal">{lang === 'bn' ? '— শীঘ্রই আসছে' : '— coming soon'}</span>
                 </StopLabel>
               </Stop>
             ))}
           </ol>
         </div>
 
-        {/* Under the trail: the locked note, or a finished stop's "I learned" line. Fixed height, so the trail never moves. */}
+        {/* Under the trail: locked note or learned line */}
         <div id="map-detail" className="flex min-h-[3.25rem] shrink-0 items-center">
           {note ? (
-            <p role="status" className="anim-pop-in flex w-full items-center gap-[0.5rem] rounded-[1rem] border-2 border-line bg-panel/85 px-[0.75rem] py-[0.375rem] font-display text-[1rem] leading-snug font-bold text-text">
+            <p role="status" className="anim-pop-in flex w-full items-center gap-[0.5rem] rounded-[1rem] border-2 border-line bg-panel/85 px-[0.75rem] py-[0.375rem] font-display text-[0.9375rem] sm:text-[1rem] leading-snug font-bold text-text">
               <Lock size={18} strokeWidth={3} aria-hidden className="shrink-0 text-muted" />
               {note}
             </p>
           ) : learned ? (
-            <p key={learned.id} className="anim-pop-in flex w-full items-center gap-[0.5rem] rounded-[1rem] border-2 border-line bg-panel/85 px-[0.75rem] py-[0.375rem] text-[1rem] leading-snug text-text">
-              <span className="grid h-[1.75rem] w-[1.75rem] shrink-0 place-items-center rounded-full border-2 border-line bg-star text-go-text" aria-hidden>
-                <Award size={14} strokeWidth={3} />
-              </span>
-              <span className="min-w-0">“{learned.learned}”</span>
-            </p>
+            <div role="status" className="anim-pop-in flex w-full items-center justify-between gap-[0.5rem] rounded-[1rem] border-2 border-line bg-panel/85 px-[0.75rem] py-[0.375rem] text-text">
+              <div className="flex items-center gap-[0.5rem] min-w-0">
+                <span className="grid h-[2rem] w-[2rem] shrink-0 place-items-center rounded-full bg-star text-go-text">
+                  <Award size={18} strokeWidth={2.5} aria-hidden />
+                </span>
+                <span className="font-display text-[0.875rem] sm:text-[0.9375rem] leading-snug font-bold break-words">
+                  {t(`level${learned.id}.teaches`) || learned.learned}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setOpen(null)}
+                className="shrink-0 rounded-full border border-line px-2.5 py-1 text-xs font-bold text-muted hover:text-text"
+              >
+                {t('btn.close')}
+              </button>
+            </div>
           ) : null}
         </div>
       </div>

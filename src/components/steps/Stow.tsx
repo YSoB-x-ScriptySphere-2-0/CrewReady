@@ -8,6 +8,7 @@ import type { GameState, StowStep } from '../../engine/types';
 import { GameButton } from '../GameButton';
 import { usePress } from '../motion';
 import { hop, LeftSlot, ToyArea, type Done } from './shared';
+import { useI18n } from '../../content/i18n';
 
 const itemHtml = '<span style="display:grid;place-items:center;width:40px;height:40px;border:2px solid #3a4a8c;border-radius:12px;background:#1c2b63"></span>';
 
@@ -54,6 +55,7 @@ function ItemCard({ label, inReach, inHold, picked, onClick }: { label: string; 
 }
 
 export function Stow({ step, game, onDone, slot }: { step: StowStep; game: GameState; onDone: Done; slot?: HTMLElement | null }) {
+  const lang = useI18n((s) => s.lang);
   // cubbies[k] holds an item flag or null.
   const [cubbies, setCubbies] = useState<(string | null)[]>(() => Array.from({ length: step.pick }, () => null));
   const [landedAt, setLandedAt] = useState(-1);
@@ -130,11 +132,21 @@ export function Stow({ step, game, onDone, slot }: { step: StowStep; game: GameS
           ))}
         </div>
         <div className="flex items-center justify-between gap-[0.5rem]">
-          <p className="min-w-0 font-display text-[0.9375rem] leading-tight font-extrabold" aria-live="polite">
-            {full ? 'Both cubbies full. Tap one to empty it.' : `Tap ${step.pick - picked.length} more.`}
+          <p className="min-w-0 font-display text-[0.8125rem] sm:text-[0.9375rem] leading-tight font-extrabold" aria-live="polite">
+            {full
+              ? (lang === 'bn' ? 'দুটো খাঁপাই পূর্ণ। বদলাতে ট্যাপ করো।' : 'Both cubbies full. Tap one to empty it.')
+              : (lang === 'bn' ? `আরও ${step.pick - picked.length}টি বেছে নাও।` : `Tap ${step.pick - picked.length} more.`)}
           </p>
-          <GameButton variant="go" icon={Rocket} disabled={!full} onClick={() => onDone(stow(game, step, picked))} className="!min-h-[2.75rem] !mb-0">
-            Ready for launch ({picked.length}/{step.pick})
+          <GameButton
+            variant="go"
+            icon={Rocket}
+            disabled={!full}
+            onClick={() => onDone(stow(game, step, picked))}
+            className="!min-h-[2.875rem] !px-3 sm:!px-4 !text-xs sm:!text-sm leading-snug break-words max-w-[14rem]"
+          >
+            {lang === 'bn'
+              ? `উড্ডয়নের প্রস্তুতি (${picked.length}/${step.pick})`
+              : `Ready for launch (${picked.length}/${step.pick})`}
           </GameButton>
         </div>
       </div>

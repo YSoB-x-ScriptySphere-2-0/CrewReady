@@ -8,8 +8,10 @@ import { METER_NAMES, type CratesStep, type GameState } from '../../engine/types
 import { GameButton } from '../GameButton';
 import { METER_COLOR, MeterBadge } from '../meters';
 import { CRATE_HTML, Crate, hop, ToyArea, type Done } from './shared';
+import { useI18n } from '../../content/i18n';
 
 export function Crates({ step, game, onDone }: { step: CratesStep; game: GameState; onDone: Done }) {
+  const lang = useI18n((s) => s.lang);
   const [counts, setCounts] = useState(step.bins.map(() => 0));
   // Which bin (or the pad, -1) just received a crate, so only that crate pops in as the copy lands.
   const [landed, setLanded] = useState<{ at: number; n: number } | null>(null);
@@ -41,12 +43,22 @@ export function Crates({ step, game, onDone }: { step: CratesStep; game: GameSta
               <Crate size={26} land={landed?.at === -1 && k === left - 1} />
             </span>
           ))}
-          <span className="ml-auto rounded-full bg-space-deep px-[0.5rem] font-display text-[0.9375rem] leading-snug font-extrabold tabular-nums" aria-hidden>
-            {left ? `${left} left` : 'Pad empty!'}
+          <span className="ml-auto rounded-full bg-space-deep px-[0.5rem] font-display text-[0.875rem] sm:text-[0.9375rem] leading-snug font-extrabold tabular-nums" aria-hidden>
+            {left
+              ? (lang === 'bn' ? `${left}টি বাকি` : `${left} left`)
+              : (lang === 'bn' ? 'প্যাড খালি!' : 'Pad empty!')}
           </span>
         </div>
-        <GameButton variant="go" icon={DoorClosed} disabled={left !== 0} onClick={() => onDone(packCrates(game, step, counts))} className="!min-h-[3rem] !px-[1rem] !text-[1rem]">
-          {left ? `Pack ${left} more` : 'Close the door'}
+        <GameButton
+          variant="go"
+          icon={DoorClosed}
+          disabled={left !== 0}
+          onClick={() => onDone(packCrates(game, step, counts))}
+          className="!min-h-[2.875rem] !px-3 sm:!px-4 !text-xs sm:!text-sm leading-snug break-words max-w-[13rem]"
+        >
+          {left
+            ? (lang === 'bn' ? `আরও ${left}টি দাও` : `Pack ${left} more`)
+            : (lang === 'bn' ? 'দরজা বন্ধ করো' : 'Close the door')}
         </GameButton>
       </div>
 
@@ -58,7 +70,7 @@ export function Crates({ step, game, onDone }: { step: CratesStep; game: GameSta
             <div key={b.meter} className="flex min-h-0 flex-col rounded-tile border-2 border-line bg-panel text-text">
               <div className="flex items-center gap-[0.25rem] rounded-t-[0.875rem] px-[0.25rem] py-[0.25rem]" style={{ background: `color-mix(in srgb, ${METER_COLOR[b.meter]} 55%, #14204d)` }}>
                 <MeterBadge meter={b.meter} size={22} />
-                <span className="min-w-0 font-display text-[0.6875rem] leading-[1.1] font-extrabold">{b.label}</span>
+                <span className="min-w-0 font-display text-[0.6875rem] sm:text-[0.75rem] leading-[1.15] font-extrabold break-words line-clamp-2">{b.label}</span>
               </div>
 
               {/* The stack: tap it to send the top crate back to the pad. */}
@@ -101,9 +113,9 @@ export function Crates({ step, game, onDone }: { step: CratesStep; game: GameSta
                   onClick={() => add(i)}
                   disabled={left === 0}
                   label={`Put a crate in ${b.label}`}
-                  className="flex min-h-[2.5rem] w-full items-center justify-center gap-[0.25rem] bg-crate font-display text-[0.9375rem] font-extrabold text-white [--lip:var(--color-crate-lip)] disabled:bg-locked disabled:text-muted disabled:[--lip:var(--color-locked-lip)]"
+                  className="flex min-h-[2.5rem] w-full items-center justify-center gap-[0.25rem] bg-crate font-display text-[0.875rem] sm:text-[0.9375rem] font-extrabold text-white [--lip:var(--color-crate-lip)] disabled:bg-locked disabled:text-muted disabled:[--lip:var(--color-locked-lip)]"
                 >
-                  <Plus size={18} strokeWidth={3.25} aria-hidden /> Crate
+                  <Plus size={16} strokeWidth={3.25} aria-hidden /> {lang === 'bn' ? 'ক্রেট' : 'Crate'}
                 </ToyArea>
               </div>
             </div>

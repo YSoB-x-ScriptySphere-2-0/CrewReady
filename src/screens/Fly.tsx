@@ -1,10 +1,26 @@
 // Fly — Endless 3-Lane Runner — BUILD_SEQUENCE.md S2 / plan.md §7 row 2
 import { useEffect, useRef, useState } from 'react';
-import { Heart, Sparkles, ArrowUp, RefreshCw, Home, Shield, Zap, Magnet } from 'lucide-react';
+import {
+  Heart,
+  Sparkles,
+  ArrowUp,
+  ArrowLeft,
+  ArrowRight,
+  RefreshCw,
+  Home,
+  Shield,
+  Zap,
+  Magnet,
+  AlertTriangle,
+  Compass,
+  Rocket,
+} from 'lucide-react';
 import { useGame } from '../store/game';
-import { stageDelta } from '../components/stageMath';
+import { stageDelta, isStageTurned } from '../components/stageMath';
 import { getKpToday } from '../services/nasa';
 import { Badge } from '../components/Panel';
+import { spaceMusic } from '../services/audio';
+import { MusicToggle } from '../components/MusicToggle';
 import {
   createInitialState,
   determineSpeedConfig,
@@ -13,6 +29,7 @@ import {
 import { getFlyStats, recordRunEnd, type FlyStats } from '../fly/storage';
 import { renderFly } from '../fly/renderer';
 import type { FlyCommand, FlyConfig, FlyState } from '../fly/types';
+import { t } from '../content/i18n';
 
 export function Fly() {
   const go = useGame((s) => s.go);
@@ -31,6 +48,14 @@ export function Fly() {
   const commandsRef = useRef<FlyCommand[]>([]);
   const lastTimeRef = useRef<number>(performance.now());
   const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
+
+  // Upbeat arcade music in Fly screen
+  useEffect(() => {
+    spaceMusic.setMode('fly');
+    return () => {
+      spaceMusic.setMode('normal');
+    };
+  }, []);
 
   // 1. Fetch today's real Kp for starting speed
   useEffect(() => {
@@ -179,7 +204,8 @@ export function Fly() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [hasStarted, isGameOver]);
 
-  // 6. Controls: Touch (Tap Left/Right 50% for lanes, swipe up via stageDelta)
+  // 6. Mobile & Touch Screen Controls
+  // Handles swipes (Left, Right, Up) and screen-half taps correctly in both portrait-turned & landscape
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!hasStarted || isGameOver) return;
     touchStartRef.current = { x: e.clientX, y: e.clientY, time: performance.now() };
@@ -192,24 +218,50 @@ export function Fly() {
 
     const screenDx = e.clientX - start.x;
     const screenDy = e.clientY - start.y;
-    // Map screen-space delta to stage-space delta (handles upright quarter-turn)
+    const turned = isStageTurned();
+    // Map screen-space delta to stage-space delta (handles upright phone quarter-turn)
     const delta = stageDelta(screenDx, screenDy);
-
     const dist = Math.hypot(delta.dx, delta.dy);
 
-    // Swipe up detection (stageDelta.dy < -30)
-    if (dist > 30 && delta.dy < -25) {
-      commandsRef.current.push('hop');
-    } else {
-      // Tap Left vs Right half of screen
-      const rect = e.currentTarget.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      if (clickX < rect.width * 0.5) {
+    // 1. Swipe Gestures
+    if (dist > 24) {
+      // Swipe Up -> Hop over low rock
+      if (delta.dy < -18 && Math.abs(delta.dy) > Math.abs(delta.dx) * 0.6) {
+        commandsRef.current.push('hop');
+        touchStartRef.current = null;
+        return;
+      }
+      // Swipe Left -> Shift Left
+      if (delta.dx < -18) {
         commandsRef.current.push('moveLeft');
-      } else {
+        touchStartRef.current = null;
+        return;
+      }
+      // Swipe Right -> Shift Right
+      if (delta.dx > 18) {
         commandsRef.current.push('moveRight');
+        touchStartRef.current = null;
+        return;
       }
     }
+
+    // 2. Screen Tap (Tap left half vs right half)
+    const rect = e.currentTarget.getBoundingClientRect();
+    let ratioX = 0.5;
+    if (turned) {
+      // In 90deg clockwise turned stage, screen Y corresponds to stage X (left-to-right)
+      ratioX = (e.clientY - rect.top) / rect.height;
+    } else {
+      // Flat landscape orientation: screen X is stage X
+      ratioX = (e.clientX - rect.left) / rect.width;
+    }
+
+    if (ratioX < 0.5) {
+      commandsRef.current.push('moveLeft');
+    } else {
+      commandsRef.current.push('moveRight');
+    }
+
     touchStartRef.current = null;
   };
 
@@ -220,16 +272,17 @@ export function Fly() {
       ref={containerRef}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
-      className="relative h-full w-full select-none overflow-hidden bg-space font-sans"
+      style={{ touchAction: 'none' }}
+      className="relative h-full w-full select-none overflow-hidden bg-space font-sans touch-none"
     >
       {/* 3D Game Canvas */}
-      <canvas ref={canvasRef} className="absolute inset-0 block h-full w-full" />
+      <canvas ref={canvasRef} className="absolute inset-0 block h-full w-full touch-none" />
 
       {/* In-Game Top HUD (Shown while playing) */}
       {hasStarted && !isGameOver && (
-        <div className="pointer-events-none absolute top-0 right-0 left-0 flex items-center justify-between p-3 sm:p-4 text-text">
+        <div className="pointer-events-none absolute top-0 right-0 left-0 flex items-center justify-between p-2.5 sm:p-4 text-text z-10">
           {/* Hull pips (3 hearts) */}
-          <div className="flex items-center gap-1.5 rounded-full border-2 border-line bg-panel/85 px-3 py-1 shadow-md">
+          <div className="flex items-center gap-1.5 rounded-full border-2 border-line bg-panel/90 px-3 py-1 shadow-md backdrop-blur-md">
             {[1, 2, 3].map((pip) => (
               <Heart
                 key={pip}
@@ -250,121 +303,250 @@ export function Fly() {
             </div>
           )}
 
-          {/* Stardust & Distance Counters */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 rounded-full border-2 border-line bg-panel/85 px-3 py-1 font-display text-sm font-extrabold text-star">
+          {/* Stardust & Distance Counters + Music */}
+          <div className="flex items-center gap-2 sm:gap-3 pointer-events-auto">
+            <div className="flex items-center gap-1 rounded-full border-2 border-line bg-panel/90 px-3 py-1 font-display text-sm font-extrabold text-star shadow-md backdrop-blur-md">
               <Sparkles size={16} />
               <span className="tabular-nums">{currentState.stardust}</span>
             </div>
-            <div className="rounded-full border-2 border-line bg-panel/85 px-3.5 py-1 font-display text-sm font-extrabold text-text tabular-nums">
+            <div className="rounded-full border-2 border-line bg-panel/90 px-3.5 py-1 font-display text-sm font-extrabold text-text tabular-nums shadow-md backdrop-blur-md">
               {Math.floor(currentState.distance)} m
             </div>
+            <MusicToggle compact />
           </div>
         </div>
       )}
 
-      {/* Mobile Touch Hop Button (bottom-right) */}
+      {/* Arcade On-Screen Touch Controls (Steer Left, Steer Right, Hop) */}
       {hasStarted && !isGameOver && (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            commandsRef.current.push('hop');
-          }}
-          className="group absolute right-4 bottom-4 z-10 flex h-14 w-14 items-center justify-center rounded-full border-3 border-line bg-panel-up text-text shadow-[0_0.35rem_0_#0F8F9C] active:translate-y-1 active:shadow-none sm:hidden"
-          aria-label="Hop over low rock"
-        >
-          <ArrowUp size={26} strokeWidth={3} className="text-go group-hover:-translate-y-0.5" />
-        </button>
-      )}
-
-      {/* 1. Start Screen Overlay: One Big FLY Button */}
-      {!hasStarted && (
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-space/85 p-6 text-center text-text">
-          <div className="inline-flex items-center gap-2 rounded-full border-2 border-line bg-panel/90 px-3.5 py-1 text-xs font-bold text-muted">
-            <Badge kind={config.badge} />
-            <span>Space weather today: Kp {config.kp} ({config.speedTier} speed)</span>
-          </div>
-
-          <h1 className="mt-4 font-display text-4xl sm:text-5xl font-extrabold uppercase tracking-wider text-text">
-            Fly: Orbit Runner
-          </h1>
-          <p className="mt-2 max-w-sm text-sm sm:text-base text-muted">
-            Tap left or right to change lanes. Swipe up or tap Hop to jump over low rocks. Collect stardust minerals!
-          </p>
-
-          <div className="mt-6">
+        <>
+          {/* Bottom-Left Steering Controls */}
+          <div className="absolute left-3 bottom-3 z-20 flex items-center gap-2.5">
             <button
-              onClick={handleStart}
-              className="inline-flex min-h-[3.5rem] items-center gap-3 rounded-2xl border-2 border-go bg-go px-8 py-3.5 font-display text-xl font-extrabold tracking-wide text-go-text shadow-[0_0.35rem_0_#0F8F9C,0_0_1.5rem_rgba(34,215,230,0.5)] transition hover:brightness-105 active:translate-y-1 active:shadow-none"
+              type="button"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                commandsRef.current.push('moveLeft');
+              }}
+              className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl border-2 border-white/30 bg-panel/85 text-text shadow-[0_0.3rem_0_#0F8F9C] backdrop-blur-md active:translate-y-1 active:border-go active:shadow-none"
+              aria-label="Steer Left"
             >
-              <span>FLY</span>
+              <ArrowLeft size={28} strokeWidth={3} className="text-go" />
+            </button>
+
+            <button
+              type="button"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                commandsRef.current.push('moveRight');
+              }}
+              className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl border-2 border-white/30 bg-panel/85 text-text shadow-[0_0.3rem_0_#0F8F9C] backdrop-blur-md active:translate-y-1 active:border-go active:shadow-none"
+              aria-label="Steer Right"
+            >
+              <ArrowRight size={28} strokeWidth={3} className="text-go" />
             </button>
           </div>
 
-          <div className="mt-8 flex items-center gap-4 text-xs font-bold text-muted">
-            <span>Best on device: {stats.bestDistance} m</span>
-            <span>·</span>
-            <span>Bank: {stats.totalStardust} ✦</span>
+          {/* Bottom-Right Hop / Jump Button */}
+          <div className="absolute right-3 bottom-3 z-20">
+            <button
+              type="button"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                commandsRef.current.push('hop');
+              }}
+              className="flex h-14 w-16 sm:h-16 sm:w-20 flex-col items-center justify-center rounded-2xl border-2 border-go/80 bg-gradient-to-b from-[#22D7E6] to-[#0F8F9C] font-display font-extrabold text-go-text shadow-[0_0.35rem_0_#0A5B64,0_0_1.25rem_rgba(34,215,230,0.4)] active:translate-y-1 active:shadow-none"
+              aria-label="Hop over low rock"
+            >
+              <ArrowUp size={24} strokeWidth={3.5} />
+              <span className="text-[0.625rem] tracking-wider uppercase leading-snug mt-0.5">{t('fly.hop')}</span>
+            </button>
+          </div>
+        </>
+      )}
+
+      {/* 1. Pre-Flight Briefing & Start Screen Overlay */}
+      {!hasStarted && (
+        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-space-deep/90 p-4 sm:p-6 text-center text-text overflow-y-auto">
+          {/* Top Pill: Live Space Weather & Music */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-2">
+            <div className="inline-flex items-center gap-2 rounded-full border border-line bg-panel/90 px-3 py-1 text-xs font-bold text-muted shadow-sm">
+              <Badge kind={config.badge} />
+              <span>{t('fly.weather')}: Kp {config.kp} ({config.speedTier})</span>
+            </div>
+            <MusicToggle />
           </div>
 
-          <button
-            onClick={() => go('home')}
-            className="mt-6 inline-flex items-center gap-1.5 text-xs text-muted hover:text-text underline-offset-4 hover:underline"
-          >
-            <Home size={14} />
-            <span>Return to Mission Control</span>
-          </button>
+          <div className="flex items-center justify-center gap-2.5 mt-1">
+            <Rocket className="text-go h-8 w-8 sm:h-9 sm:w-9" />
+            <h1 className="font-display text-2xl sm:text-4xl font-extrabold uppercase tracking-wider text-text">
+              {t('fly.title')}
+            </h1>
+          </div>
+
+          {/* Primary Controls Quick-Summary */}
+          <p className="mt-1 text-xs sm:text-sm text-text/80 max-w-md leading-snug">
+            {t('fly.instructions')}
+          </p>
+
+          {/* Flight Manual: Visual Instructions for Obstacles and Powers */}
+          <div className="mt-3.5 mb-4 grid grid-cols-1 md:grid-cols-2 gap-2.5 w-full max-w-xl text-left">
+            {/* Column 1: Obstacles (Hazards) */}
+            <div className="rounded-2xl border-2 border-line bg-panel/85 p-3 shadow-md backdrop-blur-md">
+              <div className="flex items-center gap-1.5 font-display text-xs font-extrabold uppercase tracking-wider text-danger mb-2">
+                <AlertTriangle size={15} />
+                <span>{t('fly.obstacles')}</span>
+              </div>
+              <ul className="flex flex-col gap-1.5 text-[0.8125rem]">
+                <li className="flex items-start gap-2 bg-space-deep/50 rounded-xl p-1.5 border border-line/40">
+                  <span className="shrink-0 grid place-items-center h-6 w-6 rounded-lg bg-danger/20 text-danger font-bold text-xs">
+                    🪨
+                  </span>
+                  <div>
+                    <span className="font-bold text-text">{t('fly.rock')}: </span>
+                    <span className="text-muted leading-snug">{t('fly.rockDesc')}</span>
+                  </div>
+                </li>
+
+                <li className="flex items-start gap-2 bg-space-deep/50 rounded-xl p-1.5 border border-line/40">
+                  <span className="shrink-0 grid place-items-center h-6 w-6 rounded-lg bg-danger/20 text-danger font-bold text-xs">
+                    🗼
+                  </span>
+                  <div>
+                    <span className="font-bold text-text">{t('fly.monolith')}: </span>
+                    <span className="text-muted leading-snug">{t('fly.monolithDesc')}</span>
+                  </div>
+                </li>
+
+                <li className="flex items-start gap-2 bg-space-deep/50 rounded-xl p-1.5 border border-line/40">
+                  <span className="shrink-0 grid place-items-center h-6 w-6 rounded-lg bg-danger/20 text-danger font-bold text-xs">
+                    🛰️
+                  </span>
+                  <div>
+                    <span className="font-bold text-text">{t('fly.debris')}: </span>
+                    <span className="text-muted leading-snug">{t('fly.debrisDesc')}</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            {/* Column 2: Powers & Collectibles */}
+            <div className="rounded-2xl border-2 border-line bg-panel/85 p-3 shadow-md backdrop-blur-md">
+              <div className="flex items-center gap-1.5 font-display text-xs font-extrabold uppercase tracking-wider text-star mb-2">
+                <Compass size={15} />
+                <span>{t('fly.powers')}</span>
+              </div>
+              <ul className="flex flex-col gap-1.5 text-[0.8125rem]">
+                <li className="flex items-start gap-2 bg-space-deep/50 rounded-xl p-1.5 border border-line/40">
+                  <span className="shrink-0 grid place-items-center h-6 w-6 rounded-lg bg-go/20 text-go font-bold text-xs">
+                    <Shield size={14} />
+                  </span>
+                  <div>
+                    <span className="font-bold text-go">{t('fly.shield')}: </span>
+                    <span className="text-muted leading-snug">{t('fly.shieldDesc')}</span>
+                  </div>
+                </li>
+
+                <li className="flex items-start gap-2 bg-space-deep/50 rounded-xl p-1.5 border border-line/40">
+                  <span className="shrink-0 grid place-items-center h-6 w-6 rounded-lg bg-star/20 text-star font-bold text-xs">
+                    <Magnet size={14} />
+                  </span>
+                  <div>
+                    <span className="font-bold text-star">{t('fly.magnet')}: </span>
+                    <span className="text-muted leading-snug">{t('fly.magnetDesc')}</span>
+                  </div>
+                </li>
+
+                <li className="flex items-start gap-2 bg-space-deep/50 rounded-xl p-1.5 border border-line/40">
+                  <span className="shrink-0 grid place-items-center h-6 w-6 rounded-lg bg-nova/20 text-nova font-bold text-xs">
+                    <Zap size={14} />
+                  </span>
+                  <div>
+                    <span className="font-bold text-nova">{t('fly.boost')}: </span>
+                    <span className="text-muted leading-snug">{t('fly.boostDesc')}</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Launch Action */}
+          <div className="flex flex-col items-center gap-3">
+            <button
+              onClick={handleStart}
+              className="inline-flex min-h-[3.5rem] items-center justify-center gap-3 rounded-2xl border-2 border-go bg-go px-8 sm:px-12 py-3 font-display text-xl sm:text-2xl font-extrabold tracking-wider text-go-text shadow-[0_0.35rem_0_#0F8F9C,0_0_1.5rem_rgba(34,215,230,0.5)] transition hover:brightness-105 active:translate-y-1 active:shadow-none cursor-pointer leading-snug break-words"
+            >
+              <span>{t('fly.btn')}</span>
+            </button>
+
+            <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 text-xs font-bold text-muted">
+              <span>{t('fly.bestOnDevice')}: {stats.bestDistance} m</span>
+              <span>·</span>
+              <span>{t('fly.bank')}: {stats.totalStardust} ✦</span>
+            </div>
+
+            <button
+              onClick={() => go('home')}
+              className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-text underline-offset-4 hover:underline cursor-pointer py-1"
+            >
+              <Home size={14} />
+              <span>{t('fly.returnHome')}</span>
+            </button>
+          </div>
         </div>
       )}
 
       {/* 2. End Screen Overlay (Run Over) */}
       {isGameOver && runSummary && (
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-space-deep/85 p-6 text-center text-text">
-          <div className="w-full max-w-sm rounded-3xl border-2 border-line bg-panel p-6 shadow-2xl">
-            <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-text">
-              Run Complete!
+        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-space-deep/85 p-4 sm:p-6 text-center text-text overflow-y-auto">
+          <div className="w-full max-w-sm rounded-3xl border-2 border-line bg-panel p-5 sm:p-6 shadow-2xl backdrop-blur-xl">
+            <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-text leading-tight">
+              {t('fly.gameOver')}
             </h2>
             <p className="mt-1 text-xs text-muted uppercase tracking-wider">
-              {runSummary.isNewBest ? '★ New Record Distance! ★' : 'Orbital Run telemetry'}
+              {runSummary.isNewBest ? t('fly.newRecord') : t('fly.telemetry')}
             </p>
 
-            <div className="my-5 grid grid-cols-2 gap-3">
+            <div className="my-4 sm:my-5 grid grid-cols-2 gap-3">
               <div className="rounded-2xl border border-line bg-space-deep p-3">
-                <span className="text-xs text-muted">Distance</span>
-                <p className="mt-0.5 font-display text-2xl font-extrabold text-go tabular-nums">
+                <span className="text-xs text-muted block truncate">{t('fly.distance')}</span>
+                <p className="mt-0.5 font-display text-xl sm:text-2xl font-extrabold text-go tabular-nums">
                   {runSummary.distance} m
                 </p>
               </div>
 
               <div className="rounded-2xl border border-line bg-space-deep p-3">
-                <span className="text-xs text-muted">Stardust Earned</span>
-                <p className="mt-0.5 font-display text-2xl font-extrabold text-star tabular-nums">
+                <span className="text-xs text-muted block truncate">{t('fly.stardustEarned')}</span>
+                <p className="mt-0.5 font-display text-xl sm:text-2xl font-extrabold text-star tabular-nums">
                   +{runSummary.earned} ✦
                 </p>
               </div>
             </div>
 
-            <div className="mb-6 rounded-xl bg-space-deep/60 px-4 py-2 text-xs font-bold text-muted">
-              <span>Best Distance: {stats.bestDistance} m</span>
-              <span className="mx-2">·</span>
-              <span>Total Bank: {stats.totalStardust} ✦</span>
+            <div className="mb-5 sm:mb-6 rounded-xl bg-space-deep/60 px-3 py-2 text-xs font-bold text-muted flex flex-wrap items-center justify-center gap-2">
+              <span>{t('fly.bestOnDevice')}: {stats.bestDistance} m</span>
+              <span>·</span>
+              <span>{t('fly.bank')}: {stats.totalStardust} ✦</span>
             </div>
 
             <div className="flex flex-col gap-2.5">
               <button
                 onClick={handleStart}
-                className="inline-flex min-h-[3rem] w-full items-center justify-center gap-2 rounded-xl border-2 border-go bg-go px-5 py-2.5 font-display text-lg font-extrabold text-go-text shadow-[0_0.35rem_0_#0F8F9C,0_0_1.25rem_rgba(34,215,230,0.45)] transition active:translate-y-1 active:shadow-none"
+                className="inline-flex min-h-[3rem] w-full items-center justify-center gap-2 rounded-xl border-2 border-go bg-go px-4 py-2.5 font-display text-base sm:text-lg font-extrabold text-go-text shadow-[0_0.35rem_0_#0F8F9C,0_0_1.25rem_rgba(34,215,230,0.45)] transition active:translate-y-1 active:shadow-none cursor-pointer leading-snug break-words"
               >
                 <RefreshCw size={18} strokeWidth={2.5} />
-                <span>Fly Again</span>
+                <span>{t('btn.flyAgain')}</span>
               </button>
 
               <button
                 onClick={() => go('home')}
-                className="inline-flex min-h-[2.75rem] w-full items-center justify-center gap-2 rounded-xl border-2 border-line bg-panel-up px-4 py-2 font-display text-sm font-extrabold text-text transition hover:bg-panel active:translate-y-0.5"
+                className="inline-flex min-h-[2.75rem] w-full items-center justify-center gap-2 rounded-xl border-2 border-line bg-panel-up px-4 py-2 font-display text-xs sm:text-sm font-extrabold text-text transition hover:bg-panel active:translate-y-0.5 cursor-pointer leading-snug break-words"
               >
                 <Home size={16} />
-                <span>Mission Control</span>
+                <span>{t('nav.home')}</span>
               </button>
             </div>
           </div>

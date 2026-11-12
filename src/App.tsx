@@ -16,6 +16,8 @@ import { Welcome } from './screens/Welcome';
 import { useGame } from './store/game';
 import { useSpace } from './store/space';
 import { WordCardHost } from './components/Words';
+import { TwinkleTourGuide } from './components/TwinkleTourGuide';
+import { spaceMusic } from './services/audio';
 
 /** Hidden dev page with every game-kit part (G1). Not linked from the game. */
 const Kit = lazy(() => import('./screens/Kit').then((m) => ({ default: m.Kit })));
@@ -31,10 +33,22 @@ function useHash() {
 
 function Screens() {
   const [welcomeDismissed, setWelcomeDismissed] = useState(false);
+  const [showTour, setShowTour] = useState(false);
   const { screen, seenIntro, go } = useGame();
   const hash = useHash();
   // Real NASA data starts loading as soon as the app opens, so the storm size is known by PLAY.
   useEffect(() => void useSpace.getState().load(), []);
+
+  // Adapt space music mode to current screen
+  useEffect(() => {
+    if (screen === 'fly') {
+      spaceMusic.setMode('fly');
+    } else if (screen === 'hook') {
+      spaceMusic.setMode('alarm');
+    } else {
+      spaceMusic.setMode('normal');
+    }
+  }, [screen]);
 
   if (hash === '#kit')
     return (
@@ -49,9 +63,30 @@ function Screens() {
       <Welcome
         onStart={() => {
           setWelcomeDismissed(true);
-          // First time (intro not finished, even if quit half-way): the hook. After that: Home, never the hook again.
-          if (!seenIntro) go('hook');
-          else if (screen === 'hook') go('home');
+          // Before the intro: if not seen intro yet, show Twinkle's Tour first!
+          if (!seenIntro) {
+            setShowTour(true);
+          } else if (screen === 'hook') {
+            go('home');
+          }
+        }}
+        onOpenTour={() => {
+          setWelcomeDismissed(true);
+          setShowTour(true);
+        }}
+      />
+    );
+  }
+
+  // Tour Guide of Twinkle before the intro, or when opened
+  if (showTour) {
+    return (
+      <TwinkleTourGuide
+        onClose={() => {
+          setShowTour(false);
+          if (!seenIntro) {
+            go('hook');
+          }
         }}
       />
     );

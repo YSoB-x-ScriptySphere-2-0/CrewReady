@@ -7,8 +7,10 @@ import { METER_NAMES, type CrewStep, type GameState, type Level, type SlidersSte
 import { ChangeChip, GameButton } from '../GameButton';
 import { METER_COLOR, MeterBadge } from '../meters';
 import { BLOCK_HTML, BatteryBlock, hop, LeftSlot, ToyArea, type Done } from './shared';
+import { useI18n } from '../../content/i18n';
 
 export function Power({ step, game, level, onDone, slot }: { step: SlidersStep; game: GameState; level: Level; onDone: Done; slot?: HTMLElement | null }) {
+  const lang = useI18n((s) => s.lang);
   const [alloc, setAlloc] = useState(step.systems.map(() => 0));
   const [landed, setLanded] = useState(-2); // socket index, -1 for the tray
   const left = step.units - alloc.reduce((a, b) => a + b, 0);
@@ -85,7 +87,9 @@ export function Power({ step, game, level, onDone, slot }: { step: SlidersStep; 
                   </div>
                   <div className="flex min-h-[1.5rem] items-center justify-center">
                     {full ? (
-                      <span className="inline-flex items-center rounded-full bg-good/40 px-[0.5rem] font-display text-[0.8125rem] font-extrabold">Fully powered</span>
+                      <span className="inline-flex items-center rounded-full bg-good/40 px-[0.5rem] font-display text-[0.8125rem] font-extrabold">
+                        {lang === 'bn' ? 'পূর্ণ শক্তি' : 'Fully powered'}
+                      </span>
                     ) : (
                       <ChangeChip change={{ meter: sys.meter, amount: -missing * step.costPerMissing }} size="sm" />
                     )}
@@ -98,8 +102,16 @@ export function Power({ step, game, level, onDone, slot }: { step: SlidersStep; 
         </div>
 
         <div className="flex justify-end">
-          <GameButton variant="go" icon={Zap} disabled={left !== 0} onClick={() => onDone(setSliders(game, step, alloc, mods))} className="!min-h-[3rem]">
-            {left ? `Plug in ${left} more` : 'Switch it on'}
+          <GameButton
+            variant="go"
+            icon={Zap}
+            disabled={left !== 0}
+            onClick={() => onDone(setSliders(game, step, alloc, mods))}
+            className="!min-h-[2.875rem] !px-4 sm:!px-6 !text-xs sm:!text-sm leading-snug break-words"
+          >
+            {left
+              ? (lang === 'bn' ? `আরও ${left}টি প্লাগ লাগাও` : `Plug in ${left} more`)
+              : (lang === 'bn' ? 'সুইচ অন করো' : 'Switch it on')}
           </GameButton>
         </div>
       </div>
