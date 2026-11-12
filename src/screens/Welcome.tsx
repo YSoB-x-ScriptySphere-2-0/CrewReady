@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { BookOpen, Hand, Orbit as OrbitIcon, Play, RotateCcw, Sparkles, X } from 'lucide-react';
 import { t, useI18n } from '../content/i18n';
 import { useGame } from '../store/game';
+import { useSpace } from '../store/space';
 import { MeterBadge } from '../components/meters';
 import { reducedMotion } from '../components/motion';
 
@@ -12,24 +13,25 @@ interface WelcomeProps {
   onStart: () => void;
 }
 
-const WELCOME_ART = ['/art/welcome-1.webp', '/art/welcome-2.webp'];
+const artPath = (name: string) => `${import.meta.env.BASE_URL}art/${name}.webp`;
+const WELCOME_ART = [artPath('welcome-1'), artPath('welcome-2')];
 // The crew poses the hook and the "Turn your phone" hint show first.
 const FIRST_SCENE_ART = [
-  '/art/orbit-think.webp',
-  '/art/orbit-surprised.webp',
-  '/art/nova-think.webp',
-  '/art/twinkle-happy.webp',
-  '/art/twinkle-surprised.webp',
-  '/art/twinkle-question.webp',
+  artPath('orbit-think'),
+  artPath('orbit-surprised'),
+  artPath('nova-think'),
+  artPath('twinkle-happy'),
+  artPath('twinkle-surprised'),
+  artPath('twinkle-question'),
 ];
-const MIN_MS = 1800;
-const MAX_MS = 5000;
+const MIN_MS = 1000;
+const MAX_MS = 4000;
 
-/** Real loading, as a 0–100 number plus a flag. Counts: fonts, the save read, every image decoded. */
+/** Real loading, as a 0–100 number plus a flag. Counts: fonts, save read, NASA data, every image decoded. */
 function useRealLoading() {
   const [done, setDone] = useState(0);
   const [now, setNow] = useState(0);
-  const total = 2 + WELCOME_ART.length + FIRST_SCENE_ART.length;
+  const total = 3 + WELCOME_ART.length + FIRST_SCENE_ART.length;
 
   useEffect(() => {
     let alive = true;
@@ -46,6 +48,7 @@ function useRealLoading() {
         });
       }),
     );
+    settle(useSpace.getState().load());
     [...WELCOME_ART, ...FIRST_SCENE_ART].forEach((src) => {
       const img = new Image();
       img.src = src;
@@ -53,7 +56,7 @@ function useRealLoading() {
     });
 
     const start = performance.now();
-    const timer = setInterval(() => setNow(performance.now() - start), 50);
+    const timer = setInterval(() => setNow(performance.now() - start), 40);
     return () => {
       alive = false;
       clearInterval(timer);
@@ -72,6 +75,8 @@ export function Welcome({ onStart }: WelcomeProps) {
   const { progress, ready } = useRealLoading();
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const cut = reducedMotion();
+  const nasaWeather = useSpace((s) => s.weather);
+  const nasaLoading = nasaWeather === null;
 
   const handlePlay = () => {
     // Full screen and a landscape lock on a real tap. A refusal is ignored silently.
@@ -90,34 +95,36 @@ export function Welcome({ onStart }: WelcomeProps) {
 
   // The real-looking kids turn into the game crew as the bar fills. Reduced motion: one straight cut when ready.
   const crossfade = cut ? (ready ? 1 : 0) : Math.min(1, Math.max(0, (progress - 15) / 75));
-  const fade = cut ? '' : 'transition-opacity duration-500 ease-out';
+  const fade = cut ? '' : 'transition-opacity duration-700 ease-in-out';
 
-  // Mission-prep lines only. A line naming NASA data waits for D1, when that data really loads.
-  // No new Bangla yet: Bangla keeps its one loading line.
+  // "Checking today's Sun with NASA..." shows while the real NASA space-weather call runs.
   const loadingText =
     progress >= 98
       ? t('welcome.ready')
-      : lang === 'bn' || progress < 30
-        ? t('welcome.loading')
-        : progress < 65
-          ? t('welcome.loading.life')
-          : t('welcome.loading.twinkle');
+      : nasaLoading
+        ? t('welcome.loading.nasa')
+        : lang === 'bn' || progress < 30
+          ? t('welcome.loading')
+          : progress < 65
+            ? t('welcome.loading.life')
+            : t('welcome.loading.twinkle');
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-space-deep text-text select-none">
-      {/* The crew art: right two-thirds. Its left 20% and top 15% fade into the backdrop, so leftover mock-up marks never show. */}
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-[68%]" aria-hidden="true">
+      {/* 16:9 Widescreen Welcome Scene with smooth crossfade: right 72% */}
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-[72%]" aria-hidden="true">
         {WELCOME_ART.map((src, i) => (
           <img
             key={src}
             src={src}
             alt=""
-            className={`absolute inset-0 h-full w-full object-cover object-[center_22%] ${fade}`}
+            className={`absolute inset-0 h-full w-full object-cover object-right ${fade}`}
             style={{ opacity: i === 0 ? 1 - crossfade : crossfade }}
           />
         ))}
-        <div className="absolute inset-y-0 left-0 w-[20%] bg-gradient-to-r from-space-deep to-transparent" />
-        <div className="absolute inset-x-0 top-0 h-[15%] bg-gradient-to-b from-space-deep to-transparent" />
+        {/* Soft fade into backdrop on left edge and top */}
+        <div className="absolute inset-y-0 left-0 w-[25%] bg-gradient-to-r from-space-deep via-space-deep/60 to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-[15%] bg-gradient-to-b from-space-deep/60 to-transparent" />
       </div>
 
       {/* Top strip: brand on the left, language switch on the right */}

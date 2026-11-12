@@ -6,11 +6,11 @@
 import type { Extra, Level } from '../engine/types';
 
 const LIVING: Extra = {
-  effects: { L: -5, F: -5 },
+  effects: { L: -2, F: -2 },
   reason: 'Time passes. The crew eats, drinks and breathes.',
 };
 const SUNLIGHT: Extra[] = [
-  { unless: ['panelsBuried'], effects: { P: 10 }, reason: 'Sunlight charged the batteries.' },
+  { unless: ['panelsBuried'], effects: { P: 15 }, reason: 'Sunlight charged the batteries.' },
   { if: ['panelsBuried'], about: 'P', reason: 'Remember the panels you left out in the storm? Dust buried them. No charge today.' },
 ];
 
@@ -30,7 +30,7 @@ export const LEVELS: Level[] = [
         prompt: 'Pack the rocket. You have 8 crates for 4 needs.',
         hint: 'Every meter starts at 40. Each crate adds 10. What will run out first?',
         crates: 8,
-        perCrate: 10,
+        perCrate: 15,
         bins: [
           { meter: 'P', label: 'Solar panels and batteries' },
           { meter: 'L', label: 'Air and water tanks' },

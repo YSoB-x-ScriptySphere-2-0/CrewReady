@@ -53,9 +53,9 @@ describe('amounts sized by real data', () => {
 });
 
 describe('level 1', () => {
-  it('each crate adds 10', () => {
+  it('each crate adds 15', () => {
     const out = packCrates(startMission(), step<CratesStep>(1, 0), [4, 2, 1, 1]);
-    expect(out.state.meters).toEqual({ P: 80, L: 60, F: 50, S: 50 });
+    expect(out.state.meters).toEqual({ P: 100, L: 70, F: 55, S: 55 });
   });
   it('needs exactly 8 crates', () => {
     expect(() => packCrates(startMission(), step<CratesStep>(1, 0), [4, 2, 1, 0])).toThrow();
@@ -91,7 +91,7 @@ describe('consequences come back', () => {
     expect(enterLevel(buried, LEVELS[4]).delta.P).toBeUndefined();
     const saved = chooseOption(withFlags(startMission(), 'spareParts'), leave).state;
     expect(saved.flags).not.toContain('panelsBuried');
-    expect(enterLevel(saved, LEVELS[4]).delta.P).toBe(10);
+    expect(enterLevel(saved, LEVELS[4]).delta.P).toBe(15);
   });
   it('the cliff landing reduces dust; a buried habitat reduces the last storm', () => {
     expect(enterLevel(withFlags(startMission(20, 15), 'cliff'), LEVELS[3]).state.D).toBe(10);
@@ -206,16 +206,15 @@ describe('the mission can be won and lost', () => {
     return outpostCheck(r.state!);
   };
   it('reaches Outpost Survives: 3 stars, only Food healthy', () => {
-    // spare parts; experiment, drink less, crater cliff; soil bags, patch, sunlight; leave panels out,
-    // robot; big farm, drill for ice, give plants drinking water; two hide, new machine, rover
-    const out = reach([1, 1, 1, 1, 1, 1, 1, 1, 2, 0, 1, 0, 1, 0, 1], ['engineer', 'medic', 'botanist']);
+    // (F3 re-tuned the numbers, so this is a new path found by search.) Greedy-ish picks all the way:
+    // the last seat, storm, filter, landing, radiation, leak, oxygen, panels, cleaning, farm, water, pump, storm, air, rocks
+    const out = reach([2, 2, 2, 1, 0, 1, 2, 1, 1, 0, 1, 0, 0, 2, 1], ['scientist', 'engineer', 'medic']);
     expect(out.result).toBe('survives');
     expect(out.healthy).toEqual(['F']);
   });
-  it('reaches Outpost Stable through stars: 7 stars, only Air & Water healthy', () => {
-    // science kit; experiment, spare filter, plain; bury the base, ask Earth, sunlight; leave panels out,
-    // wait for wind; small garden, full-power cleaning, fix the pump; two hide, new machine, rover
-    const out = reach([0, 1, 2, 0, 2, 0, 1, 1, 1, 1, 0, 2, 1, 0, 1], ['engineer', 'medic', 'lifesupport']);
+  it('reaches Outpost Stable through stars: 10 stars, only Air & Water healthy', () => {
+    // (F3 re-tuned the numbers, so this is a new path found by search.) A star-chasing crew with a scientist:
+    const out = reach([0, 1, 2, 1, 0, 0, 1, 1, 0, 1, 2, 2, 1, 0, 1], ['scientist', 'medic', 'lifesupport']);
     expect(out.result).toBe('stable');
     expect(out.healthy).toEqual(['L']);
   });
@@ -242,7 +241,7 @@ describe('enterSteps (level opening plays carry-overs one by one)', () => {
   });
   it('gives each carry-over its own change and the meter it is about', () => {
     const steps = enterSteps(withFlags(startMission(20, 15), 'panelsBuried', 'cliff'), LEVELS[3]);
-    expect(steps.map((s) => s.delta)).toEqual([{ L: -5, F: -5 }, {}, {}]);
+    expect(steps.map((s) => s.delta)).toEqual([{ L: -2, F: -2 }, {}, {}]);
     expect(steps.map((s) => s.about)).toEqual([['L', 'F'], ['P'], ['P']]);
   });
 });

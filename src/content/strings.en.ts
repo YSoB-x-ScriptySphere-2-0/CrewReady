@@ -5,6 +5,7 @@ export const stringsEn: Record<string, string> = {
   'welcome.play': 'Play',
   'welcome.howToPlay': 'How to Play',
   'welcome.loading': 'Preparing Mission…',
+  'welcome.loading.nasa': 'Checking today’s Sun with NASA…',
   'welcome.loading.life': 'Preparing life support…',
   'welcome.loading.twinkle': 'Waking up Twinkle…',
   'welcome.ready': 'Ready for Launch',

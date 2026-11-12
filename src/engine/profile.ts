@@ -43,21 +43,6 @@ export const BADGE_DETAILS: Record<number, { title: string; desc: string; icon: 
   6: { title: 'Outpost Commander', desc: 'Protected crew specialists and reached Sol 500', icon: 'Award' },
 };
 
-export const SPACE_WORDS_DEFAULT = [
-  { word: 'Sol', def: 'A Mars day (a sol) is 24 hours 39 minutes.', source: 'NASA Mars facts' },
-  { word: 'Radiation', def: "On the way to Mars, Curiosity's radiation detector measured about 1.8 millisieverts a day; on the surface about 0.7.", source: 'Curiosity RAD results' },
-  { word: 'Carbon Dioxide', def: 'Mars air is mostly carbon dioxide and far too thin to breathe.', source: 'NASA Mars facts' },
-  { word: 'Regolith', def: 'Piling Mars soil over a habitat is one way planners propose to block radiation.', source: 'NTRS regolith shielding studies' },
-  { word: 'Solar Power', def: 'Mars gets less than half the sunlight Earth does.', source: 'NASA Mars facts' },
-  { word: 'Dust Storm', def: 'The 2018 dust storm circled the planet and ended the Opportunity rover\'s mission.', source: 'NASA Opportunity mission pages' },
-  { word: 'MOXIE', def: 'Perseverance carried MOXIE, which made oxygen from Mars air — about 122 grams in total.', source: 'NASA MOXIE release (Sept 2023)' },
-  { word: 'Veggie', def: 'Astronauts ate lettuce grown on the Space Station for the first time in August 2015.', source: 'NASA Veggie pages; OSDR Veggie studies' },
-  { word: 'Recycler', def: 'The Space Station now recycles about 98% of its water.', source: 'NASA ECLSS release (2023)' },
-  { word: 'Oxygen', def: 'Each astronaut needs about 0.84 kg of oxygen a day.', source: 'NASA life-support baseline values (NTRS)' },
-  { word: 'Storm Shelter', def: 'Water and food are good radiation shields, so crews plan to shelter behind their supplies.', source: 'NASA Orion storm-shelter and space radiation pages; NTRS' },
-  { word: 'Radio Delay', def: 'A radio message between Mars and Earth takes roughly 5 to 20 minutes each way.', source: 'NASA Mars communications pages' },
-];
-
 const PROFILE_KEY = 'crewready_profile_settings';
 
 export const DEFAULT_PROFILE: ProfileSettings = {

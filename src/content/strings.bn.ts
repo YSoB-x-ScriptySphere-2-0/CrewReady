@@ -7,6 +7,7 @@ export const stringsBn: Record<string, string> = {
   'welcome.play': 'শুরু করো', // needs a check
   'welcome.howToPlay': 'খেলার নিয়ম', // needs a check
   'welcome.loading': 'মিশন প্রস্তুত হচ্ছে…', // needs a check
+  'welcome.loading.nasa': 'নাসার সাথে আজকের সূর্য যাচাই করা হচ্ছে…', // needs a check
   'welcome.ready': 'অভিযান শুরুর জন্য প্রস্তুত', // needs a check
   'howToPlay.title': 'খেলার নিয়ম', // needs a check
   'howToPlay.close': 'বুঝেছি, কমান্ডার', // needs a check

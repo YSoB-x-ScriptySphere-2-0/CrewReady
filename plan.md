@@ -164,8 +164,8 @@ Why four and not six: the challenge says two or three core resources work better
 ### 5.2 How time and supplies work
 
 - **Sols.** A sol is a Mars day. Each level covers a stretch of the mission, and a sol counter runs on screen.
-- **Living costs.** A crew eats and breathes whether or not anything goes wrong. On entering levels 2–6: Air & Water −5, Food −5. The player watches the meters tick down.
-- **Sunlight.** On Mars the panels recharge the batteries. On entering levels 4, 5 and 6: Power +10 — unless the panels are buried in dust.
+- **Living costs.** A crew eats and breathes whether or not anything goes wrong. On entering levels 2–6: Air & Water −2, Food −2. The player watches the meters tick down.
+- **Sunlight.** On Mars the panels recharge the batteries. On entering levels 4, 5 and 6: Power +15 — unless the panels are buried in dust.
 - **No free choices.** Every option changes at least two things: two meters, or a meter and stars, or a meter now and a consequence later.
 - **Consequences come back.** Some choices set a marker that pays or costs in a later level. When it triggers, Twinkle says so: "Remember the panels you left out in the storm?"
 - **Real data sets the size of events.** Storm size X (levels 2 and 6) comes from DONKI: small 10, medium 20, large 30. Dust size D (level 4) is one of three real cases: 5, 15 or 25.
@@ -227,7 +227,7 @@ For each level: what it teaches, what happens, every choice and its outcome, how
 
 **What happens.** The launch window closes tomorrow, and the next one is 26 months away. The player sees the cargo bay, four empty bins and eight crates. Twinkle: "Eight crates, four needs. What will you run short of?"
 
-**Step 1 — Pack (hands-on).** Every meter starts at 40. The player drags 8 crates into four bins. Each crate adds 10 to that meter.
+**Step 1 — Pack (hands-on).** Every meter starts at 40. The player drags 8 crates into four bins. Each crate adds 15 to that meter.
 
 | Bin | Adds to | What is in the crate |
 |---|---|---|
