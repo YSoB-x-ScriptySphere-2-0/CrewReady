@@ -244,7 +244,7 @@ export function EarthClock() {
   );
 }
 
-function Planet({ name }: { name: string }) {
+export function Planet({ name }: { name: string }) {
   const isMars = name.toLowerCase() === 'mars';
   const gradient = isMars
     ? 'radial-gradient(circle at 35% 32%, #fba86b 0%, #d9622b 50%, #6e1c07 95%)'

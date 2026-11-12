@@ -11,6 +11,7 @@ import { MeterBadge } from '../components/meters';
 import { flyToHud } from '../components/motion';
 import { Panel, SourceStrip, TaskList } from '../components/Panel';
 import { ResultMoment } from '../components/Result';
+import { hasToy, ToyHost } from '../components/toys';
 import { captionFor } from '../content/pictures';
 import { Scene } from '../components/Scene';
 import { StepView, USES_LEFT_ZONE } from '../components/steps';
@@ -73,6 +74,9 @@ export function Play() {
   const step = level.steps[stepIndex];
   const last = stepIndex + 1 >= level.steps.length;
   const resultRef = useRef<HTMLDivElement>(null);
+  // The Try-it toy (levels 2–5) comes after the opening and before the first decision. Skippable; changes nothing.
+  const [toyDone, setToyDone] = useState(false);
+  const toy = !toyDone && stepIndex === 0 && !outcome && hasToy(level.id);
 
   // Stars earned fly from the result to the HUD counter; the counter adds them when they land.
   const [landed, setLanded] = useState<Outcome | null>(null);
@@ -117,6 +121,10 @@ export function Play() {
   return (
     <Scene bare place={LEVEL_SCENE[level.id]} top={<LevelHud meters={hudPreview ?? game.meters} stars={game.stars - held} look={look ?? undefined} />}>
       <LevelZones left={left}>
+        {toy ? (
+          <ToyHost levelId={level.id} learned={level.learned} onDone={() => setToyDone(true)} />
+        ) : (
+          <>
         <div className="flex items-end gap-[0.5rem]">
           <Bubble className="mb-[0.25rem] min-w-0 flex-1 text-[1.0625rem]">{step.kind === 'choice' ? captionFor(step.prompt) : step.prompt}</Bubble>
           {!outcome ? <RoundButton icon={CircleHelp} label={hint ? 'Hide hint' : 'Ask Twinkle'} pressed={hint} onClick={() => setHint(!hint)} /> : null}
@@ -167,6 +175,8 @@ export function Play() {
         </div>
 
         <SourceStrip text={level.source} />
+          </>
+        )}
       </LevelZones>
     </Scene>
   );

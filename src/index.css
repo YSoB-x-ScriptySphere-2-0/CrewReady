@@ -162,6 +162,12 @@ button:disabled {
 }
 .ev-rot { transform: rotate(var(--r, 0deg)); animation: ev-rot 1.2s ease-in-out 0.3s both; }
 
+/* Try-it toys (L1): the cabin clock's hand turns once while the message travels (4 s). */
+@keyframes toy-spin {
+  to { transform: rotate(360deg); }
+}
+.toy-spin { animation: toy-spin 4s linear 1 both; }
+
 /* ================= Game kit (BUILD_SEQUENCE.md §4.3–4.4, step G1) ================= */
 
 @layer components {
