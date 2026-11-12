@@ -1,4 +1,4 @@
-# CrewReady: Beyond Us — Final Plan v10
+# CrewReady: Beyond Us — Final Plan v10.1
 
 NASA Space Apps Challenge 2026 · Challenge: **Build a Junior Astronaut Mission Trainer** · Team CrewReady, Bangladesh
 
@@ -14,7 +14,8 @@ The story, the four meters, the six levels and every number are **unchanged**. W
 |---|---|---|
 | 1 | **Landscape everywhere.** One wide stage on phones, tablets and laptops. A phone held upright shows the same stage turned sideways, so nobody is blocked | §7.1 |
 | 2 | **Welcome screen on every launch.** While the game loads, the real-looking crew turns into the game crew. Then Play and How to Play | §7, part 0 |
-| 3 | **New look: deep space, cinematic.** Dark navy scenes, the 3D crew large in the frame, a cyan main button. The paper-card look is retired | `docs/BUILD_SEQUENCE.md` §4 |
+| 3 | **See it, don't read it.** Every decision opens with the danger happening in the scene; choices are pictures with 2–5 words; results are acted out, then drawn as a chain. A word budget per screen. Text only labels | `docs/BUILD_SEQUENCE.md` §4.1a |
+| 3b | **New look: deep space, cinematic.** Dark navy scenes, the 3D crew large in the frame, a cyan main button. The paper-card look is retired | `docs/BUILD_SEQUENCE.md` §4 |
 | 4 | **Nova wears pink.** Orbit is teal, Nova is pink, Twinkle is cyan | §7, done |
 | 5 | **A learning layer.** See what a choice touches before you pick, watch the chain reaction after, try one small toy per idea, collect Space Words, have any text read aloud | §5.4 |
 | 6 | **English and Bangla.** A switch on the welcome screen | §7.2 |
@@ -189,6 +190,7 @@ A 7-year-old does not learn "coupled systems" from a sentence. They learn it by 
 
 | Tool | What the child does | The idea it makes easy | Where |
 |---|---|---|---|
+| **Event moment** | Watches the danger happen before choosing: a wave of storm light, a dust wall, air hissing out (2–3 s, no reading) | Space hazards are real things you can see coming | Every decision |
 | **Look first** | Taps a choice once. The meters it will touch wiggle and show an up or down arrow, with no numbers. A second tap on **GO** confirms | Every choice touches more than one system | Every decision |
 | **Chain reaction** | Watches three pictures link up after a choice: lights dim → plants slow → Food −5 | Why one system hits another | Every result |
 | **Try it** | Plays a 10-second toy before the level's first decision. No score, no cost, can be skipped | The level's one big idea, felt by hand | Levels 2–5 (below) |
@@ -702,7 +704,7 @@ v9 planned 40 free hours. The event's run of show (Participants Guide §02, §08
 
 | When | Build | Video and page | Must be true at the end |
 |---|---|---|---|
-| **Thu 12 Nov, today** | R0–R4: landscape stage, welcome, every built screen in the new look. F1: publish. D1–D2: real storm data. S1: Sources | Lock both scripts. Narrator chosen (18+). Scratch narration | **The film line:** a public link plays welcome → hook → six levels → Replay → Sources, with a real DONKI card |
+| **Thu 12 Nov, today** | R0–R5: landscape stage, welcome, every built screen in the new look, event moments and chain reactions. F1: publish. D1–D2: real storm data. S1: Sources | Lock both scripts. Narrator chosen (18+). Scratch narration | **The film line:** a public link plays welcome → hook → six levels → Replay → Sources, with a real DONKI card |
 | **Fri 13, 07:00–11:30** | Bug fixes only. Register every member and role on the NASA site (08:30) | Record all game footage: 1080p, landscape, internet on, LIVE badge showing. Ask the Local Lead the §10 question | Footage in hand |
 | **Fri 13, 11:30–15:00** | L1: the learning layer, if the footage is done | Edit the 240 s: subtitles, citations, names. Rough cut ready for the 15:00 mentor round | A full rough cut |
 | **Fri 13, 15:00–18:30** | Fixes from mentor feedback | Apply feedback at the 18:00 round. Export. **Upload by 18:30:** YouTube link in the form, file in Drive | **240 s submitted** |
@@ -745,6 +747,7 @@ Cut in this order: sound → Bangla level text (keep the switch and the buttons)
 - [ ] The game is landscape on a phone held either way, with no blocking screen
 - [ ] A new player makes their first choice within 15 seconds of opening the link
 - [ ] Every decision shows what it touches before the player confirms
+- [ ] Every decision opens with an event moment; with the sound off and the words covered, a player can still tell what happened and what it cost
 - [ ] Nova wears pink everywhere; no NASA logo in any artwork
 - [ ] After one visit the game opens with the internet off
 - [ ] `LICENSE` (Apache-2.0) and `docs/AI_USE.md` exist; generated art is credited

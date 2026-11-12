@@ -1,4 +1,4 @@
-# CrewReady — Build Sequence v10
+# CrewReady — Build Sequence v10.1
 
 Goes with `plan.md` v10. The plan says **what** the game is. This file says **how to build it**, in what order, and what "done" means. On game content the plan wins; on look and build order this file wins. Older files in `docs/` (01–05, 07, 08, `BUILD_PROMPTS`, `CHARACTER_CONCEPT_SHEET`, `frontend-ui-prompt-pack`) are history: don't read them.
 
@@ -10,7 +10,9 @@ Goes with `plan.md` v10. The plan says **what** the game is. This file says **ho
 4. Don't move on until the step's **Done when** passes and you've looked at the screenshot yourself.
 5. A fix to the last step is just a sentence in the same chat ("the GO button overlaps Twinkle at 667 wide").
 
-**Start with R0.** A5–A9 are committed (`49aabda`), and so is a first welcome screen built in Antigravity (`36f70fb`). R0 brings that work in line with §3 and §4 before anything new is built.
+**Start with R0.** A5–A9 are committed (`49aabda`), and so is the welcome screen built in Antigravity (`36f70fb`, `3743293`). R0 brings that work in line with §3 and §4 before anything new is built.
+
+**The one idea of v10.1:** the game is still more reading than seeing. From now on every screen is judged by §4.1a, *See it, don't read it*, and R5 makes the levels pass it before we film.
 
 ---
 
@@ -23,11 +25,10 @@ Goes with `plan.md` v10. The plan says **what** the game is. This file says **ho
 | Shared parts | Scene, Hud, GameButton, Panel, Decision, AlarmBanner, RewardCrate, Dock, Twinkle (crew), LevelChrome, five hands-on steps | `src/components/*`, `src/components/steps/*` |
 | Replay blame, leaderboard, APOD sample | Done (A8, A9) | `src/engine/blame.test.ts`, `src/store/leaderboard.ts`, `src/content/apod.ts` |
 | Crew art | 30 cut-outs. **Nova is now in the pink suit** (re-cut 12 Nov, same file names and sizes) | `public/art/*.webp` |
-| Welcome screen | **Built in Antigravity, needs R0 + R2.** Crossfade, bar → Play, How to Play, EN / বাংলা switch, shown on every load. The bar runs on a fixed 2.4 s timer, not on real loading | `src/screens/Welcome.tsx`, `src/App.tsx` |
+| Welcome screen | **Built in Antigravity; the visual reference for every screen.** Full-bleed art, crossfade, bar → Play, How to Play, EN / বাংলা switch, shown on every load. Needs R0 (wording, blur) and R2 (stage, loading) | `src/screens/Welcome.tsx`, `src/App.tsx` |
 | Strings | `t()` helper with English and Bangla for the welcome screen only | `src/content/i18n.ts`, `strings.en.ts`, `strings.bn.ts` |
 | Antigravity extras | Home: Kp gauge with NOAA G-scale labels. Story: asteroid "radar". LevelChrome: sol and place badge. Decision: shaded planets in the level-3 clock. Dock: frosted glass | see R0 |
-| Welcome art | `welcome-1.webp`, `welcome-2.webp`: **placeholders** cropped from the mock-ups. The `_clean` versions are **not usable**: the cleanup smeared Orbit's face and the EN / বাংলা pill is still baked in | `public/art/welcome-*` |
-| Scratch files | 16 untracked test images (`c1_test.jpg`, `slice_*.jpg`, `w1_left.jpg`…) left in `public/art/`. They would ship with the game | R0 deletes them |
+| Welcome art | `welcome-1.webp`, `welcome-2.webp`: cleaned in Antigravity (mock-up letters and language pill removed). Usable. A dark frame corner remains top right; R2 hides it with the backdrop fade. Upright crops (704 × 818); a 16:9 version is nice to have (§7) | `public/art/welcome-*` |
 | Not built | Landscape stage, real NASA data, Sources, learning layer, Quick Run, Me, Resources, Training, Bangla beyond the welcome screen, offline, publishing | — |
 
 Stack: Vite 8, React 19, TypeScript, Tailwind 4, Zustand 5, Vitest, `lucide-react`, Baloo Da 2 + Nunito. `npm run dev` (port 5173, in `.claude/launch.json`) · `npm test` · `npm run build`. If new Tailwind classes don't show in the preview, restart the dev server.
@@ -89,6 +90,51 @@ G1–G2 gave us working parts and good motion, but the screens still read as a q
 
 We keep everything G1 got right: the lip under a button, the squash on press, meters that count and shake, chips that float, the crew reacting.
 
+### 4.1a See it, don't read it (the rule every screen is judged by)
+
+A 7-year-old reads slowly, and a judge watches a silent video. So **the scene tells the story and the words only label it.** Today a level is: read a question, read three options, read a reason. In v10.1 it is: **watch something happen, touch something, watch what it did.**
+
+**1. Every decision opens with an event moment (2–3 s, no reading needed).** The danger plays out in the scene before any choice appears. The words come after, as a caption.
+
+| Level · decision | What the player sees happen |
+|---|---|
+| 1 · last seat | The cargo bay: one empty seat outlined, three objects floating beside it |
+| 2 · storm | A wave of orange light rolls from the Sun toward the ship; the Shield pill blinks |
+| 2 · filter | The water tank's gauge drops; brown drips in the pipe |
+| 2 · landing zone | Mars fills the window; three zones light up on the real Jezero photo |
+| 3 · protect | Radiation dots fall on the bare habitat roof |
+| 3 · leak | Air streams out of a crack; the Air & Water pill ticks down **until the player chooses** |
+| 3 · oxygen maker | The oxygen box hums; its power cable lights up; the battery bar sinks a little |
+| 4 · panels | A brown dust wall rolls in from the horizon and the sky darkens |
+| 4 · cleaning | The panels sit grey; the power bar barely fills |
+| 5 · farm, water, pump | Plants droop when the water bar is low; the pump stops with a puff |
+| 6 · storm + dust | The orange wave and the dust wall arrive together |
+| 6 · scrubber | The carbon dioxide bar in the cabin creeps up; the crew yawns |
+| 6 · samples | The rover, the delta and the habitat on one map, with a dotted route to each |
+
+**2. Choices are pictures first.** A `ChoiceCard` is a picture (an icon scene: shelter = crew behind water bags), then 2–5 words ("Hide behind water"). The full option sentence lives in Read-to-me and in the result.
+
+**3. The result is shown in the scene, then counted.** After GO, the scene acts out the choice in about 1.5 s (the crew run into the shelter and the wave splashes off it; the panels fold and the lights dim), then the **chain reaction** (lights dim → plants slow → Food −5) draws the cost as pictures, then the HUD counts. The reason sentence is one line under the chain, never the main thing.
+
+**4. Numbers are drawn, not written.** Storm size is a bigger or smaller wave; dust size a thicker or thinner wall; the battery is 7 blocks; message delay is a dot that travels. Every number on screen also has a picture.
+
+**5. A word budget.** Count the words a player must read to act (labels, bubbles, cards; not the source line or Read-to-me):
+
+| Screen | Most words |
+|---|---|
+| Decision (bubble + all cards) | 20 |
+| Result | 12 |
+| Level opening | 15 |
+| Hands-on step | 10 |
+| Story card | 20 |
+| Replay | 25 |
+
+Anything over budget is cut, turned into a picture, or moved to Read-to-me.
+
+**6. The silent test.** Mute the sound, cover every word, and play a level. Can you still tell what went wrong and what your choice cost? If not, the screen isn't done.
+
+None of this changes a rule, a number or a fact. Event moments only *show* what the plan's level text already says.
+
 ### 4.2 The stage (built in R1)
 
 - One `Stage` wraps the whole app. Sideways phone, tablet, laptop: it fills the window.
@@ -114,7 +160,7 @@ Meter colours are untouched. A meter colour still means that meter and nothing e
 | Token | Value | Used for |
 |---|---|---|
 | `space` / `space-deep` | `#0B1437` / `#070B1E` | Backdrop behind every scene. A scene may add **one** soft radial light (the Earth's edge, a far nebula) |
-| `panel` | `#14204D` | Panels, cards, HUD pills (solid, never see-through) |
+| `panel` | `#14204D` | Panels, cards, HUD pills. Over a busy scene it may be 70–85% opaque, but never blurred |
 | `panel-up` | `#1C2B63` | A raised or selected card |
 | `line` | `#3A4A8C` | 2 px border on panels and cards |
 | `text` / `muted` | `#F4F7FF` / `#A9B4D6` | Text on dark |
@@ -129,8 +175,8 @@ Meter colours are untouched. A meter colour still means that meter and nothing e
 - **Shape.** Radius 1 rem for buttons and cards, 1.5 rem for panels, round for pills. A selected card gets a 3 px `go` border and lifts.
 - **Depth.** Every pressable thing keeps its hard lip (`0 0.35rem 0`, darker shade, no blur) and drops onto it when pressed.
 - **Type.** Baloo Da 2, weight 800, for titles, buttons, numbers and all Bangla. Nunito for English sentences. Nothing a kid needs is under 1 rem. Tabular figures for counters.
-- **Buttons, three kinds.** Main: solid cyan `go` with its lip, exactly one per screen (Play, GO, Next, Continue). Second: an outlined pill, 2 px `text` border at 30%, dark solid fill, white text (How to Play, Map, Ask Twinkle, Start over). Small: icon-only round buttons.
-- **Still banned:** blur and see-through panels (`backdrop-blur`: slow on the cheap phones we promise to reach), glow and coloured shadows, neon, emoji (use lucide icons), the NASA logo (also on suits in artwork), motion that loops forever (`animate-ping`, `animate-pulse`), walls of text, cream paper cards on the dark stage.
+- **Buttons, three kinds.** Main: cyan `go` with a gentle top-to-bottom gradient and its lip, exactly one per screen (Play, GO, Next, Continue). It may carry **one soft cyan halo** (`0 0 1.25rem` of `go` at 45%): the only glow in the game, because it marks the one thing to press. Second: an outlined pill, 2 px border of `text` at 30%, dark fill (`panel` at 70%), white text (How to Play, Map, Ask Twinkle, Start over). Small: icon-only round buttons.
+- **Still banned:** `backdrop-blur` (it stutters on the cheap phones we promise to reach, and over our dark scenes a 70–85% dark fill looks the same), any other glow, neon, emoji (use lucide icons), the NASA logo (also on suits in artwork), motion that loops forever (`animate-ping`, `animate-pulse`; the welcome bar may move while it loads, because it ends), walls of text (§4.1a), cream paper cards on the dark stage.
 
 ### 4.3a What we keep from the Antigravity notes
 
@@ -140,14 +186,15 @@ Meter colours are untouched. A meter colour still means that meter and nothing e
 |---|---|---|
 | Deep navy base, the welcome screen as the reference | **Keep** | It's §4 already |
 | One cyan main button per screen | **Keep** | It's the `go` token |
-| Gradient on the cyan button, cyan glow shadow | **Drop**: solid cyan with a lip | No glow. A lip says "press me"; a glow says nothing |
-| Frosted glass for second buttons, the Dock, How to Play | **Drop**: solid dark panels and outlined pills | Blur stutters on low-end phones; design standards say no glass on ordinary content |
+| Cyan button with a gradient and a glow | **Keep, tamed**: gentle gradient, the lip, one soft halo, on the main button only | It is the focal point; the design standards allow an effect that has a job, and this one says "press here" |
+| Frosted glass for second buttons, the Dock, How to Play | **Keep the look, drop the blur**: dark 70–85% fills with a thin light border | Same look over a dark scene, no stutter on low-end phones |
 | Paper cards on the dark stage for decisions | **Drop** | Two surface styles on one screen; dark `panel` cards with a cyan selected border |
-| Loading lines like "Syncing NASA Space Weather…" | **Keep only when true.** Before D1 nothing syncs, so the lines say what really loads ("Waking up the crew…", "Packing the rocket…"). After D1 the space-weather line shows while that call runs | No fake telemetry, same as no fake facts |
+| Loading lines ("Preparing Life Support Systems…", "Syncing NASA Space Weather…") | **Keep the feel.** Mission-prep lines stay ("Preparing life support…", "Fuelling the rocket…", "Waking up Twinkle…"): they are clearly part of the story, like a countdown. **A line that names NASA data shows only while that data really loads** (after D1, "Checking today's Sun with NASA…" runs while the DONKI call does). The bar may be paced to last at least 1.8 s | Our citation rule and the challenge: never present static or invented data as live |
 | "Impact Risk: 0.00% · Safe Flybys Verified" on the asteroid card | **Drop** | Not in the data. The plan's line is "None will hit us." |
 | Kp gauge with NOAA G1–G5 names | **Keep** if the Kp → G mapping is added to `docs/06` §4 with NOAA's scale as its source; sentence cut under 15 words; no looping beacon | Real scale, but every fact needs its line in `docs/06` |
 | Look-first arrows scaled by size | **Keep**: one ▼ for 5–10, two for 15–20, three for 25+ | Shows "how much" without numbers |
-| Chain reaction with emoji | **Keep the idea, use icons** | No emoji |
+| Chain reaction with emoji | **Keep the idea, use icons**; built in R5, not L1 | No emoji; it is the heart of "see it, don't read it" |
+| Show radiation and delay as pictures, not paragraphs | **Keep**, and made a rule for every screen | §4.1a |
 | A sol and place badge in the level HUD | **Keep** | Teaches "sol" by repetition |
 
 ### 4.4 Motion — every effect has a job
@@ -199,7 +246,7 @@ Names in `src/components/` may differ a little; keep the existing ones.
 
 ## 5. The steps
 
-Order: **R0 → R1 → R2 → R3 → R4 → F1 → D1 → D2 → S1** reaches the **film line** (everything the 240-second video shows). Then **L1 → L2 → S2 → S3 → S4 → F2 → F3 → F4 → F5**.
+Order: **R0 → R1 → R2 → R3 → R4 → R5 → F1 → D1 → D2 → S1** reaches the **film line** (everything the 240-second video shows). Then **L1 → L2 → S2 → S3 → S4 → F2 → F3 → F4 → F5**.
 
 After R1, two people can run in parallel: one on R2 → R3 → R4, one on D1 → D2 → S1. They meet in `src/store/game.ts` and the IntelCard; merge those by hand.
 
@@ -211,13 +258,12 @@ After R1, two people can run in parallel: one on R2 → R3 → R4, one on D1 →
 **Fix**
 - Story: replace "Impact Risk: 0.00% · Safe Flybys Verified" with the plan's "None will hit us." Remove the looping ping.
 - Home: keep the Kp gauge; cut its sentence under 15 words; no looping beacon. Add the Kp → NOAA G-scale rows to `docs/06` §4 with their source, or drop the G labels.
-- Welcome: loading lines say only what is really loading (§4.3a). Take out `backdrop-blur`, glows and `animate-pulse`; panels become solid `panel`, How to Play a solid dark panel.
-- Decision, Dock, LevelChrome: no loops, no glow. The shaded planets may keep a flat light edge.
-- Delete the untracked scratch images in `public/art/` (everything except the crew poses and `welcome-1.webp` / `welcome-2.webp`). List them in the report.
+- Welcome: loading lines follow §4.3a (mission-prep lines stay; the NASA line waits for D1). Replace `backdrop-blur` with dark 70–85% fills and keep the look. `animate-pulse` goes. The Play button keeps its one halo.
+- Dock (glass), Decision (ping, planet glow), LevelChrome: no blur, no loops, no glow. The shaded planets keep their light edge.
 
 **Done when** `grep` finds no `backdrop-blur`, `animate-ping` or `animate-pulse` in `src/`; every sentence a player sees is under 15 words and in the plan or `docs/06`; tests and build pass.
 
-> **Prompt — R0.** Do step R0 in `docs/BUILD_SEQUENCE.md`. Read §3, §4.3a and R0, then only its Read line. Remove the invented asteroid line, fake loading lines, blur, glow and looping motion, and delete the scratch images. Change nothing else. Check, report, stop.
+> **Prompt — R0.** Do step R0 in `docs/BUILD_SEQUENCE.md`. Read §3, §4.3, §4.3a and R0, then only its Read line. Remove the invented asteroid line, blur, extra glow and looping motion, and fix the NASA loading line, keeping the welcome screen's look. Change nothing else. Check, report, stop.
 
 #### R1 — The stage and the new tokens (about 2 h)
 **Read:** `src/index.css`, `src/App.tsx`, `src/main.tsx`, `src/components/*` (not `steps/`), `src/screens/Kit.tsx`, `src/store/game.ts`.
@@ -281,6 +327,22 @@ The screen exists (Antigravity, cleaned in R0). Shown on every load, crossfade, 
 
 > **Prompt — R4.** Do step R4 in `docs/BUILD_SEQUENCE.md`. Read §3, §4 and R4, then only its Read line. Re-lay the six screens for the landscape stage as the table says. No rule or word changes. Play welcome to Success once and force one loss, check, report, stop.
 
+#### R5 — Make it seen, not read (about 4 h)
+The step that turns a reading game into a watching-and-touching game. Spec: §4.1a.
+
+**Read:** §4.1a; `src/components/Decision.tsx`, `src/components/Scene.tsx`, `src/content/icons.ts`; search `src/content/levels.ts` for option labels and reason lines only.
+
+**Build**
+- **Event moments:** `src/components/events/`, one small SVG/CSS animation per row of the §4.1a table, played in the `Scene` before the choices appear. 2–3 s, tap to skip, reduced motion shows the end frame. Storm and dust read their size (X, D) from the store, so a bigger real storm draws a bigger wave.
+- **Picture cards:** each option gets a short label (2–5 words) and an icon scene in `src/content/icons.ts` (`short`, `scene`). The full sentence stays in `levels.ts` for Read-to-me and the result. Words change only by shortening; no new meaning.
+- **Result in the scene, then the chain:** after GO, a 1.5 s acted result (reusing the event's parts), then the chain reaction: two or three icons linking left to right and ending in the meter chips, from a `chain` map per option written from its reason line. The reason sentence is one line under it.
+- **Live pressure in level 3:** during the leak, Air & Water ticks down until a choice is made (display only; the engine's numbers still decide the cost).
+- **Word budget:** a test counts the words on every decision, result and opening against the §4.1a table and fails if any is over.
+
+**Done when** the silent test (§4.1a) passes on all six levels; the word-budget test passes; a bigger storm visibly draws a bigger wave; engine tests are untouched.
+
+> **Prompt — R5.** Do step R5 in `docs/BUILD_SEQUENCE.md`. Read §3, §4.1a and R5, then only its Read line. Add an event moment before each decision, picture-first cards with short labels, the acted result plus chain reaction after GO, and the word-budget test. Change no rule, number or fact. Do the silent test on all six levels, check, report, stop.
+
 ### Phase F1 — get it online early
 
 #### F1 — Licence, README, publish (about 1 h)
@@ -340,17 +402,17 @@ Endpoint notes (tested): DONKI ranges 60 days or less · `DONKI/FLR` is 404, use
 
 ### Phase L — the learning layer (plan §5.4)
 
-#### L1 — Chain reaction and the four Try-it toys (about 3 h)
+#### L1 — The four Try-it toys (about 2 h)
 **Read:** `plan.md` §5.4; `src/content/icons.ts`; `src/content/levels.ts` (reason lines only: search for them); the result part of `src/components/Decision.tsx`; `src/screens/LevelOpening.tsx`.
 
 **Build**
-- **Chain reaction:** in the result, two or three icons link up left to right and end in the meter chip (lights dim → plants slow → Food −5). The icons come from a small `chain` map per option in `src/content/icons.ts`, written from the reason line that's already there. No new words, no new facts. An option with no clear chain shows just its chips.
+- The chain reaction is built in R5.
 - **Try it:** one toy each for levels 2–5, in `src/components/toys/`, shown after the level opening and before the first decision. Ten seconds, no score, no meter change, a **Skip**. The four toys and what the hand should feel are in plan §5.4. Each ends with one line from that level's "I learned" sentence.
 - The level-3 toy reuses the message clock.
 
 **Done when** each toy works with one thumb and with the keyboard, can be skipped, and changes no meter (a test proves the store is untouched).
 
-> **Prompt — L1.** Do step L1 in `docs/BUILD_SEQUENCE.md`. Read §3, §4 and L1, then only its Read line. Add the picture chain to results and the four ten-second Try-it toys. They teach only what the plan already says and never change a meter. Check, report, stop.
+> **Prompt — L1.** Do step L1 in `docs/BUILD_SEQUENCE.md`. Read §3, §4 and L1, then only its Read line. Add the four ten-second Try-it toys. They teach only what the plan already says and never change a meter. Check, report, stop.
 
 #### L2 — Space Words and Read to me (about 2 h)
 **Read:** `docs/06` §4; `src/components/Twinkle.tsx`; `src/content/strings.en.ts`; `src/store/game.ts`.
@@ -425,18 +487,18 @@ A keyboard-only run, a reduced-motion run, an upright-phone run, an offline run.
 
 | Phase | Hours |
 |---|---|
-| R0–R4 | about 9 |
+| R0–R5 | about 13 |
 | F1 | 1 |
 | D1–D2 | 5 |
 | S1 | 1 |
-| **To the film line** | **about 16** (about 10 with two people after R1) |
-| L1–L2 | 5 |
+| **To the film line** | **about 20** (about 12 with two people after R1) |
+| L1–L2 | 4 |
 | S2–S4 | 6.5 |
 | F2–F5 | 5.5 |
 
 **If time runs short, cut in this order:** sound → Bangla level text (keep the switch and buttons) → Resources upgrades → Space Words → Try-it toys → leaderboard (keep badges) → Quick Run → the welcome picture change (keep the screen).
 
-**Never cut:** the six levels · the four meters and the HUD · landscape · the hook · Look first · Mission Replay · source lines · live DONKI in level 2 · the Sources page · the crew reacting.
+**Never cut:** the six levels · the four meters and the HUD · landscape · the hook · Look first · the level-2 storm and level-4 dust event moments · the chain reaction · Mission Replay · source lines · live DONKI in level 2 · the Sources page · the crew reacting.
 
 Real deadlines are in plan §12.1: the 240-second video on **Fri 13 Nov, 6:30 PM**; the 30-second video and the finished project page on **Sat 14 Nov, 12:00**; freeze **Sat 09:00**.
 
@@ -446,7 +508,7 @@ Real deadlines are in plan §12.1: the 240-second video on **Fri 13 Nov, 6:30 PM
 
 | Needed | By step | If missing |
 |---|---|---|
-| **Two clean welcome pictures**, 16:9, at least 1920 × 1080, **no text, buttons, language pill or device frame**, crew on the right two-thirds, same framing in both: the real-looking crew and the game crew. Make them fresh from the image tool; cleaning up the mock-ups didn't work (the `_clean` files smear Orbit's face) | R2 | The cropped placeholders ship, edges faded |
+| **Wide welcome pictures** (nice to have): the same two scenes as 16:9, at least 1920 × 1080, no text, crew on the right two-thirds, same framing | R2 | The cleaned upright pictures ship, with the backdrop fade |
 | The name of the AI image tool used for the crew and welcome art | F1, S1 | Credited as "AI-generated by the team" |
 | A hosting choice, and a yes before each push | F1 | The build stays local |
 | Confirmation of each "Confirm" fact in `docs/06` §4 | D2, L2 | The sentence stays out |
