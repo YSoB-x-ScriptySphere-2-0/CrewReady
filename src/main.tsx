@@ -9,7 +9,10 @@ import '@fontsource/nunito/800.css';
 import App from './App';
 import { Stage } from './components/Stage';
 import { useGame } from './store/game';
+import { registerServiceWorker } from './services/sw';
 import './index.css';
+
+registerServiceWorker();
 
 // Dev only: lets screenshots and play-tests jump to any screen (`__game.setState({...})`).
 if (import.meta.env.DEV) (window as unknown as { __game: typeof useGame }).__game = useGame;

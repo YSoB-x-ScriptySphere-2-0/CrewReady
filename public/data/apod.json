@@ -1,0 +1,46 @@
+{
+  "fetchedAt": "2026-11-12T09:28:25.396Z",
+  "source": "https://api.nasa.gov/planetary/apod",
+  "today": {
+    "date": "2024-05-11",
+    "title": "Aurora over Earth",
+    "url": "https://apod.nasa.gov/apod/image/2405/Aurora_Spiss_1080.jpg",
+    "explanation": "Vivid auroras danced across global skies during the intense solar storm of May 2024.",
+    "media_type": "image",
+    "copyright": "Lorenzo Spiss"
+  },
+  "featured": [
+    {
+      "date": "2024-05-11",
+      "title": "Aurora over Earth",
+      "url": "https://apod.nasa.gov/apod/image/2405/Aurora_Spiss_1080.jpg",
+      "explanation": "Vivid auroras danced across global skies during the intense solar storm of May 2024.",
+      "media_type": "image",
+      "copyright": "Lorenzo Spiss"
+    },
+    {
+      "date": "2023-04-12",
+      "title": "Mars and the Pleiades",
+      "url": "https://apod.nasa.gov/apod/image/2304/MarsPleiades_Hao_1080.jpg",
+      "explanation": "The Red Planet shines near the glittering stars of the Pleiades cluster.",
+      "media_type": "image",
+      "copyright": "Hao Chen"
+    },
+    {
+      "date": "2022-07-13",
+      "title": "Webb's First Deep Field",
+      "url": "https://apod.nasa.gov/apod/image/2207/SMACS0723_Webb_1080.jpg",
+      "explanation": "Thousands of distant galaxies seen in the deepest infrared view of the universe.",
+      "media_type": "image",
+      "copyright": "NASA, ESA, CSA, STScI"
+    },
+    {
+      "date": "2021-02-22",
+      "title": "Perseverance at Jezero Crater",
+      "url": "https://apod.nasa.gov/apod/image/2102/PIA24428_Percy_1080.jpg",
+      "explanation": "NASA's Perseverance rover rests on the ancient lakebed of Jezero Crater on Mars.",
+      "media_type": "image",
+      "copyright": "NASA/JPL-Caltech"
+    }
+  ]
+}
