@@ -1,6 +1,6 @@
 export const stringsBn: Record<string, string> = {
   'app.name': 'CrewReady',
-  'app.tagline': 'আমাদের সীমানা ছাড়িয়ে',
+  'app.tagline': 'BEYOND US',
   'app.subtitle': 'জুনিয়র মহাকাশচারী মিশন ট্রেইনার',
   'welcome.play': 'শুরু করো',
   'welcome.howToPlay': 'খেলার নিয়ম',

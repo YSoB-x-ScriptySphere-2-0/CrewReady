@@ -75,43 +75,35 @@ export function Welcome({ onStart }: WelcomeProps) {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-[#070b1e] text-[#f4f7ff] select-none flex flex-col justify-between">
-      {/* Background Deep Space Ambience */}
-      <div className="absolute inset-0 bg-radial from-[#121c45] via-[#090d24] to-[#040612] pointer-events-none" />
+      {/* Background Deep Space Base */}
+      <div className="absolute inset-0 bg-[#070b1e] pointer-events-none" />
 
       {/* Layer 1: Realistic Astronaut Kids (Interface 1) */}
       <div
-        className="absolute inset-y-0 right-0 w-full lg:w-[65%] pointer-events-none transition-opacity duration-300 ease-out flex items-center justify-end"
+        className="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-500 ease-out overflow-hidden"
         style={{ opacity: 1 - crossfade }}
       >
-        <div className="relative h-full w-full max-w-[850px] flex items-center justify-end overflow-hidden">
-          <img
-            src="/art/welcome-1.webp"
-            alt="Real-world Junior Astronauts looking at space"
-            className="h-full w-full object-cover object-right-top md:object-center"
-          />
-          {/* Subtle edge fades to integrate cleanly into backdrop */}
-          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#070b1e] to-transparent" />
-          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#070b1e] to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#070b1e] to-transparent" />
-        </div>
+        <img
+          src="/art/welcome-1.webp"
+          alt="Real-world Junior Astronauts looking at space"
+          className="h-full w-full object-cover object-[center_20%] md:object-[72%_center]"
+        />
+        {/* Seamless backdrop gradients: smooth bottom fade on mobile, soft left fade on desktop */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#070b1e] via-[#070b1e]/85 via-45% to-transparent md:bg-gradient-to-r md:from-[#070b1e] md:via-[#070b1e]/75 md:via-35% md:to-transparent md:to-80%" />
       </div>
 
       {/* Layer 2: 3D Animated Game Crew (Interface 2 - Orbit, Nova & Twinkle) */}
       <div
-        className="absolute inset-y-0 right-0 w-full lg:w-[65%] pointer-events-none transition-opacity duration-300 ease-out flex items-center justify-end"
+        className="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-500 ease-out overflow-hidden"
         style={{ opacity: crossfade }}
       >
-        <div className="relative h-full w-full max-w-[850px] flex items-center justify-end overflow-hidden">
-          <img
-            src="/art/welcome-2.webp"
-            alt="3D Animated CrewReady Astronauts"
-            className="h-full w-full object-cover object-right-top md:object-center"
-          />
-          {/* Subtle edge fades to integrate cleanly into backdrop */}
-          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#070b1e] to-transparent" />
-          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#070b1e] to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#070b1e] to-transparent" />
-        </div>
+        <img
+          src="/art/welcome-2.webp"
+          alt="3D Animated CrewReady Astronauts"
+          className="h-full w-full object-cover object-[center_20%] md:object-[72%_center]"
+        />
+        {/* Seamless backdrop gradients: smooth bottom fade on mobile, soft left fade on desktop */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#070b1e] via-[#070b1e]/85 via-45% to-transparent md:bg-gradient-to-r md:from-[#070b1e] md:via-[#070b1e]/75 md:via-35% md:to-transparent md:to-80%" />
       </div>
 
       {/* Top Header Bar */}
@@ -157,13 +149,13 @@ export function Welcome({ onStart }: WelcomeProps) {
       </header>
 
       {/* Main Hero Stage */}
-      <main className="relative z-20 flex-1 flex flex-col justify-end md:justify-center px-6 sm:px-12 pb-6 md:pb-0 max-w-xl">
-        <div className="rounded-3xl md:rounded-none bg-[#070b1e]/60 md:bg-transparent backdrop-blur-md md:backdrop-blur-none p-5 md:p-0 border border-white/10 md:border-none shadow-xl md:shadow-none space-y-4 md:space-y-6">
+      <main className="relative z-20 flex-1 flex flex-col justify-end md:justify-center items-center md:items-start px-6 sm:px-12 pb-8 md:pb-0">
+        <div className="w-full max-w-sm md:max-w-xl flex flex-col items-center md:items-start text-center md:text-left space-y-4 md:space-y-6">
           <div className="space-y-1.5 md:space-y-2">
             <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]">
               {t('app.name')}
             </h1>
-            <p className="font-display text-lg sm:text-xl md:text-2xl font-semibold text-cyan-100/90 tracking-wide">
+            <p className="font-display text-base sm:text-lg md:text-2xl font-semibold text-cyan-100/90 tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
               {t('app.subtitle')}
             </p>
           </div>

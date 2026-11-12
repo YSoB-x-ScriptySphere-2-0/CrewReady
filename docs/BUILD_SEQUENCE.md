@@ -10,7 +10,7 @@ Goes with `plan.md` v10. The plan says **what** the game is. This file says **ho
 4. Don't move on until the step's **Done when** passes and you've looked at the screenshot yourself.
 5. A fix to the last step is just a sentence in the same chat ("the GO button overlaps Twinkle at 667 wide").
 
-**Before R1:** steps A5–A9 are finished but not committed (branch `game-kit-g1-g2`). Commit them first, so the rework has a clean base to go back to.
+**Start with R0.** A5–A9 are committed (`49aabda`), and so is a first welcome screen built in Antigravity (`36f70fb`). R0 brings that work in line with §3 and §4 before anything new is built.
 
 ---
 
@@ -23,8 +23,12 @@ Goes with `plan.md` v10. The plan says **what** the game is. This file says **ho
 | Shared parts | Scene, Hud, GameButton, Panel, Decision, AlarmBanner, RewardCrate, Dock, Twinkle (crew), LevelChrome, five hands-on steps | `src/components/*`, `src/components/steps/*` |
 | Replay blame, leaderboard, APOD sample | Done (A8, A9) | `src/engine/blame.test.ts`, `src/store/leaderboard.ts`, `src/content/apod.ts` |
 | Crew art | 30 cut-outs. **Nova is now in the pink suit** (re-cut 12 Nov, same file names and sizes) | `public/art/*.webp` |
-| Welcome art | **Placeholders** cropped from the two mock-ups; they still show bits of mock-up text and frame | `public/art/welcome-1.webp`, `welcome-2.webp` |
-| Not built | Landscape stage, welcome, real NASA data, Sources, learning layer, Quick Run, Me, Resources, Training, Bangla, offline, publishing | — |
+| Welcome screen | **Built in Antigravity, needs R0 + R2.** Crossfade, bar → Play, How to Play, EN / বাংলা switch, shown on every load. The bar runs on a fixed 2.4 s timer, not on real loading | `src/screens/Welcome.tsx`, `src/App.tsx` |
+| Strings | `t()` helper with English and Bangla for the welcome screen only | `src/content/i18n.ts`, `strings.en.ts`, `strings.bn.ts` |
+| Antigravity extras | Home: Kp gauge with NOAA G-scale labels. Story: asteroid "radar". LevelChrome: sol and place badge. Decision: shaded planets in the level-3 clock. Dock: frosted glass | see R0 |
+| Welcome art | `welcome-1.webp`, `welcome-2.webp`: **placeholders** cropped from the mock-ups. The `_clean` versions are **not usable**: the cleanup smeared Orbit's face and the EN / বাংলা pill is still baked in | `public/art/welcome-*` |
+| Scratch files | 16 untracked test images (`c1_test.jpg`, `slice_*.jpg`, `w1_left.jpg`…) left in `public/art/`. They would ship with the game | R0 deletes them |
+| Not built | Landscape stage, real NASA data, Sources, learning layer, Quick Run, Me, Resources, Training, Bangla beyond the welcome screen, offline, publishing | — |
 
 Stack: Vite 8, React 19, TypeScript, Tailwind 4, Zustand 5, Vitest, `lucide-react`, Baloo Da 2 + Nunito. `npm run dev` (port 5173, in `.claude/launch.json`) · `npm test` · `npm run build`. If new Tailwind classes don't show in the preview, restart the dev server.
 
@@ -109,7 +113,7 @@ Meter colours are untouched. A meter colour still means that meter and nothing e
 
 | Token | Value | Used for |
 |---|---|---|
-| `space` | `#0B1437` | Backdrop behind every scene |
+| `space` / `space-deep` | `#0B1437` / `#070B1E` | Backdrop behind every scene. A scene may add **one** soft radial light (the Earth's edge, a far nebula) |
 | `panel` | `#14204D` | Panels, cards, HUD pills (solid, never see-through) |
 | `panel-up` | `#1C2B63` | A raised or selected card |
 | `line` | `#3A4A8C` | 2 px border on panels and cards |
@@ -125,7 +129,26 @@ Meter colours are untouched. A meter colour still means that meter and nothing e
 - **Shape.** Radius 1 rem for buttons and cards, 1.5 rem for panels, round for pills. A selected card gets a 3 px `go` border and lifts.
 - **Depth.** Every pressable thing keeps its hard lip (`0 0.35rem 0`, darker shade, no blur) and drops onto it when pressed.
 - **Type.** Baloo Da 2, weight 800, for titles, buttons, numbers and all Bangla. Nunito for English sentences. Nothing a kid needs is under 1 rem. Tabular figures for counters.
-- **Still banned:** blur and see-through panels (slow on cheap phones), glow, neon, emoji, the NASA logo (also on suits in artwork), motion that loops forever, walls of text.
+- **Buttons, three kinds.** Main: solid cyan `go` with its lip, exactly one per screen (Play, GO, Next, Continue). Second: an outlined pill, 2 px `text` border at 30%, dark solid fill, white text (How to Play, Map, Ask Twinkle, Start over). Small: icon-only round buttons.
+- **Still banned:** blur and see-through panels (`backdrop-blur`: slow on the cheap phones we promise to reach), glow and coloured shadows, neon, emoji (use lucide icons), the NASA logo (also on suits in artwork), motion that loops forever (`animate-ping`, `animate-pulse`), walls of text, cream paper cards on the dark stage.
+
+### 4.3a What we keep from the Antigravity notes
+
+`improvement-suggestions.md` (12 Nov) proposed a style for every page. Checked against our rules and `docs/human design standards.md`:
+
+| Suggestion | Decision | Why |
+|---|---|---|
+| Deep navy base, the welcome screen as the reference | **Keep** | It's §4 already |
+| One cyan main button per screen | **Keep** | It's the `go` token |
+| Gradient on the cyan button, cyan glow shadow | **Drop**: solid cyan with a lip | No glow. A lip says "press me"; a glow says nothing |
+| Frosted glass for second buttons, the Dock, How to Play | **Drop**: solid dark panels and outlined pills | Blur stutters on low-end phones; design standards say no glass on ordinary content |
+| Paper cards on the dark stage for decisions | **Drop** | Two surface styles on one screen; dark `panel` cards with a cyan selected border |
+| Loading lines like "Syncing NASA Space Weather…" | **Keep only when true.** Before D1 nothing syncs, so the lines say what really loads ("Waking up the crew…", "Packing the rocket…"). After D1 the space-weather line shows while that call runs | No fake telemetry, same as no fake facts |
+| "Impact Risk: 0.00% · Safe Flybys Verified" on the asteroid card | **Drop** | Not in the data. The plan's line is "None will hit us." |
+| Kp gauge with NOAA G1–G5 names | **Keep** if the Kp → G mapping is added to `docs/06` §4 with NOAA's scale as its source; sentence cut under 15 words; no looping beacon | Real scale, but every fact needs its line in `docs/06` |
+| Look-first arrows scaled by size | **Keep**: one ▼ for 5–10, two for 15–20, three for 25+ | Shows "how much" without numbers |
+| Chain reaction with emoji | **Keep the idea, use icons** | No emoji |
+| A sol and place badge in the level HUD | **Keep** | Teaches "sol" by repetition |
 
 ### 4.4 Motion — every effect has a job
 
@@ -176,11 +199,25 @@ Names in `src/components/` may differ a little; keep the existing ones.
 
 ## 5. The steps
 
-Order: **R1 → R2 → R3 → R4 → F1 → D1 → D2 → S1** reaches the **film line** (everything the 240-second video shows). Then **L1 → L2 → S2 → S3 → S4 → F2 → F3 → F4 → F5**.
+Order: **R0 → R1 → R2 → R3 → R4 → F1 → D1 → D2 → S1** reaches the **film line** (everything the 240-second video shows). Then **L1 → L2 → S2 → S3 → S4 → F2 → F3 → F4 → F5**.
 
 After R1, two people can run in parallel: one on R2 → R3 → R4, one on D1 → D2 → S1. They meet in `src/store/game.ts` and the IntelCard; merge those by hand.
 
 ### Phase R — rework what's built
+
+#### R0 — Bring the Antigravity work in line (about 45 min)
+**Read:** §4.3a; `src/screens/Story.tsx`, `src/screens/Home.tsx`, `src/screens/Welcome.tsx`; search `src/components/Decision.tsx`, `Dock.tsx` and `LevelChrome.tsx` for `animate-`, `blur`, `shadow-[0_0` and `boxShadow`.
+
+**Fix**
+- Story: replace "Impact Risk: 0.00% · Safe Flybys Verified" with the plan's "None will hit us." Remove the looping ping.
+- Home: keep the Kp gauge; cut its sentence under 15 words; no looping beacon. Add the Kp → NOAA G-scale rows to `docs/06` §4 with their source, or drop the G labels.
+- Welcome: loading lines say only what is really loading (§4.3a). Take out `backdrop-blur`, glows and `animate-pulse`; panels become solid `panel`, How to Play a solid dark panel.
+- Decision, Dock, LevelChrome: no loops, no glow. The shaded planets may keep a flat light edge.
+- Delete the untracked scratch images in `public/art/` (everything except the crew poses and `welcome-1.webp` / `welcome-2.webp`). List them in the report.
+
+**Done when** `grep` finds no `backdrop-blur`, `animate-ping` or `animate-pulse` in `src/`; every sentence a player sees is under 15 words and in the plan or `docs/06`; tests and build pass.
+
+> **Prompt — R0.** Do step R0 in `docs/BUILD_SEQUENCE.md`. Read §3, §4.3a and R0, then only its Read line. Remove the invented asteroid line, fake loading lines, blur, glow and looping motion, and delete the scratch images. Change nothing else. Check, report, stop.
 
 #### R1 — The stage and the new tokens (about 2 h)
 **Read:** `src/index.css`, `src/App.tsx`, `src/main.tsx`, `src/components/*` (not `steps/`), `src/screens/Kit.tsx`, `src/store/game.ts`.
@@ -196,20 +233,21 @@ After R1, two people can run in parallel: one on R2 → R3 → R4, one on D1 →
 
 > **Prompt — R1.** Do step R1 in `docs/BUILD_SEQUENCE.md`. Read §3, §4 and R1 first, then only the files on its Read line. Build the landscape `Stage`, swap the tokens, update the shared parts and `#kit`. Don't restyle the screens yet. Check, report, stop.
 
-#### R2 — Welcome and loading (about 1.5 h)
-**Read:** `src/App.tsx`, `src/store/game.ts`, `src/screens/Hook.tsx` (how it starts), `plan.md` §7 row W and §7.2.
+#### R2 — Finish the welcome screen (about 1 h)
+The screen exists (Antigravity, cleaned in R0). Shown on every load, crossfade, bar → Play, How to Play and the switch already work. What's left:
 
-**Build**
-- `src/screens/Welcome.tsx`. It shows on **every page load** (not saved). Layout as the mock-up's wide version: logo top left, **EN / বাংলা** top right, "CrewReady" and "Junior Astronaut Training" on the left, the crew art on the right over the Earth.
-- **The change:** `welcome-1` (real-looking crew) is on screen first. As the game preloads (fonts, crew art, the first scenes, saved data), `welcome-2` (game crew) fades in over it in step with a loading bar that sits where Play will be. At least 1.8 s so it's seen, at most 5 s, then carry on anyway. At 100% the bar becomes the cyan **Play** and pops. Reduced motion: one straight cut.
-- The placeholder art has mock-up text on its left and top. Place it on the right and fade its left 20% and top 15% into the backdrop. Swapping in clean art later must need no code change.
-- **Play:** first time → hook; afterwards → Home. Also ask for full screen and landscape (§4.2).
-- **How to Play:** three picture panels, one line each: "Watch your four meters." · "Tap a choice to look. Tap GO to pick it." · "If a meter hits zero, you try again." Then Play.
-- **Language:** add `src/content/strings.en.ts`, `strings.bn.ts` and a `t(key)` helper; the choice is saved. Put this screen's and the kit's strings through `t()`. Missing Bangla shows English. Leave Bangla empty except the switch label; F2 fills it.
+**Read:** `src/screens/Welcome.tsx`, `src/App.tsx`, `src/content/i18n.ts`, `plan.md` §7 row W.
 
-**Done when** reloading always shows the change then Play; first choice in the hook is reachable within 15 seconds of load; the switch flips this screen's text and survives a reload.
+**Finish**
+- **Tie the bar to real loading.** Today it's a fixed 2.4 s timer. Count real things: fonts ready, each crew image and the first scenes decoded, the save read. At least 1.8 s so the change is seen, at most 5 s, then go on anyway. Reduced motion: one straight cut.
+- **Fit the stage.** Lay it out inside R1's `Stage`: title, Play and How to Play on the left; the crew art on the right two-thirds. Drop the separate upright layout: the turned stage covers it. Fade the placeholder art's left 20% and top 15% into the backdrop so its leftover mock-up text doesn't show. Clean art later must need no code change.
+- **Play** asks for full screen and landscape (§4.2), then goes to the hook the first time and to Home after that (check the `screen === 'hook'` branch in `App.tsx` doesn't skip the hook for a player who quit half-way through it).
+- **How to Play:** three picture panels, one line each: "Watch your four meters." · "Tap a choice to look. Tap GO to pick it." · "If a meter hits zero, you try again."
+- **Strings:** the kit's strings go through `t()` too. Bangla lines Antigravity wrote stay, but mark them "needs a check" for F2.
 
-> **Prompt — R2.** Do step R2 in `docs/BUILD_SEQUENCE.md`. Read §3, §4 and R2, then only its Read line. Build the welcome screen with the picture change tied to real preloading, Play, How to Play and the language switch with `t()`. Write no Bangla yourself. Check, report, stop.
+**Done when** reloading always shows the change then Play; throttled to "Slow 4G" the bar really waits; the hook's first choice is reachable within 15 seconds of load; the switch survives a reload.
+
+> **Prompt — R2.** Do step R2 in `docs/BUILD_SEQUENCE.md`. Read §3, §4 and R2, then only its Read line. Tie the welcome bar to real loading, fit the screen into the stage, and finish Play, How to Play and strings. Write no new Bangla. Check, report, stop.
 
 #### R3 — Level screens in landscape, with Look first (about 3 h)
 **Read:** `src/screens/LevelOpening.tsx`, `src/screens/Play.tsx`, `src/components/Decision.tsx`, `src/components/LevelChrome.tsx`, `src/components/Hud.tsx`, `src/components/steps/*`, `src/content/icons.ts`. Search `src/engine/engine.ts` for how a choice's changes are worked out; don't read it all.
@@ -217,7 +255,7 @@ After R1, two people can run in parallel: one on R2 → R3 → R4, one on D1 →
 **Build**
 - **Level opening:** the scene fills the stage. Left: the crew. Right: ribbon ("LEVEL 3 · FIRST BREATH"), one line, the task list as three or four icon chips, the IntelCard, **GO!**. Carry-over costs still play onto the HUD one by one with their reason.
 - **Decision:** Twinkle's bubble on top of the right zone; three `ChoiceCard`s in a row under it.
-  - **Look first:** the first tap selects a card. It lifts, and every meter it will touch wiggles and shows ▲ or ▼ (direction only; no numbers; stars show a star). Tapping another card moves the selection. **GO** confirms. Keyboard: arrows move, Enter confirms.
+  - **Look first:** the first tap selects a card. It lifts, and every meter it will touch wiggles and shows arrows: one ▲/▼ for 5–10, two for 15–20, three for 25 or more (no numbers; stars show a star). Tapping another card moves the selection. **GO** confirms. Keyboard: arrows move, Enter confirms.
   - After GO: stamp, the others slide off, the HUD plays the real changes, the kid reacts, and the result (reason line, chips, **Next**) takes the cards' place.
   - Ask Twinkle stays: it names your lowest meter. It never says "best", "right" or "answer".
 - **Hands-on steps:** crates, stowing, landing order, battery sharing, crew pick each use the full right zone (and the left when they need the room, with the kid shrinking to a corner). Same engine calls. Crew pick: five cards in one row.
@@ -387,7 +425,7 @@ A keyboard-only run, a reduced-motion run, an upright-phone run, an offline run.
 
 | Phase | Hours |
 |---|---|
-| R1–R4 | about 9 |
+| R0–R4 | about 9 |
 | F1 | 1 |
 | D1–D2 | 5 |
 | S1 | 1 |
@@ -408,8 +446,7 @@ Real deadlines are in plan §12.1: the 240-second video on **Fri 13 Nov, 6:30 PM
 
 | Needed | By step | If missing |
 |---|---|---|
-| A yes to commit A5–A9 | Before R1 | The rework has no clean base |
-| **Two clean welcome pictures**, 16:9, at least 1920 × 1080, **no text, buttons or device frame**, crew on the right two-thirds: the real-looking crew and the game crew | R2 | The cropped placeholders ship, edges faded |
+| **Two clean welcome pictures**, 16:9, at least 1920 × 1080, **no text, buttons, language pill or device frame**, crew on the right two-thirds, same framing in both: the real-looking crew and the game crew. Make them fresh from the image tool; cleaning up the mock-ups didn't work (the `_clean` files smear Orbit's face) | R2 | The cropped placeholders ship, edges faded |
 | The name of the AI image tool used for the crew and welcome art | F1, S1 | Credited as "AI-generated by the team" |
 | A hosting choice, and a yes before each push | F1 | The build stays local |
 | Confirmation of each "Confirm" fact in `docs/06` §4 | D2, L2 | The sentence stays out |
@@ -426,6 +463,8 @@ Real deadlines are in plan §12.1: the 240-second video on **Fri 13 Nov, 6:30 PM
 ## 8. Where the ideas come from
 
 - The team's welcome mock-ups ("CrewReady Astronaut Training Interface" 1 and 2): the deep-space look, the cyan Play button, the EN / বাংলা switch.
+- `improvement-suggestions.md` (Antigravity session, 12 Nov): what was kept and dropped is in §4.3a.
+- `docs/human design standards.md`: the quality bar; its §3 and §5 are why glass and glow stay out.
 - `nasa guidelines/space-apps-2026-bangladesh-build-guide.md`, challenge 03: the 15-second demo, the Relevance trap, offline, Bangla, touch targets, the under-18 rule.
 - `nasa guidelines/Space Apps Challenge Participants Guide.md` §02 and §08: the run of show and the three videos.
 - Supercell on the Clash of Clans interface: a few big things, each in a fixed place. https://supercell.com/en/games/clashofclans/blog/news/weve-revamped-the-clash-of-clans-user-interface/

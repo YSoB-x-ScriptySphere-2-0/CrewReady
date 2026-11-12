@@ -702,7 +702,7 @@ v9 planned 40 free hours. The event's run of show (Participants Guide §02, §08
 
 | When | Build | Video and page | Must be true at the end |
 |---|---|---|---|
-| **Thu 12 Nov, today** | R1–R4: landscape stage, welcome, every built screen in the new look. F1: publish. D1–D2: real storm data. S1: Sources | Lock both scripts. Narrator chosen (18+). Scratch narration | **The film line:** a public link plays welcome → hook → six levels → Replay → Sources, with a real DONKI card |
+| **Thu 12 Nov, today** | R0–R4: landscape stage, welcome, every built screen in the new look. F1: publish. D1–D2: real storm data. S1: Sources | Lock both scripts. Narrator chosen (18+). Scratch narration | **The film line:** a public link plays welcome → hook → six levels → Replay → Sources, with a real DONKI card |
 | **Fri 13, 07:00–11:30** | Bug fixes only. Register every member and role on the NASA site (08:30) | Record all game footage: 1080p, landscape, internet on, LIVE badge showing. Ask the Local Lead the §10 question | Footage in hand |
 | **Fri 13, 11:30–15:00** | L1: the learning layer, if the footage is done | Edit the 240 s: subtitles, citations, names. Rough cut ready for the 15:00 mentor round | A full rough cut |
 | **Fri 13, 15:00–18:30** | Fixes from mentor feedback | Apply feedback at the 18:00 round. Export. **Upload by 18:30:** YouTube link in the form, file in Drive | **240 s submitted** |
