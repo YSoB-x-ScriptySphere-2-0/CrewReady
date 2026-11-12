@@ -7,6 +7,8 @@ import { MissionMap } from './screens/MissionMap';
 import { Replay } from './screens/Replay';
 import { Story } from './screens/Story';
 import { Success } from './screens/Success';
+import { Sources } from './screens/Sources';
+import { Fly } from './screens/Fly';
 import { Welcome } from './screens/Welcome';
 import { useGame } from './store/game';
 import { useSpace } from './store/space';
@@ -58,5 +60,7 @@ export default function App() {
   if (screen === 'play') return <Play />;
   if (screen === 'replay') return <Replay />;
   if (screen === 'success') return <Success />;
+  if (screen === 'sources') return <Sources />;
+  if (screen === 'fly') return <Fly />;
   return <Home />;
 }
