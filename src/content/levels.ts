@@ -26,6 +26,7 @@ export const LEVELS: Level[] = [
     steps: [
       {
         kind: 'crates',
+        task: 'Pack the rocket',
         prompt: 'Pack the rocket. You have 8 crates for 4 needs.',
         hint: 'Every meter starts at 40. Each crate adds 10. What will run out first?',
         crates: 8,
@@ -39,6 +40,7 @@ export const LEVELS: Level[] = [
       },
       {
         kind: 'choice',
+        task: 'Fill the last seat',
         prompt: 'One seat is left on the rocket. What gets it?',
         hint: 'Each one costs a little now. Each one helps you later.',
         options: [
@@ -65,6 +67,7 @@ export const LEVELS: Level[] = [
       },
       {
         kind: 'stow',
+        task: 'Stow your gear',
         prompt: 'Only two things fit next to your seat. Pick them.',
         hint: 'Things by your seat are quick to grab. The rest is deep in the hold.',
         pick: 2,
@@ -91,6 +94,7 @@ export const LEVELS: Level[] = [
     steps: [
       {
         kind: 'choice',
+        task: 'Storm alert',
         prompt: 'Storm alert! Harmful rays from the Sun arrive in one hour.',
         hint: 'Water blocks the rays well. Science earns stars. Check your Shield meter first.',
         options: [
@@ -115,6 +119,7 @@ export const LEVELS: Level[] = [
       },
       {
         kind: 'choice',
+        task: 'Fix the water filter',
         prompt: 'The filter that cleans your water is blocked.',
         hint: 'Cleaning uses power. Waiting uses water. Where did you pack the spare filter?',
         options: [
@@ -130,6 +135,7 @@ export const LEVELS: Level[] = [
       },
       {
         kind: 'choice',
+        task: 'Pick a landing spot',
         prompt: 'Mars is in the window! Where in Jezero Crater will you land?',
         hint: 'Sun means power. A cliff means cover. The old river bed has the best rocks.',
         options: [
@@ -155,6 +161,7 @@ export const LEVELS: Level[] = [
       },
       {
         kind: 'order',
+        task: 'Land on Mars',
         prompt: 'Landing steps! Tap the four steps in the right order.',
         hint: 'Slow down in the air first. Then slow down more. Then land softly.',
         sequence: ['Heat shield', 'Parachute', 'Landing engines', 'Touchdown'],
@@ -183,6 +190,7 @@ export const LEVELS: Level[] = [
     steps: [
       {
         kind: 'choice',
+        task: 'Protect the base',
         prompt: 'Space rays hit Mars every day. Protect your base?',
         hint: 'Mars soil is free armour. Moving it takes power and makes you hungry.',
         options: [
@@ -202,6 +210,7 @@ export const LEVELS: Level[] = [
       },
       {
         kind: 'choice',
+        task: 'Stop the air leak',
         prompt: 'Alarm! Air is leaking out of the base!',
         hint: 'Mission Control knows the best fix. How long does a message take?',
         options: [
@@ -222,6 +231,7 @@ export const LEVELS: Level[] = [
       },
       {
         kind: 'choice',
+        task: 'Make oxygen',
         prompt: 'A machine can make oxygen from Mars air. It uses lots of power.',
         hint: 'More oxygen costs more power. A dust storm will come one day.',
         options: [
@@ -251,6 +261,7 @@ export const LEVELS: Level[] = [
     steps: [
       {
         kind: 'choice',
+        task: 'Save the panels',
         prompt: 'The storm arrives in minutes. What about the solar panels?',
         hint: 'Folded panels are safe but make no power. Open panels catch light — and dust.',
         options: [
@@ -276,6 +287,7 @@ export const LEVELS: Level[] = [
       },
       {
         kind: 'sliders',
+        task: 'Share the battery',
         prompt: 'Share the battery. There is not enough for everything.',
         hint: 'Each system wants 3 blocks. You have 7. What can wait?',
         units: 7,
@@ -289,6 +301,7 @@ export const LEVELS: Level[] = [
       },
       {
         kind: 'choice',
+        task: 'Clean the panels',
         prompt: 'The storm is over. The panels are grey with dust.',
         hint: 'Fast and risky? Slow and safe? Or use the little robot?',
         options: [
@@ -317,6 +330,7 @@ export const LEVELS: Level[] = [
     steps: [
       {
         kind: 'choice',
+        task: 'Plan the farm',
         prompt: 'How big will your farm be?',
         hint: 'More plants need more water and more lamps.',
         options: [
@@ -337,6 +351,7 @@ export const LEVELS: Level[] = [
       },
       {
         kind: 'choice',
+        task: 'Find water',
         prompt: 'Water is running low.',
         hint: 'Cleaning old water uses power. Drilling means a day outside. Plants drink too.',
         options: [
@@ -347,6 +362,7 @@ export const LEVELS: Level[] = [
       },
       {
         kind: 'choice',
+        task: 'Save the lettuce',
         prompt: 'The lettuce is nearly ready. Then a water pump breaks.',
         hint: 'Your water, your plants, or your time?',
         options: [
@@ -376,6 +392,7 @@ export const LEVELS: Level[] = [
     steps: [
       {
         kind: 'crew',
+        task: 'Pick your crew',
         prompt: 'Pick your crew: 3 of the 5 experts.',
         hint: 'Which meters are lowest? An expert halves every loss to their meter.',
         pick: 3,
@@ -390,6 +407,7 @@ export const LEVELS: Level[] = [
       },
       {
         kind: 'choice',
+        task: 'Survive two storms',
         prompt: 'A Sun storm and a dust storm arrive together!',
         hint: 'The shelter saves your Shield. But the panels need someone outside.',
         options: [
@@ -400,6 +418,7 @@ export const LEVELS: Level[] = [
       },
       {
         kind: 'choice',
+        task: 'Fix the air',
         prompt: 'The machine that cleans your air has broken.',
         hint: 'The Apollo 13 crew once built a new one from spare parts.',
         options: [
@@ -410,6 +429,7 @@ export const LEVELS: Level[] = [
       },
       {
         kind: 'choice',
+        task: 'Collect rocks',
         prompt: 'Last job: collect Mars rocks to send back to Earth.',
         hint: 'The best rocks are far away. Do you have the air and Shield for the trip?',
         options: [

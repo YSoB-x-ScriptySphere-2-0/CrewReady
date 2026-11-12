@@ -42,6 +42,8 @@ export interface Option {
 }
 
 interface StepBase {
+  /** Two to four words for the level's task list ("Pack the rocket"). */
+  task: string;
   prompt: string;
   hint: string;
 }

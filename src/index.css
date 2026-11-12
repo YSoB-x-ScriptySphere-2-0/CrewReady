@@ -15,6 +15,16 @@
   --color-danger: #d93a3a;
   --color-good: #1f8a4c;
 
+  /* The one main action per screen (G1). Pink: the meters own yellow, blue, green and purple; red means danger. */
+  --color-go: #e8336f;
+  --color-go-lip: #b81e52;
+  /* Lip shades for the toy parts: a darker step of each fill. */
+  --color-paper-lip: #cbbd9f;
+  --color-locked: #d9d4c7;
+  --color-locked-lip: #aaa392;
+  --color-crate: #c7773a;
+  --color-crate-lip: #8e4f22;
+
   --color-sky-earth: #2f6fed;
   --color-sky-space: #1f1a5c;
   --color-sky-mars: #d9622b;
@@ -23,12 +33,16 @@
 
   --radius-card: 20px;
   --radius-btn: 14px;
+  --radius-tile: 16px; /* buttons and choice tiles */
+  --radius-panel: 24px; /* panels */
   --shadow-card: 0 8px 24px rgb(27 31 59 / 0.18);
+  --shadow-panel: 0 10px 24px rgb(27 31 59 / 0.22);
 
   --font-sans: 'Nunito', system-ui, 'Segoe UI', sans-serif;
   --font-display: 'Baloo Da 2', 'Nunito', system-ui, sans-serif;
 }
 
+@layer base {
 html,
 body,
 #root {
@@ -63,13 +77,14 @@ button:disabled {
 .on-sky :focus-visible {
   outline-color: var(--color-paper);
 }
-
-/* Success screen — the only gradient in the app (dawn, pink to gold). */
-.sky-success {
-  background: linear-gradient(180deg, #f6a6b8 0%, #f9c98a 55%, #f5c542 100%);
+/* Paper surfaces (panels, the Dock) sitting on a dark scene get the ink ring back. */
+.on-paper :focus-visible {
+  outline-color: var(--color-ink);
 }
 
-/* Motion — §4.3. Nothing loops; everything stops for reduced motion. */
+}
+
+/* Motion — §4.4. Nothing loops; everything stops for reduced motion. */
 @keyframes rise {
   from {
     opacity: 0;
@@ -83,36 +98,6 @@ button:disabled {
 .rise {
   animation: rise 0.2s ease-out both;
 }
-@keyframes delta-flash {
-  0%,
-  70% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-.delta-flash {
-  animation: delta-flash 3s ease-out forwards;
-}
-/* The hook shakes once when the storm hits. */
-@keyframes shake {
-  0%,
-  100% {
-    transform: none;
-  }
-  15%,
-  55% {
-    transform: translateX(-8px) rotate(-0.5deg);
-  }
-  35%,
-  75% {
-    transform: translateX(8px) rotate(0.5deg);
-  }
-}
-.shake {
-  animation: shake 0.5s ease-in-out 1;
-}
 @keyframes earth-fill {
   from {
     width: 0%;
@@ -124,6 +109,164 @@ button:disabled {
 .earth-fill {
   animation: earth-fill 2s linear forwards;
 }
+/* ================= Game kit (BUILD_SEQUENCE.md §4.3–4.4, step G1) ================= */
+
+@layer components {
+/* Toy parts: 3 px ink outline and a hard lip (darker fill + ink edge) underneath, no blur.
+   On press they squash to 95% and drop 4 px onto the lip. */
+.toy {
+  --lip: var(--color-paper-lip);
+  --lip-y: 6px;
+  position: relative;
+  border: 3px solid var(--color-ink);
+  box-shadow:
+    0 var(--lip-y) 0 0 var(--lip),
+    0 var(--lip-y) 0 3px var(--color-ink);
+  margin-bottom: 9px; /* room for the lip */
+  transition:
+    transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 180ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 150ms;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+.toy[data-pressed='true'] {
+  --lip-y: 2px;
+  transform: translateY(4px) scale(0.95);
+  transition-duration: 60ms;
+  transition-timing-function: ease-out;
+}
+.toy:disabled,
+.toy[aria-disabled='true'] {
+  --lip: var(--color-locked-lip);
+  background: var(--color-locked);
+  color: var(--color-muted);
+  opacity: 1;
+}
+/* A thin flat shine band across the top third. Not a glow. */
+.shine::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 4px;
+  height: 26%;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.3);
+  pointer-events: none;
+}
+.toy:disabled.shine::before {
+  display: none;
+}
+
+/* Warning stripes (ink and paper, never a meter colour). */
+.hazard {
+  background: repeating-linear-gradient(-45deg, var(--color-ink) 0 12px, var(--color-paper) 12px 24px);
+}
+
+/* Loading shimmer is added in B2. */
+
+/* --- one-shot motions. Each tells the kid something; none loops. --- */
+@keyframes kit-shake-x {
+  0%, 100% { transform: none; }
+  20% { transform: translateX(-7px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(2px); }
+}
+.anim-shake-x { animation: kit-shake-x 420ms ease-in-out 1; }
+
+@keyframes kit-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+.anim-pop { animation: kit-pop 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 1; }
+
+@keyframes kit-float-chip {
+  0% { transform: translate(-50%, 6px) scale(0.8); opacity: 0; }
+  15% { transform: translate(-50%, 0) scale(1.05); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: translate(-50%, -34px) scale(1); opacity: 0; }
+}
+.anim-float-chip { animation: kit-float-chip 700ms ease-out 1 forwards; }
+
+@keyframes kit-stamp {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.05) rotate(-1deg); }
+  70% { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+.anim-stamp { animation: kit-stamp 300ms ease-out 1; }
+
+/* Tiles that were not chosen slide away. A transition, so the end state also applies with reduced motion. */
+.is-gone {
+  transform: translateX(115%);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 300ms ease-in,
+    opacity 300ms ease-in;
+}
+
+@keyframes kit-slam {
+  0% { transform: translateX(-110%); }
+  70% { transform: translateX(3%); }
+  100% { transform: none; }
+}
+.anim-slam { animation: kit-slam 400ms cubic-bezier(0.2, 0.9, 0.3, 1) 1 both; }
+
+@keyframes kit-pop-in {
+  0% { transform: scale(0.6) translateY(10px); opacity: 0; }
+  60% { transform: scale(1.06) translateY(-4px); opacity: 1; }
+  100% { transform: none; opacity: 1; }
+}
+.anim-pop-in { animation: kit-pop-in 250ms cubic-bezier(0.34, 1.56, 0.64, 1) 1 both; }
+
+@keyframes kit-bubble {
+  0% { transform: scale(0.4); opacity: 0; }
+  70% { transform: scale(1.03); opacity: 1; }
+  100% { transform: none; opacity: 1; }
+}
+.anim-bubble { transform-origin: 0% 100%; animation: kit-bubble 250ms cubic-bezier(0.34, 1.56, 0.64, 1) 80ms 1 both; }
+
+/* Idle characters bob once when a screen opens. */
+@keyframes kit-bob {
+  0%, 100% { transform: none; }
+  50% { transform: translateY(-8px); }
+}
+.anim-bob { animation: kit-bob 700ms ease-in-out 1; }
+
+/* Reward crate: drops, bounces, the lid flips open, the badge pops out (1.6 s, then done).
+   Natural (non-animated) state is the end state, so reduced motion shows the badge straight away. */
+@keyframes kit-crate-drop {
+  0% { transform: translateY(-160%); }
+  45% { transform: translateY(0); }
+  60% { transform: translateY(-14%); }
+  75% { transform: translateY(0); }
+  88% { transform: translateY(-4%); }
+  100% { transform: translateY(0); }
+}
+.anim-crate-drop { animation: kit-crate-drop 700ms ease-in 1 both; }
+@keyframes kit-lid-open {
+  from { transform: rotate(0deg); }
+  to { transform: translate(-10px, -36px) rotate(-14deg); }
+}
+.crate-lid { transform-origin: 6px 100%; transform: translate(-10px, -36px) rotate(-14deg); }
+.anim-lid-open { animation: kit-lid-open 260ms cubic-bezier(0.34, 1.56, 0.64, 1) 750ms 1 both; }
+@keyframes kit-badge-out {
+  0% { transform: translate(-50%, 70px) scale(0.2); opacity: 0; }
+  60% { transform: translate(-50%, -12px) scale(1.15); opacity: 1; }
+  100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+}
+.crate-badge { transform: translate(-50%, 0); }
+.anim-badge-out { animation: kit-badge-out 550ms cubic-bezier(0.34, 1.56, 0.64, 1) 1000ms 1 both; }
+
+}
+
+/* Reduced motion: from the OS, or from the in-game setting (html[data-motion='reduce']).
+   Changes still happen and colours still flash; nothing moves or shakes. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -131,4 +274,16 @@ button:disabled {
     transition: none !important;
     animation: none !important;
   }
+  .toy[data-pressed='true'] {
+    transform: none;
+  }
+}
+:root[data-motion='reduce'] *,
+:root[data-motion='reduce'] *::before,
+:root[data-motion='reduce'] *::after {
+  transition: none !important;
+  animation: none !important;
+}
+:root[data-motion='reduce'] .toy[data-pressed='true'] {
+  transform: none;
 }

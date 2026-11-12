@@ -26,7 +26,7 @@ describe('content', () => {
   it('rejects an option that changes only one thing', () => {
     const bad: Level = {
       ...LEVELS[2],
-      steps: [{ kind: 'choice', prompt: 'p', hint: 'h', options: [
+      steps: [{ kind: 'choice', task: 't', prompt: 'p', hint: 'h', options: [
         { label: 'free lunch', effects: { F: 10 }, reason: 'r' },
         { label: 'ok', effects: { F: 10, P: -5 }, reason: 'r' },
       ] }],
