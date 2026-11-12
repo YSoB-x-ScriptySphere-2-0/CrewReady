@@ -11,15 +11,16 @@ import { GameButton } from '../components/GameButton';
 import { MeterPill, StarCounter } from '../components/Hud';
 import { LevelZones } from '../components/LevelChrome';
 import { reducedMotion, usePress } from '../components/motion';
-import { IntelCard, Panel, Ribbon } from '../components/Panel';
+import { Badge, Panel, Ribbon, SourceLine } from '../components/Panel';
 import { PrizeBadge, RewardCrate } from '../components/RewardCrate';
 import { Scene } from '../components/Scene';
 import { Kid } from '../components/Twinkle';
-import { SAVED_APOD, usableApod } from '../content/apod';
+import { usableApod } from '../content/apod';
 import { LEVELS } from '../content/levels';
 import { HEALTHY, outpostCheck } from '../engine/engine';
 import { METERS, type Level, type OutpostResult } from '../engine/types';
 import { useGame } from '../store/game';
+import { fmtDate, useSpace } from '../store/space';
 import type { BoardEntry } from '../store/leaderboard';
 
 // Plan §5.3, word for word.
@@ -181,6 +182,7 @@ const TEASERS = [
 
 export function Success() {
   const { game, startMission, goHome, leaderboard, lastSavedRun } = useGame();
+  const apod = useSpace((s) => s.apod);
   const { healthy, result } = outpostCheck(game);
   const text = RESULT_TEXT[result];
   const [open, setOpen] = useState<number | null>(null);
@@ -297,24 +299,27 @@ export function Success() {
           {openLevel ? <LessonCard key={openLevel.id} level={openLevel} onClose={closeBadge} /> : null}
           </div>
 
-          {/* NASA's picture of the day, only from a real saved entry. Today the API sends only a placeholder
-              (the NASA logo), so nothing shows here. B1 saves real entries; B4 brings live data. */}
-          {usableApod(SAVED_APOD) ? (
-            <div className="shrink-0">
-              <IntelCard
-                compact
-                title="NASA picture of the day"
-                badge="NASA ARCHIVE"
-                date={SAVED_APOD.date}
-                sentence={`Your reward: "${SAVED_APOD.title ?? 'A space picture'}".`}
-                image={{ src: SAVED_APOD.url, alt: SAVED_APOD.title ?? 'NASA picture of the day', credit: SAVED_APOD.copyright ? `Image: ${SAVED_APOD.copyright}` : 'Image: NASA APOD' }}
-                source="NASA APOD"
+          {/* NASA's picture of the day: live, or a saved real entry (badged ARCHIVE). Never the placeholder or the NASA logo. */}
+          {apod && usableApod(apod.data) ? (
+            <article aria-label="NASA picture of the day" className="flex shrink-0 items-center gap-[0.5rem] rounded-[1rem] border-2 border-line bg-panel/85 p-[0.25rem] text-text">
+              <img
+                src={apod.data.url}
+                alt={apod.data.title ?? 'NASA picture of the day'}
+                className="h-[3.25rem] w-[4.5rem] shrink-0 rounded-[0.5rem] border-2 border-line bg-space-deep object-cover"
+                loading="lazy"
               />
-            </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-x-[0.375rem]">
+                  <Badge kind={apod.badge} />
+                  <span className="truncate font-display text-[0.875rem] leading-tight font-bold">{`Your reward: “${apod.data.title ?? 'A space picture'}”`}</span>
+                </div>
+                <SourceLine bare text={`NASA APOD · ${apod.badge === 'NASA LIVE' ? 'LIVE' : 'ARCHIVE'} · ${fmtDate(apod.data.date ?? apod.fetchedAt)}${apod.data.copyright ? ` · Image: ${apod.data.copyright}` : ''}`} />
+              </div>
+            </article>
           ) : null}
 
-          {/* Two locked teasers (not buttons, so they can be slim). */}
-          <div className="flex shrink-0 items-start gap-[0.375rem]">
+          {/* Two locked teasers (not buttons, so they can be slim). The picture of the day needs their room. */}
+          <div className={`shrink-0 items-start gap-[0.375rem] ${apod && usableApod(apod.data) ? 'hidden' : 'flex'}`}>
             {TEASERS.map(([t, d]) => (
               <div
                 key={t}

@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react';
 import { Battery, Car, Droplets, Gem, Hammer, Shield, Sprout, Wind, Wrench, Zap, Microscope, House, Recycle } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
 import type { GameState } from '../../engine/types';
+import { fmtDate, useSpace } from '../../store/space';
 import { useReducedMotion } from '../motion';
 import { Bar, Blink, Crew, Dome, Fade, Frame, Ic, Mv, Route, Sc } from './parts';
 
@@ -60,7 +61,7 @@ const Plant = ({ x, y, droop = 0 }: { x: number; y: number; droop?: number }) =>
   </g>
 );
 
-type EventFn = (g: GameState) => ReactNode;
+type EventFn = (g: GameState, pics: { jezero?: string }) => ReactNode;
 
 const EVENTS: Record<string, EventFn> = {
   // Level 1 · the last seat: one empty seat outlined, three things floating beside it.
@@ -102,13 +103,18 @@ const EVENTS: Record<string, EventFn> = {
     </Frame>
   ),
   // Level 2 · landing: Mars fills the window; three zones light up.
-  '2-2': () => (
+  '2-2': (_g, pics) => (
     <Frame sky="#0B1437">
       <Sc from={[0.3, 0.3]} o="center" d={1.2}>
         <circle cx={200} cy={110} r={110} fill="#D9622B" />
         <circle cx={150} cy={70} r={14} fill="#B2461A" />
         <circle cx={260} cy={84} r={10} fill="#B2461A" />
       </Sc>
+      {pics.jezero ? (
+        <Fade dl={0.9} d={0.8}>
+          <image href={pics.jezero} x={0} y={0} width={400} height={160} preserveAspectRatio="xMidYMid slice" />
+        </Fade>
+      ) : null}
       {[[130, 52], [200, 36], [270, 58]].map(([x, y], k) => (
         <Fade key={k} dl={1.1 + k * 0.3}>
           <Blink dl={1.1 + k * 0.3}>
@@ -271,10 +277,28 @@ export function EventMoment({ levelId, stepIndex, game, label, onDone }: { level
     const t = setTimeout(() => done.current(), reduce ? 1500 : 2600);
     return () => clearTimeout(t);
   }, [reduce]);
-  const make = EVENTS[`${levelId}-${stepIndex}`];
+  const key = `${levelId}-${stepIndex}`;
+  const make = EVENTS[key];
+  const { weather, images } = useSpace();
+  const jezero = images?.data.find((i) => /jezero/i.test(i.description))?.url;
+  // The storm events name the real data behind them: its badge and date. Level 6 uses the stronger of live and archive.
+  const chip =
+    key === '2-0' && weather
+      ? { badge: weather.badge, text: weather.badge === 'NASA LIVE' ? fmtDate(weather.data.startTime) : '10–11 May 2024' }
+      : key === '6-1'
+        ? { badge: 'NASA ARCHIVE', text: '9–11 May 2024' }
+        : key === '2-2' && jezero
+          ? { badge: images!.badge, text: 'Jezero Crater' }
+          : null;
   return (
-    <button type="button" onClick={onDone} aria-label={`${label} Tap to skip.`} className="rise block h-full w-full overflow-hidden rounded-panel border-2 border-line text-left" data-event={`${levelId}-${stepIndex}`}>
-      {make?.(game)}
+    <button type="button" onClick={onDone} aria-label={`${label} Tap to skip.`} className="rise relative block h-full w-full overflow-hidden rounded-panel border-2 border-line text-left" data-event={`${levelId}-${stepIndex}`}>
+      {make?.(game, { jezero })}
+      {chip ? (
+        <span className="pointer-events-none absolute bottom-[0.25rem] left-[0.25rem] inline-flex items-center gap-[0.375rem] rounded-full border-2 border-line bg-panel/85 px-[0.5rem] py-[0.0625rem] font-display text-[0.75rem] leading-snug font-extrabold text-text">
+          {chip.badge === 'NASA LIVE' ? <span className="h-[0.5rem] w-[0.5rem] rounded-full bg-good" aria-hidden /> : null}
+          {chip.badge} · {chip.text}
+        </span>
+      ) : null}
     </button>
   );
 }

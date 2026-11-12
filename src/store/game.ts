@@ -5,6 +5,7 @@ import { LEVELS } from '../content/levels';
 import { costliest, enterLevel, enterSteps, startMission, type LogEntry } from '../engine/engine';
 import type { GameState, Meter, Outcome } from '../engine/types';
 import { recordRun, type BoardEntry } from './leaderboard';
+import { currentStormX, level6Storm } from './space';
 
 /** Every place in the app. No router: the store holds which one is showing. */
 export type Screen =
@@ -65,8 +66,10 @@ interface Store {
 /** A mission has been started and not yet finished. */
 export const missionInProgress = (s: { entered: Outcome | null; badges: number[] }) => s.entered !== null && s.badges.length < LEVELS.length;
 
-function enter(game: GameState, levelIndex: number) {
+function enter(start: GameState, levelIndex: number) {
   const level = LEVELS[levelIndex];
+  // Level 6 always uses the stronger of the live and archive storm (docs/06 §3).
+  const game = level.id === 6 ? { ...start, X: level6Storm(start.X) } : start;
   const entered = enterLevel(game, level);
   const log: LogEntry[] = enterSteps(game, level).map((s) => ({ label: s.reason, delta: s.delta, living: true }));
   return { checkpoint: game, game: entered.state, entered, log, stepIndex: 0, outcome: null, lost: null, retryStep: false };
@@ -127,7 +130,7 @@ export const useGame = create<Store>()(
       lastSavedRun: -1,
       leaderboard: [],
 
-      startMission: (X = 20) => {
+      startMission: (X = currentStormX()) => {
         const D = DUST_CASES[Math.floor(Math.random() * DUST_CASES.length)];
         set({ levelIndex: 0, badges: [], screen: 'level', runId: get().runId + 1, ...enter(startMission(X, D), 0) });
       },

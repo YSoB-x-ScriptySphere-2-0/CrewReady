@@ -12,6 +12,7 @@ import { Scene, type ScenePlace } from '../components/Scene';
 import { Kid, Twinkle } from '../components/Twinkle';
 import neows from '../content/samples/neows.json';
 import { useGame } from '../store/game';
+import { fmtDate, useSpace } from '../store/space';
 
 const CARDS: { title: string; body: ReactNode; place: ScenePlace; picture: ReactNode }[] = [
   {
@@ -50,7 +51,6 @@ const CARDS: { title: string; body: ReactNode; place: ScenePlace; picture: React
   },
 ];
 
-const fetched = new Date(neows.fetchedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 
 /** A number that ticks up from 0 when the card opens. */
 function CountUp({ to }: { to: number }) {
@@ -86,16 +86,21 @@ function AsteroidRadarFigure({ count }: { count: number }) {
  * The full sentence of the old Intel card is kept for screen readers.
  */
 function NeowsStrip() {
+  // Live data once it arrives; until then the saved sample, always badged ARCHIVE with its own date.
+  const res = useSpace((s) => s.neows);
+  const count = res?.data.count ?? neows.count;
+  const badge = res?.badge ?? 'NASA ARCHIVE';
+  const fetched = fmtDate(res?.fetchedAt ?? neows.fetchedAt);
   return (
     <article aria-label="Planetary Defense" className="rounded-[1rem] border-2 border-line bg-panel/85 p-[0.5rem] text-text">
-      <AsteroidRadarFigure count={neows.count} />
-      <p className="sr-only">{`NASA's Planetary Defense Coordination Office is tracking ${neows.count} near-Earth asteroids this week. None will hit us.`}</p>
+      <AsteroidRadarFigure count={count} />
+      <p className="sr-only">{`NASA's Planetary Defense Coordination Office is tracking ${count} near-Earth asteroids this week. None will hit us.`}</p>
       <div className="mt-[0.375rem] flex flex-wrap items-center gap-x-[0.5rem] gap-y-[0.125rem]">
-        <Badge kind="NASA ARCHIVE" />
-        <span className="text-[0.8125rem] font-bold text-muted">{`Real NASA data from ${fetched}`}</span>
+        <Badge kind={badge} />
+        <span className="text-[0.8125rem] font-bold text-muted">{badge === 'NASA LIVE' ? 'From NASA, just now' : `Real NASA data from ${fetched}`}</span>
       </div>
       <div className="mt-[0.25rem]">
-        <SourceLine text={`NASA NeoWs (Near Earth Object Web Service) · ARCHIVE · ${fetched}`} bare />
+        <SourceLine text={`NASA NeoWs (Near Earth Object Web Service) · ${badge === 'NASA LIVE' ? 'LIVE' : 'ARCHIVE'} · ${fetched}`} bare />
       </div>
     </article>
   );

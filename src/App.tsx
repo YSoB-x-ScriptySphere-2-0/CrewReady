@@ -9,6 +9,7 @@ import { Story } from './screens/Story';
 import { Success } from './screens/Success';
 import { Welcome } from './screens/Welcome';
 import { useGame } from './store/game';
+import { useSpace } from './store/space';
 
 /** Hidden dev page with every game-kit part (G1). Not linked from the game. */
 const Kit = lazy(() => import('./screens/Kit').then((m) => ({ default: m.Kit })));
@@ -26,6 +27,8 @@ export default function App() {
   const [welcomeDismissed, setWelcomeDismissed] = useState(false);
   const { screen, seenIntro, go } = useGame();
   const hash = useHash();
+  // Real NASA data starts loading as soon as the app opens, so the storm size is known by PLAY.
+  useEffect(() => void useSpace.getState().load(), []);
 
   if (hash === '#kit')
     return (

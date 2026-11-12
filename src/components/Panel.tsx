@@ -117,6 +117,7 @@ export function IntelCard({
   source,
   title = 'Mission Intel',
   compact,
+  loading,
 }: {
   badge: BadgeKind;
   date?: string;
@@ -127,7 +128,22 @@ export function IntelCard({
   title?: string;
   /** Landscape stage: the picture or figure on the left, badge and sentence on the right. */
   compact?: boolean;
+  /** Real data still on its way: a still skeleton, never a blank. */
+  loading?: boolean;
 }) {
+  if (loading)
+    return (
+      <Panel as="article" ribbon={title} tone="space" compact className="!pb-[0.5rem]" aria-busy="true">
+        <div className="flex items-center gap-[0.75rem]" role="status">
+          <div className="min-h-[3.5rem] w-[7rem] shrink-0 rounded-[0.75rem] border-2 border-line bg-space-deep" aria-hidden />
+          <div className="min-w-0 flex-1 space-y-[0.375rem]" aria-hidden>
+            <div className="h-[1.25rem] w-[8rem] rounded-lg bg-panel-up" />
+            <div className="h-[0.875rem] w-full rounded-lg bg-panel-up" />
+          </div>
+          <span className="sr-only">Checking NASA…</span>
+        </div>
+      </Panel>
+    );
   if (compact)
     return (
       <Panel as="article" ribbon={title} tone="space" compact className="!pb-[0.5rem]">

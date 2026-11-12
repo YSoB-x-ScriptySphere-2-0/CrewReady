@@ -11,9 +11,7 @@ import { Scene } from '../components/Scene';
 import { Kid, TwinkleSays } from '../components/Twinkle';
 import { LEVELS } from '../content/levels';
 import { BUILT_SCREENS, missionInProgress, useGame } from '../store/game';
-
-/** Sample until B4 wires live data. Confirmed in DONKI: Kp reached 9.0 on 11 May 2024 (docs/06 §4). */
-const SPACE_WEATHER_SAMPLE = { kp: 9, date: '11 May 2024' };
+import { fmtDate, useSpace } from '../store/space';
 
 /** Bands follow docs/06 §4 (Kp 0–3 slow, 4–6 medium, 7–9 fast). No NOAA G-scale: it isn't sourced in docs/06. */
 function getStormTier(kp: number): { scale: string; label: string; tone: 'calm' | 'active' | 'storm' | 'extreme'; barColor: string } {
@@ -68,6 +66,7 @@ const SMALL = '!min-h-[2.75rem] !px-[0.875rem] !text-[1rem]';
 export function Home() {
   const { startMission, levelIndex, go, game } = useGame();
   const inProgress = useGame(missionInProgress);
+  const kpNow = useSpace((s) => s.kp);
   const [confirming, setConfirming] = useState(false);
   const flyOpen = BUILT_SCREENS.has('fly');
 
@@ -154,15 +153,19 @@ export function Home() {
 
           <div className="min-h-0 flex-1" />
 
-          <IntelCard
-            compact
-            title="Space weather"
-            badge="NASA ARCHIVE"
-            date={SPACE_WEATHER_SAMPLE.date}
-            figure={<KpGauge kp={SPACE_WEATHER_SAMPLE.kp} />}
-            sentence="Solar storms blast radiation. Crews shelter behind water."
-            source={`NASA DONKI + NOAA SWPC · ARCHIVE · ${SPACE_WEATHER_SAMPLE.date}`}
-          />
+          {kpNow ? (
+            <IntelCard
+              compact
+              title="Space weather"
+              badge={kpNow.badge}
+              date={fmtDate(kpNow.fetchedAt)}
+              figure={<KpGauge kp={Math.round(kpNow.data * 10) / 10} />}
+              sentence="Solar storms blast radiation. Crews shelter behind water."
+              source={`NOAA SWPC · ${kpNow.badge === 'NASA LIVE' ? 'LIVE' : 'ARCHIVE'} · ${fmtDate(kpNow.fetchedAt)}`}
+            />
+          ) : (
+            <IntelCard compact loading title="Space weather" badge="NASA ARCHIVE" sentence="" />
+          )}
         </div>
       </div>
     </Scene>
