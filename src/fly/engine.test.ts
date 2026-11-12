@@ -199,5 +199,30 @@ describe('Fly Runner Engine (Pure Logic)', () => {
       expect(state.activePower).toBeNull();
       expect(state.powerRemaining).toBe(0);
     });
+
+    it('stepGame is strictly pure and does not mutate input state (B2 item 4)', () => {
+      const state = createInitialState();
+      state.obstacles = [{ id: 99, lane: 0, z: 0.1, kind: 'tallRock' }];
+      state.items = [{ id: 88, lane: 0, z: 0.1, kind: 'stardust' }];
+
+      const run1 = stepGame(state, 0.05);
+      expect(state.obstacles[0].passed).toBeUndefined();
+      expect(state.items[0].collected).toBeUndefined();
+
+      const run2 = stepGame(state, 0.05);
+      expect(run1.hull).toBe(run2.hull);
+      expect(run1.stardust).toBe(run2.stardust);
+      expect(run1.distance).toBe(run2.distance);
+    });
+
+    it('detects swept obstacle collision on fast frame jumps (B2 item 3)', () => {
+      const state = createInitialState();
+      // Rock positioned at z = 1.2, speed = 25m/s with dt = 0.08 moves ~2.0m, skipping to -0.8
+      state.obstacles = [{ id: 101, lane: 0, z: 1.2, kind: 'tallRock' }];
+      state.speed = 25;
+
+      const next = stepGame(state, 0.08); // deltaDistance = 2.0m, jumps from 1.2 to -0.8
+      expect(next.hull).toBe(2); // Hit successfully detected via swept interval!
+    });
   });
 });

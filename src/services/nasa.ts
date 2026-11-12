@@ -112,22 +112,23 @@ const FALLBACK_APOD: Apod = {
   copyright: 'Lorenzo Spiss',
 };
 
+// Copied from public/data/insight.json (NASA InSight API record, archived 12 Nov 2026). Never edit by hand.
 const FALLBACK_INSIGHT_SOLS: MarsSol[] = [
   { sol: '675', firstUtc: '2020-10-19T18:32:20Z', temp: { av: -62.3, mn: -96.9, mx: -15.9 } },
-  { sol: '676', firstUtc: '2020-10-20T19:11:55Z', temp: { av: -63.1, mn: -97.4, mx: -16.2 } },
-  { sol: '677', firstUtc: '2020-10-21T19:51:30Z', temp: { av: -62.8, mn: -96.5, mx: -15.5 } },
-  { sol: '678', firstUtc: '2020-10-22T20:31:05Z', temp: { av: -63.5, mn: -98.0, mx: -16.8 } },
-  { sol: '679', firstUtc: '2020-10-23T21:10:40Z', temp: { av: -62.9, mn: -97.1, mx: -15.8 } },
-  { sol: '680', firstUtc: '2020-10-24T21:50:15Z', temp: { av: -63.8, mn: -98.5, mx: -16.4 } },
-  { sol: '681', firstUtc: '2020-10-25T22:29:50Z', temp: { av: -64.2, mn: -99.1, mx: -17.0 } },
+  { sol: '676', firstUtc: '2020-10-20T19:11:55Z', temp: { av: -62.8, mn: -96.9, mx: -16.5 } },
+  { sol: '677', firstUtc: '2020-10-21T19:51:31Z', temp: { av: -63.1, mn: -97.2, mx: -16.9 } },
+  { sol: '678', firstUtc: '2020-10-22T20:31:06Z', temp: { av: -62.6, mn: -97.7, mx: -9.1 } },
+  { sol: '679', firstUtc: '2020-10-23T21:10:41Z', temp: { av: -62.6, mn: -96.6, mx: -11.6 } },
+  { sol: '680', firstUtc: '2020-10-24T21:50:16Z', temp: { av: -61.8, mn: -96.8, mx: -15.3 } },
+  { sol: '681', firstUtc: '2020-10-25T22:29:51Z', temp: { av: -62.4, mn: -95.4, mx: -4.4 } },
 ];
 
 const FALLBACK_OSDR: OsdrStudy = {
-  accession: 'OSD-268',
-  title: 'Microbiological and nutritional analysis of lettuce crops grown on the International Space Station-VEG01B',
+  accession: 'OSD-745',
+  title: 'Microbiological and Nutritional Analysis of Lettuce Crops Grown on the International Space Station',
   mission: 'International Space Station (ISS)',
-  finding: 'Space-grown lettuce on the Space Station was safe to eat and had the same nutrients as lettuce grown on Earth.',
-  details: 'Lettuce crops grown in the Veggie payload aboard the ISS were harvested and returned for chemical, microbiological and nutritional analysis.',
+  finding: 'Lettuce grown on the Space Station was safe to eat.',
+  details: 'Red romaine lettuce grown in the Veggie garden was tested for harmful germs and for nutrients. No harmful germs were found.',
   date: 'August 2015',
 };
 
@@ -304,12 +305,15 @@ export async function getSpaceWeather(): Promise<Result<StormEvent>> {
 
   if (snapshot.data?.archiveMay2024) {
     const may = snapshot.data.archiveMay2024;
-    const topGst = may.gst?.[0];
-    const topKp = topGst?.allKpIndex?.[0]?.kpIndex ?? 9.0;
+    // Pick the strongest storm in the archive (the 10 May 2024 one, Kp 9), not simply the first record.
+    const gstMax = (g: any): number => Math.max(0, ...(g?.allKpIndex ?? []).map((k: any) => Number(k?.kpIndex) || 0));
+    const topGst = (may.gst ?? []).reduce((best: any, g: any) => (gstMax(g) > gstMax(best) ? g : best), may.gst?.[0]);
+    const topKp = topGst ? gstMax(topGst) || 9.0 : 9.0;
+    const cmeSpeeds = (may.cme ?? []).map((c: any) => Number(c?.speed) || 0);
     archiveEvent = {
       startTime: topGst?.startTime || '2024-05-10T15:00:00Z',
       kpIndex: topKp,
-      cmeSpeed: may.cme?.[0]?.speed || 1650,
+      cmeSpeed: cmeSpeeds.length ? Math.max(...cmeSpeeds) : 1650,
       hasSep: (may.sep?.length ?? 0) > 0,
       activityID: topGst?.gstID || '2024-05-10T15:00:00-GST-001',
       note: 'Superstorm of 10–11 May 2024: Kp index reached 9.0; SEP event on 9 May 2024.',

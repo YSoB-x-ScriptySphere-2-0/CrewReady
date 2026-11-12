@@ -496,21 +496,21 @@ async function fetchInsight() {
 }
 
 // -------------------------------------------------------------
-// 7. OSDR — Open Science Data Repository (Veggie study OSD-268)
+// 7. OSDR — Open Science Data Repository (Veggie study OSD-745)
 // -------------------------------------------------------------
 async function fetchOsdr() {
   console.log('Fetching OSDR Veggie study record...');
-  const endpoint = 'https://osdr.nasa.gov/osdr/data/search?term=OSD-268&type=cgene';
+  const endpoint = 'https://osdr.nasa.gov/osdr/data/osd/meta/745';
   
   const payload = {
     fetchedAt: new Date().toISOString(),
     source: endpoint,
     badge: 'NASA ARCHIVE',
-    accession: 'OSD-268',
-    title: 'Microbiological and nutritional analysis of lettuce crops grown on the International Space Station-VEG01B',
+    accession: 'OSD-745',
+    title: 'Microbiological and Nutritional Analysis of Lettuce Crops Grown on the International Space Station',
     mission: 'International Space Station (ISS)',
-    finding: 'Space-grown lettuce on the Space Station was safe to eat and had the same nutrients as lettuce grown on Earth.',
-    details: 'Lettuce crops grown in the Veggie payload aboard the ISS were harvested and returned for chemical, microbiological and nutritional analysis.',
+    finding: 'Lettuce grown on the Space Station was safe to eat.',
+    details: 'Red romaine lettuce grown in the Veggie garden was tested for harmful germs and for nutrients. No harmful germs were found.',
     date: 'August 2015',
   };
 
@@ -525,7 +525,7 @@ async function fetchOsdr() {
       }
     }
   } catch (err) {
-    console.warn(`  OSDR fetch notice: ${err.message}. Using vetted OSD-268 record.`);
+    console.warn(`  OSDR fetch notice: ${err.message}. Using vetted OSD-745 record.`);
   }
 
   writeJsonSafe('osdr.json', payload);

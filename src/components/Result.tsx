@@ -4,6 +4,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { ChevronRight, type LucideIcon } from 'lucide-react';
 import { pictureFor } from '../content/pictures';
+import { tMission } from '../content/i18n';
 import type { Outcome } from '../engine/types';
 import { ScenePicture } from './Decision';
 import { ChangeChip, type Change } from './GameButton';
@@ -44,7 +45,7 @@ export function ResultMoment({
 }) {
   const pic = pictureFor(label);
   const chain = pic?.chain ?? [fallback];
-  const line = pic?.line ?? outcome.reasons[0] ?? '';
+  const line = tMission(pic?.line ?? outcome.reasons[0] ?? '');
   const extras = outcome.reasons.slice(1);
   let i = 0;
   return (

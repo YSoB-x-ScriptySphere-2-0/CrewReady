@@ -8,7 +8,7 @@ import { METER_NAMES, type CratesStep, type GameState } from '../../engine/types
 import { GameButton } from '../GameButton';
 import { METER_COLOR, MeterBadge } from '../meters';
 import { CRATE_HTML, Crate, hop, ToyArea, type Done } from './shared';
-import { useI18n } from '../../content/i18n';
+import { useI18n, tMission } from '../../content/i18n';
 
 export function Crates({ step, game, onDone }: { step: CratesStep; game: GameState; onDone: Done }) {
   const lang = useI18n((s) => s.lang);
@@ -70,7 +70,7 @@ export function Crates({ step, game, onDone }: { step: CratesStep; game: GameSta
             <div key={b.meter} className="flex min-h-0 flex-col rounded-tile border-2 border-line bg-panel text-text">
               <div className="flex items-center gap-[0.25rem] rounded-t-[0.875rem] px-[0.25rem] py-[0.25rem]" style={{ background: `color-mix(in srgb, ${METER_COLOR[b.meter]} 55%, #14204d)` }}>
                 <MeterBadge meter={b.meter} size={22} />
-                <span className="min-w-0 font-display text-[0.6875rem] sm:text-[0.75rem] leading-[1.15] font-extrabold break-words line-clamp-2">{b.label}</span>
+                <span className="min-w-0 font-display text-[0.6875rem] sm:text-[0.75rem] leading-[1.15] font-extrabold break-words line-clamp-2">{tMission(b.label)}</span>
               </div>
 
               {/* The stack: tap it to send the top crate back to the pad. */}
@@ -78,7 +78,7 @@ export function Crates({ step, game, onDone }: { step: CratesStep; game: GameSta
                 <ToyArea
                   onClick={() => takeBack(i)}
                   disabled={!counts[i]}
-                  label={`Take a crate out of ${b.label}. It has ${counts[i]}.`}
+                  label={`Take a crate out of ${tMission(b.label)}. It has ${counts[i]}.`}
                   className="flex h-full min-h-[2.5rem] w-full flex-wrap-reverse content-start items-end justify-center gap-[0.125rem] overflow-hidden !bg-space-deep px-[0.125rem] py-[0.25rem] disabled:!bg-space-deep"
                 >
                   <span ref={(el) => void (stacks.current[i] = el)} className="flex flex-wrap-reverse justify-center gap-[0.125rem]">

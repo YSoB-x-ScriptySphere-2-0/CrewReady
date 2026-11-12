@@ -41,6 +41,7 @@ export function speak(text: string, lang: Language, onEnd: () => void): boolean 
   const u = new SpeechSynthesisUtterance(text);
   u.voice = voice;
   u.lang = voice.lang;
+  u.volume = 1.0; // full loud volume
   u.onend = onEnd;
   u.onerror = onEnd;
   window.speechSynthesis.speak(u);

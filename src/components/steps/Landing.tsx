@@ -7,6 +7,7 @@ import { checkOrder } from '../../engine/engine';
 import type { GameState, OrderStep } from '../../engine/types';
 import { LeftSlot, ToyArea, type Done } from './shared';
 import { reducedMotion } from '../motion';
+import { useI18n, tMission } from '../../content/i18n';
 
 const CARD_ICON: Record<string, LucideIcon> = { 'Heat shield': Flame, Parachute: Umbrella, 'Landing engines': Rocket, Touchdown: PlaneLanding };
 
@@ -39,6 +40,7 @@ function Lander({ stage }: { stage: number }) {
 }
 
 export function Landing({ step, game, onDone, slot }: { step: OrderStep; game: GameState; onDone: Done; slot?: HTMLElement | null }) {
+  const lang = useI18n((s) => s.lang);
   // A fixed scrambled order, so the answer is never already on screen.
   const [pool] = useState(() => [...step.sequence].sort((a, b) => a.length - b.length || a.localeCompare(b)));
   const [answer, setAnswer] = useState<string[]>([]);
@@ -81,7 +83,11 @@ export function Landing({ step, game, onDone, slot }: { step: OrderStep; game: G
 
       <div className="flex h-full min-h-0 flex-col gap-[0.5rem]">
         <p className="font-display text-[1rem] leading-tight font-extrabold" aria-live="polite">
-          {wrong ? 'Bump! Wrong step.' : stage === step.sequence.length ? 'Touchdown!' : `Step ${stage + 1} of ${step.sequence.length}: which comes now?`}
+          {wrong
+            ? (lang === 'bn' ? 'ধাক্কা! ভুল ধাপ।' : 'Bump! Wrong step.')
+            : stage === step.sequence.length
+            ? (lang === 'bn' ? 'সফল অবতরণ!' : 'Touchdown!')
+            : (lang === 'bn' ? `${step.sequence.length}টির মধ্যে ${stage + 1} নম্বর ধাপ: এখন কোনটি আসবে?` : `Step ${stage + 1} of ${step.sequence.length}: which comes now?`)}
         </p>
         <div className="grid min-h-0 flex-1 grid-cols-2 gap-x-[0.5rem] gap-y-[0.25rem]">
           {pool.map((card) => {
@@ -93,7 +99,7 @@ export function Landing({ step, game, onDone, slot }: { step: OrderStep; game: G
                 key={card}
                 onClick={() => tap(card)}
                 disabled={done || busy}
-                label={done ? `${card} — step ${at + 1}, done` : card}
+                label={done ? (lang === 'bn' ? `${tMission(card)} — ধাপ ${at + 1}, সম্পন্ন` : `${card} — step ${at + 1}, done`) : tMission(card)}
                 className={`flex h-full min-h-0 w-full items-center justify-center gap-[0.5rem] px-[0.5rem] py-[0.25rem] text-left ${
                   done ? '!border-good !bg-good/30 disabled:!bg-good/30 disabled:!text-text' : wrong === card ? '!border-danger !bg-danger/30 disabled:!bg-danger/30 disabled:!text-text anim-wiggle' : 'bg-panel'
                 }`}
@@ -106,7 +112,7 @@ export function Landing({ step, game, onDone, slot }: { step: OrderStep; game: G
                     </span>
                   ) : null}
                 </span>
-                <span className="min-w-0 flex-1 font-display text-[1rem] leading-tight font-extrabold">{card}</span>
+                <span className="min-w-0 flex-1 font-display text-[1rem] leading-tight font-extrabold">{tMission(card)}</span>
               </ToyArea>
             );
           })}

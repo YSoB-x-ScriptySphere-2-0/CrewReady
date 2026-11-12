@@ -1,7 +1,7 @@
-// Navigation outside levels: a rail down the left edge, five round icon buttons (Missions, Fly,
-// Resources, Training, Me). A bottom bar would eat height we don't have. Unbuilt places show a padlock,
-// so nothing looks broken. Put it in `Scene`'s `rail` slot. BUILD_SEQUENCE.md §4.2, §4.6.
-import { BookOpen, Dumbbell, Lock, Map as MapIcon, Rocket, UserRound, type LucideIcon } from 'lucide-react';
+// Navigation outside levels:
+// Desktop (md:): a sleek rail down the left edge (Screenshot 3).
+// Mobile (< md): a floating bottom pill navigation bar (Screenshot 1).
+import { BookOpen, GraduationCap, Lock, Map as MapIcon, Rocket, UserRound, type LucideIcon } from 'lucide-react';
 import { BUILT_SCREENS, useGame, type Screen } from '../store/game';
 import { usePress } from './motion';
 
@@ -9,11 +9,11 @@ const ITEMS: { label: string; icon: LucideIcon; screen: Screen; alsoActive?: Scr
   { label: 'Missions', icon: MapIcon, screen: 'map', alsoActive: ['home'] },
   { label: 'Fly', icon: Rocket, screen: 'fly' },
   { label: 'Resources', icon: BookOpen, screen: 'resources' },
-  { label: 'Training', icon: Dumbbell, screen: 'training' },
+  { label: 'Training', icon: GraduationCap, screen: 'training' },
   { label: 'Me', icon: UserRound, screen: 'profile' },
 ];
 
-function DockButton({ label, icon: Icon, open, here, onClick }: { label: string; icon: LucideIcon; open: boolean; here: boolean; onClick: () => void }) {
+function DesktopDockButton({ label, icon: Icon, open, here, onClick }: { label: string; icon: LucideIcon; open: boolean; here: boolean; onClick: () => void }) {
   const press = usePress(!open);
   return (
     <button
@@ -23,7 +23,7 @@ function DockButton({ label, icon: Icon, open, here, onClick }: { label: string;
       aria-label={open ? label : `${label} (locked)`}
       title={label}
       {...press}
-      className="group relative grid place-items-center rounded-2xl disabled:cursor-not-allowed disabled:opacity-75"
+      className="group relative grid place-items-center rounded-2xl disabled:cursor-not-allowed disabled:opacity-75 cursor-pointer"
     >
       <span
         data-pressed={press['data-pressed']}
@@ -36,7 +36,7 @@ function DockButton({ label, icon: Icon, open, here, onClick }: { label: string;
         }`}
         aria-hidden
       >
-        <Icon size={24} strokeWidth={2.4} />
+        <Icon size={24} strokeWidth={here ? 2.6 : 2.2} />
         {!open ? (
           <span className="absolute -right-1 -bottom-1 grid h-5 w-5 place-items-center rounded-full border border-white/20 bg-space-deep/90 text-muted">
             <Lock size={10} strokeWidth={2.5} />
@@ -49,18 +49,52 @@ function DockButton({ label, icon: Icon, open, here, onClick }: { label: string;
 
 export function Dock() {
   const { screen, go } = useGame();
+
   return (
-    <nav aria-label="Main" className="flex h-full w-[4.75rem] flex-col items-center justify-center border-r border-white/15 bg-space-deep/45 backdrop-blur-xl py-[0.5rem] shadow-[4px_0_24px_rgba(0,0,0,0.35)]">
-      <ul className="flex flex-col items-center gap-[0.35rem]">
-        {ITEMS.map(({ label, icon, screen: target, alsoActive }) => {
-          const isHere = screen === target || !!alsoActive?.includes(screen);
-          return (
-            <li key={label}>
-              <DockButton label={label} icon={icon} open={BUILT_SCREENS.has(target)} here={isHere} onClick={() => go(target)} />
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
+    <>
+      {/* Desktop Left Rail (Screenshot 3) */}
+      <nav aria-label="Main" className="hidden md:flex h-full w-[4.75rem] flex-col items-center justify-center border-r border-white/15 bg-space-deep/60 backdrop-blur-xl py-[0.5rem] shadow-[4px_0_24px_rgba(0,0,0,0.35)]">
+        <ul className="flex flex-col items-center gap-[0.5rem]">
+          {ITEMS.map(({ label, icon, screen: target, alsoActive }) => {
+            const isHere = screen === target || !!alsoActive?.includes(screen);
+            return (
+              <li key={label}>
+                <DesktopDockButton label={label} icon={icon} open={BUILT_SCREENS.has(target)} here={isHere} onClick={() => go(target)} />
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
+      {/* Mobile Floating Bottom Bar (Screenshot 1) */}
+      <nav aria-label="Mobile Navigation" className="md:hidden fixed bottom-3 left-1/2 -translate-x-1/2 z-40 w-[92%] max-w-sm">
+        <div className="flex items-center justify-around rounded-full border border-cyan-400/30 bg-[#070E28]/95 px-3 py-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.7),0_0_16px_rgba(34,215,230,0.15)] backdrop-blur-xl">
+          {ITEMS.map(({ label, icon: Icon, screen: target, alsoActive }) => {
+            const isHere = screen === target || !!alsoActive?.includes(screen);
+            const open = BUILT_SCREENS.has(target);
+            return (
+              <button
+                key={label}
+                onClick={() => go(target)}
+                disabled={!open}
+                aria-label={label}
+                className={`relative grid h-12 w-12 place-items-center rounded-2xl transition-all cursor-pointer ${
+                  isHere
+                    ? 'bg-[#103E54] text-[#22D7E6] border border-[#22D7E6] shadow-[0_0_12px_rgba(34,215,230,0.5)]'
+                    : 'text-white/70 hover:text-white active:scale-95'
+                }`}
+              >
+                <Icon size={22} strokeWidth={isHere ? 2.6 : 2.0} />
+                {!open && (
+                  <span className="absolute -right-0.5 -bottom-0.5 grid h-4 w-4 place-items-center rounded-full bg-space-deep text-muted border border-white/20">
+                    <Lock size={8} />
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </nav>
+    </>
   );
 }

@@ -16,13 +16,13 @@ export interface SpaceWord {
 }
 
 export const SPACE_WORDS: SpaceWord[] = [
-  { id: 'sol', word: 'Sol', match: ['sols?'], icon: Sunrise, sentence: 'A sol is a Mars day.', source: 'NASA Mars facts' },
+  { id: 'sol', word: 'Sol', match: ['sols?'], icon: Sunrise, sentence: 'One Mars day, called a sol, is about 24 hours and 40 minutes.', source: 'NASA Mars facts' },
   {
     id: 'launch-window',
     word: 'Launch window',
     match: ['launch windows?'],
     icon: Rocket,
-    sentence: 'A rocket can leave for Mars only about every 26 months, when the planets line up.',
+    sentence: 'Rockets can go to Mars only about once every 26 months.',
     source: 'NASA Mars mission pages',
   },
   {
@@ -30,7 +30,7 @@ export const SPACE_WORDS: SpaceWord[] = [
     word: 'Radiation',
     match: ['radiation'],
     icon: Radiation,
-    sentence: 'Water and food are good radiation shields, so crews plan to shelter behind their supplies.',
+    sentence: 'In a Sun storm, astronauts hide behind bags of food and water.',
     source: 'NASA Orion storm-shelter pages',
   },
   {
@@ -54,7 +54,7 @@ export const SPACE_WORDS: SpaceWord[] = [
     word: 'Carbon dioxide',
     match: ['carbon dioxide'],
     icon: Cloud,
-    sentence: 'Mars air is mostly carbon dioxide and far too thin to breathe.',
+    sentence: 'Mars air is mostly carbon dioxide and very thin.',
     source: 'NASA Mars facts',
   },
   {
@@ -62,7 +62,7 @@ export const SPACE_WORDS: SpaceWord[] = [
     word: 'Dust storm',
     match: ['dust storms?'],
     icon: Wind,
-    sentence: 'The 2018 dust storm circled the planet and ended the Opportunity rover’s mission.',
+    sentence: 'In 2018 a dust storm covered all of Mars.',
     source: 'NASA Opportunity mission pages',
   },
   {
@@ -70,7 +70,7 @@ export const SPACE_WORDS: SpaceWord[] = [
     word: 'MOXIE',
     match: ['moxie'],
     icon: FlaskConical,
-    sentence: 'A machine called MOXIE made oxygen from Mars air on the Perseverance rover.',
+    sentence: 'MOXIE on Perseverance made 122 grams of oxygen from Mars air.',
     source: 'NASA MOXIE release',
   },
   {
@@ -78,8 +78,8 @@ export const SPACE_WORDS: SpaceWord[] = [
     word: 'Kp',
     match: ['kp'],
     icon: Gauge,
-    sentence: 'On 10–11 May 2024 a solar storm reached the highest level on the Kp scale (9).',
-    source: 'NASA DONKI',
+    sentence: 'Sun storms have 5 levels, from G1 (small) to G5 (extreme).',
+    source: 'NOAA space weather scales',
   },
   {
     id: 'veggie',

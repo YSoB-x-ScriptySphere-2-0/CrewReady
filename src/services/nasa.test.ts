@@ -237,14 +237,14 @@ describe('NASA Data Service', () => {
       expect(fetchSpy).not.toHaveBeenCalled();
     });
 
-    it('getPlantStudy returns NASA ARCHIVE for OSD-268 Veggie study without fetching', () => {
+    it('getPlantStudy returns NASA ARCHIVE for OSD-745 Veggie study without fetching', () => {
       const fetchSpy = vi.fn();
       globalThis.fetch = fetchSpy;
 
       const res = getPlantStudy();
       expect(res.badge).toBe('NASA ARCHIVE');
-      expect(res.data.accession).toBe('OSD-268');
-      expect(res.data.finding).toContain('lettuce');
+      expect(res.data.accession).toBe('OSD-745');
+      expect(res.data.finding).toContain('safe to eat');
       expect(fetchSpy).not.toHaveBeenCalled();
     });
   });

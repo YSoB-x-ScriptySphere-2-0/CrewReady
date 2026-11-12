@@ -122,9 +122,9 @@ class SpaceMusicEngine {
       this.filter.frequency.setValueAtTime(2600, this.ctx.currentTime);
       this.filter.Q.setValueAtTime(1.2, this.ctx.currentTime);
 
-      // Music gain node
+      // Music gain node (boosted for clearer, louder audibility)
       this.musicGain = this.ctx.createGain();
-      this.musicGain.gain.setValueAtTime(this.isMuted ? 0 : 0.22, this.ctx.currentTime);
+      this.musicGain.gain.setValueAtTime(this.isMuted ? 0 : 0.38, this.ctx.currentTime);
 
       // Master output gain
       this.masterGain = this.ctx.createGain();
@@ -177,7 +177,7 @@ class SpaceMusicEngine {
       if (this.isMuted) {
         this.musicGain.gain.linearRampToValueAtTime(0, now + 0.2);
       } else {
-        this.musicGain.gain.linearRampToValueAtTime(0.22, now + 0.2);
+        this.musicGain.gain.linearRampToValueAtTime(0.38, now + 0.2);
         if (!this.isPlaying) {
           this.play();
         }
@@ -256,7 +256,7 @@ class SpaceMusicEngine {
       // Slightly detune for warm chorus effect
       osc.detune.setValueAtTime(step % 2 === 0 ? 3 : -3, now);
 
-      const noteVol = this.mode === 'fly' ? 0.16 : 0.13;
+      const noteVol = this.mode === 'fly' ? 0.26 : 0.22;
       gain.gain.setValueAtTime(0, now);
       gain.gain.linearRampToValueAtTime(noteVol, now + 0.015);
       gain.gain.exponentialRampToValueAtTime(0.0001, now + (this.mode === 'fly' ? 0.22 : 0.32));
@@ -278,7 +278,7 @@ class SpaceMusicEngine {
       bOsc.frequency.setValueAtTime(this.notes[bassNote], now);
 
       bGain.gain.setValueAtTime(0, now);
-      bGain.gain.linearRampToValueAtTime(0.18, now + 0.02);
+      bGain.gain.linearRampToValueAtTime(0.28, now + 0.02);
       bGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
 
       bOsc.connect(bGain);
@@ -305,7 +305,7 @@ class SpaceMusicEngine {
         padOsc.detune.setValueAtTime(i === 0 ? 5 : -5, now);
 
         padGain.gain.setValueAtTime(0, now);
-        padGain.gain.linearRampToValueAtTime(0.04, now + 0.35);
+        padGain.gain.linearRampToValueAtTime(0.07, now + 0.35);
         padGain.gain.linearRampToValueAtTime(0.0001, now + 1.2);
 
         padOsc.connect(padGain);
@@ -323,7 +323,7 @@ class SpaceMusicEngine {
       shimmer.type = 'sine';
       shimmer.frequency.setValueAtTime(this.mode === 'fly' ? 1400 : 900, now);
 
-      sGain.gain.setValueAtTime(0.02, now);
+      sGain.gain.setValueAtTime(0.04, now);
       sGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
 
       shimmer.connect(sGain);

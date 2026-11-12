@@ -8,7 +8,7 @@ import { ChangeChip, GameButton } from '../GameButton';
 import { METER_COLOR, MeterBadge, StarIcon } from '../meters';
 import { usePress } from '../motion';
 import type { Done } from './shared';
-import { useI18n } from '../../content/i18n';
+import { useI18n, tMission } from '../../content/i18n';
 
 type Member = CrewStep['members'][number];
 
@@ -23,6 +23,7 @@ function Portrait({ m, size }: { m: Member; size: number }) {
 }
 
 function CrewCard({ m, picked, full, nudge, onClick }: { m: Member; picked: boolean; full: boolean; nudge: number; onClick: () => void }) {
+  const lang = useI18n((s) => s.lang);
   const press = usePress();
   const frame = m.protects ? METER_COLOR[m.protects] : 'var(--color-star)';
   return (
@@ -30,7 +31,7 @@ function CrewCard({ m, picked, full, nudge, onClick }: { m: Member; picked: bool
       type="button"
       onClick={onClick}
       aria-pressed={picked}
-      aria-label={`${m.label}. ${m.blurb}${picked ? ' Picked.' : ''}`}
+      aria-label={`${tMission(m.label)}. ${tMission(m.blurb)}${picked ? (lang === 'bn' ? ' নির্বাচিত।' : ' Picked.') : ''}`}
       {...press}
       className={`toy flip-card block h-full min-h-0 w-full rounded-tile bg-transparent p-0 text-text ${full && !picked && nudge ? 'anim-wiggle' : ''}`}
       key={full && !picked ? nudge : 0}
@@ -41,16 +42,16 @@ function CrewCard({ m, picked, full, nudge, onClick }: { m: Member; picked: bool
           <span className="rounded-full border-2 border-line bg-panel p-[0.125rem]">
             <Portrait m={m} size={36} />
           </span>
-          <span className="mt-[0.25rem] text-center font-display text-[0.8125rem] leading-tight font-extrabold">{m.label}</span>
-          <span className="mt-[0.125rem] text-center text-[0.6875rem] leading-tight">{m.blurb}</span>
+          <span className="mt-[0.25rem] text-center font-display text-[0.8125rem] leading-tight font-extrabold">{tMission(m.label)}</span>
+          <span className="mt-[0.125rem] text-center text-[0.6875rem] leading-tight">{tMission(m.blurb)}</span>
         </span>
         {/* Back: on the team. */}
         <span className="flip-face flip-back flex h-full flex-col items-center justify-center gap-[0.25rem] rounded-[0.875rem] bg-good/40 px-[0.25rem] py-[0.375rem]">
           <span className="grid h-[2.5rem] w-[2.5rem] place-items-center rounded-full border-2 border-line bg-good text-white">
             <Check size={24} strokeWidth={3.5} aria-hidden />
           </span>
-          <span className="text-center font-display text-[0.8125rem] leading-tight font-extrabold">{m.label}</span>
-          <span className="font-display text-[0.75rem] font-extrabold">On the team!</span>
+          <span className="text-center font-display text-[0.8125rem] leading-tight font-extrabold">{tMission(m.label)}</span>
+          <span className="font-display text-[0.75rem] font-extrabold">{lang === 'bn' ? 'দলে যোগ দিয়েছে!' : 'On the team!'}</span>
         </span>
       </span>
     </button>

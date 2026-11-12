@@ -152,7 +152,7 @@ export function Training() {
 
       {/* Footer */}
       <footer className="flex flex-shrink-0 items-center justify-center border-t-2 border-line/40 pt-2 text-center text-[11px] text-muted">
-        <span>Curriculum developed according to NASA astronaut human factors guidelines.</span>
+        <span>Coming in the next update.</span>
       </footer>
 
       {/* Inline animation keyframes for card wiggle */}

@@ -32,7 +32,14 @@ export function holds(state: GameState, c: Cond): boolean {
 /** Turn "-(X+5)" into a number. Data-sized losses never become gains. */
 export function resolve(a: Amount, state: GameState): number {
   if (typeof a === 'number') return a;
-  const m = /^-\(?([XD])(?:([+-])(\d+))?\)?$/.exec(a.replace(/\s|−/g, (c) => (c === '−' ? '-' : '')));
+  const clean = a.replace(/\s|−/g, (c) => (c === '−' ? '-' : ''));
+  const maxM = /^-\(?max\(([XD]),\s*(\d+)\)\)?$/i.exec(clean);
+  if (maxM) {
+    const base = maxM[1].toUpperCase() === 'X' ? state.X : state.D;
+    const floorVal = Number(maxM[2]);
+    return -Math.max(floorVal, base);
+  }
+  const m = /^-\(?([XD])(?:([+-])(\d+))?\)?$/.exec(clean);
   if (!m) throw new Error(`Bad amount: ${a}`);
   const base = m[1] === 'X' ? state.X : state.D;
   const add = m[3] ? (m[2] === '+' ? 1 : -1) * Number(m[3]) : 0;

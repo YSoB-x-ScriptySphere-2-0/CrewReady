@@ -16,7 +16,6 @@ import {
   Rocket,
 } from 'lucide-react';
 import { useGame } from '../store/game';
-import { stageDelta, isStageTurned } from '../components/stageMath';
 import { getKpToday } from '../services/nasa';
 import { Badge } from '../components/Panel';
 import { spaceMusic } from '../services/audio';
@@ -28,7 +27,7 @@ import {
 } from '../fly/engine';
 import { getFlyStats, recordRunEnd, type FlyStats } from '../fly/storage';
 import { renderFly } from '../fly/renderer';
-import type { FlyCommand, FlyConfig, FlyState } from '../fly/types';
+import type { FlyCommand, FlyConfig, FlyState, PowerKind } from '../fly/types';
 import { t } from '../content/i18n';
 
 export function Fly() {
@@ -42,6 +41,22 @@ export function Fly() {
   const [hasStarted, setHasStarted] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const [runSummary, setRunSummary] = useState<{ distance: number; earned: number; isNewBest: boolean } | null>(null);
+
+  // HUD state updated reactively from loop (B2 item 1)
+  const [hud, setHud] = useState<{
+    hull: number;
+    stardust: number;
+    distance: number;
+    activePower: PowerKind | null;
+    powerRemaining: number;
+  }>({
+    hull: 3,
+    stardust: 0,
+    distance: 0,
+    activePower: null,
+    powerRemaining: 0,
+  });
+  const lastHudRef = useRef({ hull: 3, stardust: 0, distance: 0, activePower: null as PowerKind | null });
 
   // Active game state in ref for 60fps render loop
   const stateRef = useRef<FlyState>(createInitialState(config));
@@ -81,6 +96,8 @@ export function Fly() {
     setIsGameOver(false);
     setRunSummary(null);
     setHasStarted(true);
+    setHud({ hull: 3, stardust: 0, distance: 0, activePower: null, powerRemaining: 0 });
+    lastHudRef.current = { hull: 3, stardust: 0, distance: 0, activePower: null };
     lastTimeRef.current = performance.now();
   };
 
@@ -118,6 +135,29 @@ export function Fly() {
       // Step physics
       const nextState = stepGame(stateRef.current, dt, cmds, config);
       stateRef.current = nextState;
+
+      // Update reactive HUD only when displayed values change (B2 item 1)
+      const distInt = Math.floor(nextState.distance);
+      if (
+        distInt !== lastHudRef.current.distance ||
+        nextState.stardust !== lastHudRef.current.stardust ||
+        nextState.hull !== lastHudRef.current.hull ||
+        nextState.activePower !== lastHudRef.current.activePower
+      ) {
+        lastHudRef.current = {
+          hull: nextState.hull,
+          stardust: nextState.stardust,
+          distance: distInt,
+          activePower: nextState.activePower,
+        };
+        setHud({
+          hull: nextState.hull,
+          stardust: nextState.stardust,
+          distance: distInt,
+          activePower: nextState.activePower,
+          powerRemaining: Math.ceil(nextState.powerRemaining),
+        });
+      }
 
       // Check game over
       if (nextState.gameOver && !isGameOver) {
@@ -205,7 +245,7 @@ export function Fly() {
   }, [hasStarted, isGameOver]);
 
   // 6. Mobile & Touch Screen Controls
-  // Handles swipes (Left, Right, Up) and screen-half taps correctly in both portrait-turned & landscape
+  // Handles swipes (Left, Right, Up) and screen-half taps directly in viewport screen coordinates
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!hasStarted || isGameOver) return;
     touchStartRef.current = { x: e.clientX, y: e.clientY, time: performance.now() };
@@ -216,56 +256,42 @@ export function Fly() {
     const start = touchStartRef.current;
     if (!start) return;
 
-    const screenDx = e.clientX - start.x;
-    const screenDy = e.clientY - start.y;
-    const turned = isStageTurned();
-    // Map screen-space delta to stage-space delta (handles upright phone quarter-turn)
-    const delta = stageDelta(screenDx, screenDy);
-    const dist = Math.hypot(delta.dx, delta.dy);
+    const dx = e.clientX - start.x;
+    const dy = e.clientY - start.y;
+    const dist = Math.hypot(dx, dy);
 
     // 1. Swipe Gestures
-    if (dist > 24) {
-      // Swipe Up -> Hop over low rock
-      if (delta.dy < -18 && Math.abs(delta.dy) > Math.abs(delta.dx) * 0.6) {
-        commandsRef.current.push('hop');
-        touchStartRef.current = null;
-        return;
+    if (dist > 20) {
+      if (Math.abs(dx) > Math.abs(dy)) {
+        // Horizontal swipe
+        if (dx < -15) {
+          commandsRef.current.push('moveLeft');
+        } else if (dx > 15) {
+          commandsRef.current.push('moveRight');
+        }
+      } else {
+        // Vertical swipe up -> hop
+        if (dy < -15) {
+          commandsRef.current.push('hop');
+        }
       }
-      // Swipe Left -> Shift Left
-      if (delta.dx < -18) {
-        commandsRef.current.push('moveLeft');
-        touchStartRef.current = null;
-        return;
-      }
-      // Swipe Right -> Shift Right
-      if (delta.dx > 18) {
-        commandsRef.current.push('moveRight');
-        touchStartRef.current = null;
-        return;
-      }
+      touchStartRef.current = null;
+      return;
     }
 
     // 2. Screen Tap (Tap left half vs right half)
-    const rect = e.currentTarget.getBoundingClientRect();
-    let ratioX = 0.5;
-    if (turned) {
-      // In 90deg clockwise turned stage, screen Y corresponds to stage X (left-to-right)
-      ratioX = (e.clientY - rect.top) / rect.height;
-    } else {
-      // Flat landscape orientation: screen X is stage X
-      ratioX = (e.clientX - rect.left) / rect.width;
-    }
-
-    if (ratioX < 0.5) {
-      commandsRef.current.push('moveLeft');
-    } else {
-      commandsRef.current.push('moveRight');
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (rect) {
+      const ratioX = (e.clientX - rect.left) / rect.width;
+      if (ratioX < 0.5) {
+        commandsRef.current.push('moveLeft');
+      } else {
+        commandsRef.current.push('moveRight');
+      }
     }
 
     touchStartRef.current = null;
   };
-
-  const currentState = stateRef.current;
 
   return (
     <div
@@ -282,35 +308,35 @@ export function Fly() {
       {hasStarted && !isGameOver && (
         <div className="pointer-events-none absolute top-0 right-0 left-0 flex items-center justify-between p-2.5 sm:p-4 text-text z-10">
           {/* Hull pips (3 hearts) */}
-          <div className="flex items-center gap-1.5 rounded-full border-2 border-line bg-panel/90 px-3 py-1 shadow-md backdrop-blur-md">
+          <div className="flex items-center gap-1.5 rounded-full border-2 border-line bg-panel/95 px-3 py-1 shadow-md">
             {[1, 2, 3].map((pip) => (
               <Heart
                 key={pip}
                 size={18}
-                className={pip <= currentState.hull ? 'fill-danger text-danger' : 'text-muted/40'}
+                className={pip <= hud.hull ? 'fill-danger text-danger' : 'text-muted/40'}
               />
             ))}
           </div>
 
           {/* Active Power Widget */}
-          {currentState.activePower && (
+          {hud.activePower && (
             <div className="flex items-center gap-2 rounded-full border-2 border-go bg-panel px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-text shadow-[0_0_1.25rem_rgba(34,215,230,0.45)]">
-              {currentState.activePower === 'shield' && <Shield size={16} className="text-go" />}
-              {currentState.activePower === 'magnet' && <Magnet size={16} className="text-star" />}
-              {currentState.activePower === 'boost' && <Zap size={16} className="text-nova" />}
-              <span>{currentState.activePower}</span>
-              <span className="tabular-nums font-mono">({Math.ceil(currentState.powerRemaining)}s)</span>
+              {hud.activePower === 'shield' && <Shield size={16} className="text-go" />}
+              {hud.activePower === 'magnet' && <Magnet size={16} className="text-star" />}
+              {hud.activePower === 'boost' && <Zap size={16} className="text-nova" />}
+              <span>{hud.activePower}</span>
+              <span className="tabular-nums font-mono">({hud.powerRemaining}s)</span>
             </div>
           )}
 
           {/* Stardust & Distance Counters + Music */}
           <div className="flex items-center gap-2 sm:gap-3 pointer-events-auto">
-            <div className="flex items-center gap-1 rounded-full border-2 border-line bg-panel/90 px-3 py-1 font-display text-sm font-extrabold text-star shadow-md backdrop-blur-md">
+            <div className="flex items-center gap-1 rounded-full border-2 border-line bg-panel/95 px-3 py-1 font-display text-sm font-extrabold text-star shadow-md">
               <Sparkles size={16} />
-              <span className="tabular-nums">{currentState.stardust}</span>
+              <span className="tabular-nums">{hud.stardust}</span>
             </div>
-            <div className="rounded-full border-2 border-line bg-panel/90 px-3.5 py-1 font-display text-sm font-extrabold text-text tabular-nums shadow-md backdrop-blur-md">
-              {Math.floor(currentState.distance)} m
+            <div className="rounded-full border-2 border-line bg-panel/95 px-3.5 py-1 font-display text-sm font-extrabold text-text tabular-nums shadow-md">
+              {hud.distance} m
             </div>
             <MusicToggle compact />
           </div>
@@ -329,7 +355,15 @@ export function Fly() {
                 e.stopPropagation();
                 commandsRef.current.push('moveLeft');
               }}
-              className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl border-2 border-white/30 bg-panel/85 text-text shadow-[0_0.3rem_0_#0F8F9C] backdrop-blur-md active:translate-y-1 active:border-go active:shadow-none"
+              onPointerUp={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl border-2 border-white/30 bg-panel/85 text-text shadow-[0_0.3rem_0_#0F8F9C] backdrop-blur-md active:translate-y-1 active:border-go active:shadow-none pointer-events-auto cursor-pointer"
               aria-label="Steer Left"
             >
               <ArrowLeft size={28} strokeWidth={3} className="text-go" />
@@ -342,7 +376,15 @@ export function Fly() {
                 e.stopPropagation();
                 commandsRef.current.push('moveRight');
               }}
-              className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl border-2 border-white/30 bg-panel/85 text-text shadow-[0_0.3rem_0_#0F8F9C] backdrop-blur-md active:translate-y-1 active:border-go active:shadow-none"
+              onPointerUp={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl border-2 border-white/30 bg-panel/85 text-text shadow-[0_0.3rem_0_#0F8F9C] backdrop-blur-md active:translate-y-1 active:border-go active:shadow-none pointer-events-auto cursor-pointer"
               aria-label="Steer Right"
             >
               <ArrowRight size={28} strokeWidth={3} className="text-go" />
@@ -358,7 +400,15 @@ export function Fly() {
                 e.stopPropagation();
                 commandsRef.current.push('hop');
               }}
-              className="flex h-14 w-16 sm:h-16 sm:w-20 flex-col items-center justify-center rounded-2xl border-2 border-go/80 bg-gradient-to-b from-[#22D7E6] to-[#0F8F9C] font-display font-extrabold text-go-text shadow-[0_0.35rem_0_#0A5B64,0_0_1.25rem_rgba(34,215,230,0.4)] active:translate-y-1 active:shadow-none"
+              onPointerUp={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              className="flex h-14 w-16 sm:h-16 sm:w-20 flex-col items-center justify-center rounded-2xl border-2 border-go/80 bg-gradient-to-b from-[#22D7E6] to-[#0F8F9C] font-display font-extrabold text-go-text shadow-[0_0.35rem_0_#0A5B64,0_0_1.25rem_rgba(34,215,230,0.4)] active:translate-y-1 active:shadow-none pointer-events-auto cursor-pointer"
               aria-label="Hop over low rock"
             >
               <ArrowUp size={24} strokeWidth={3.5} />

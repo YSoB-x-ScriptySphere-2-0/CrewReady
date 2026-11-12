@@ -16,7 +16,7 @@ import { arrowCount } from './Hud';
 import { outcomeChanges } from './LevelChrome';
 import { MeterBadge } from './meters';
 import { reducedMotion, useReducedMotion } from './motion';
-import { t } from '../content/i18n';
+import { t, tMission } from '../content/i18n';
 
 /** Each leg of the message clock: Mars → Earth, then Earth → Mars. */
 export const LEG_MS = 2000;
@@ -169,7 +169,7 @@ export function Decision({
     <div className="flex h-full min-h-0 flex-col gap-[0.5rem]">
       <div className="min-h-0 flex-1">
         {!eventDone ? (
-          <EventMoment levelId={level.id} stepIndex={stepIndex} game={game} label={captionFor(step.prompt)} onDone={() => setEventDone(true)} />
+          <EventMoment levelId={level.id} stepIndex={stepIndex} game={game} label={tMission(captionFor(step.prompt))} onDone={() => setEventDone(true)} />
         ) : waiting ? (
           <EarthClock />
         ) : (
@@ -177,8 +177,8 @@ export function Decision({
             {step.options.map((o, i) => (
               <ChoiceCard
                 key={o.label}
-                label={pictureFor(o.label)?.short ?? o.label}
-                ariaLabel={o.label}
+                label={tMission(pictureFor(o.label)?.short ?? o.label)}
+                ariaLabel={tMission(o.label)}
                 icon={iconFor(o.label)}
                 picture={pictureFor(o.label) ? <ScenePicture scene={pictureFor(o.label)!.scene} /> : undefined}
                 selected={sel === i && picked === null}

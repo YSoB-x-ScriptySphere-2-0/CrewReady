@@ -28,7 +28,7 @@ export const LEVELS: Level[] = [
         kind: 'crates',
         task: 'Pack the rocket',
         prompt: 'Pack the rocket. You have 8 crates for 4 needs.',
-        hint: 'Every meter starts at 40. Each crate adds 10. What will run out first?',
+        hint: 'Every meter starts at 40. Each crate adds 15. What will run out first?',
         crates: 8,
         perCrate: 15,
         bins: [
@@ -88,7 +88,7 @@ export const LEVELS: Level[] = [
     place: 'Deep space · 7 months',
     teaches: 'The Sun has storms, and thick things protect you.',
     story:
-      'It takes seven months to reach Mars. Out here, nothing blocks storms from the Sun. A storm alert comes in. Real astronauts get these alerts too.',
+      'It takes about seven months to reach Mars. Out here, nothing blocks storms from the Sun. A storm alert comes in. Real astronauts get these alerts too.',
     source: 'Storm: NASA DONKI + NOAA SWPC · Radiation: NASA Human Research Program',
     onEnter: [LIVING],
     steps: [
@@ -272,7 +272,7 @@ export const LEVELS: Level[] = [
           },
           {
             label: 'Leave them out to catch the last light',
-            effects: { P: '-D' },
+            effects: { P: '-max(D, 5)' },
             reason: 'You caught a bit more light. Dust is piling up on the panels.',
             setFlag: 'panelsBuried',
             setFlagCond: { unless: ['spareParts'] },
@@ -312,7 +312,7 @@ export const LEVELS: Level[] = [
       },
     ],
     replay: {
-      P: 'Dusty solar panels ended two NASA missions: the Opportunity rover and the InSight lander.',
+      P: 'Mars dust stopped two NASA robots. A dust storm stopped Opportunity. Dusty panels stopped InSight.',
       F: 'Plants need light. When power is short, something must switch off. You choose what.',
       default: 'When power is short, you choose what stays on.',
     },
@@ -420,7 +420,7 @@ export const LEVELS: Level[] = [
         kind: 'choice',
         task: 'Fix the air',
         prompt: 'The machine that cleans your air has broken.',
-        hint: 'The Apollo 13 crew once built a new one from spare parts.',
+        hint: 'The Apollo 13 crew once built an air-filter fix from bags, card and tape.',
         options: [
           { label: 'Build a new one from spare parts', effects: { L: 10, P: -20 }, reason: 'It works! The power tools drained the batteries.' },
           { label: 'Close the greenhouse and use its air', effects: { L: 15, F: -25 }, reason: 'Air today. No food from the plants tomorrow.' },

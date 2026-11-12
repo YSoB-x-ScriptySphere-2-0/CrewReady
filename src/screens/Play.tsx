@@ -3,7 +3,7 @@
 // under it (three choice cards with Look first, or a hands-on step), the source line at the bottom.
 // After GO the cards slide away and the result (what happened, the chips, Next) takes their place.
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, CircleHelp, Globe, Rocket, X } from 'lucide-react';
+import { ArrowRight, CircleHelp, Globe, Rocket, Settings, X } from 'lucide-react';
 import { Decision, optionCosts } from '../components/Decision';
 import { ChangeChip, GameButton, RoundButton } from '../components/GameButton';
 import { LEVEL_SCENE, LevelHud, LevelZones, outcomeChanges, tasksFor, totalChange } from '../components/LevelChrome';
@@ -20,9 +20,11 @@ import { iconFor, iconForEntry } from '../content/icons';
 import { LEVELS } from '../content/levels';
 import { METERS, METER_NAMES, type ChoiceStep, type GameState, type Level, type Meter, type Outcome } from '../engine/types';
 import { useGame } from '../store/game';
-import { t, useI18n } from '../content/i18n';
+import { t, tMission, useI18n } from '../content/i18n';
 import { CrisisEarth3D } from '../components/3d/CrisisEarth3D';
 import { HeroCadetRocket3D } from '../components/3d/HeroCadetRocket3D';
+import { MissionSettingsModal } from '../components/MissionSettingsModal';
+import { BonusRound } from '../components/BonusRound';
 
 /** Twinkle's hint: names the lowest meter and, for a decision, what each option costs. Never which to pick. */
 function Hint({ step, game, level, onClose }: { step: Level['steps'][number]; game: GameState; level: Level; onClose: () => void }) {
@@ -30,14 +32,14 @@ function Hint({ step, game, level, onClose }: { step: Level['steps'][number]; ga
   const costs = step.kind === 'choice' ? optionCosts(step as ChoiceStep, game, level) : [];
   return (
     <Panel ribbon="Twinkle's hint" tone="space" compact className="!absolute inset-x-0 top-0 bottom-0 z-20 !mt-0 !bg-panel">
-      <button onClick={onClose} aria-label="Hide hint" className="absolute top-[0.125rem] right-[0.25rem] z-10 grid h-[2.75rem] w-[2.75rem] place-items-center rounded-full text-text">
+      <button onClick={onClose} aria-label="Hide hint" className="absolute top-[0.125rem] right-[0.25rem] z-10 grid h-[2.75rem] w-[2.75rem] place-items-center rounded-full text-text cursor-pointer">
         <X size={22} strokeWidth={3} />
       </button>
       <div className="h-full overflow-y-auto">
       <div className="flex items-start gap-[0.75rem]">
         <Twinkle mood="question" size={48} />
         <div className="min-w-0">
-          <p className="text-[0.9375rem] leading-snug">{step.hint}</p>
+          <p className="text-[0.9375rem] leading-snug">{tMission(step.hint)}</p>
           <p className="mt-[0.25rem] flex flex-wrap items-center gap-[0.375rem] font-display text-[1rem] font-extrabold">
             Lowest: <MeterBadge meter={lowest} size={24} /> {METER_NAMES[lowest]} ({game.meters[lowest]}).
           </p>
@@ -52,7 +54,7 @@ function Hint({ step, game, level, onClose }: { step: Level['steps'][number]; ga
                 <span className="grid h-[2rem] w-[2rem] shrink-0 place-items-center rounded-[0.5rem] border-2 border-line bg-space" aria-hidden>
                   <Icon size={18} strokeWidth={2.25} />
                 </span>
-                <span className="min-w-0 flex-1 truncate font-display text-[0.9375rem] leading-tight font-bold">{option.label}</span>
+                <span className="min-w-0 flex-1 truncate font-display text-[0.9375rem] leading-tight font-bold">{tMission(option.label)}</span>
                 <span className="flex shrink-0 flex-wrap justify-end gap-[0.25rem]">
                   {changes.map((c) => (
                     <ChangeChip key={c.meter} change={c} size="sm" />
@@ -72,7 +74,9 @@ export function Play() {
   const { game, levelIndex, stepIndex, outcome, act, next, retryStep, log } = useGame();
   const lang = useI18n((s) => s.lang);
   const [hint, setHint] = useState(false);
+  const [showBonus, setShowBonus] = useState(false);
   const [show3DModal, setShow3DModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [active3DTab, setActive3DTab] = useState<'earth' | 'rocket'>('earth');
   const [hudPreview, setHudPreview] = useState<Record<Meter, number> | null>(null);
   const [look, setLook] = useState<Partial<Record<Meter, number>> | null>(null);
@@ -125,32 +129,64 @@ export function Play() {
   );
 
   return (
-    <Scene bare place={LEVEL_SCENE[level.id]} top={<LevelHud meters={hudPreview ?? game.meters} stars={game.stars - held} look={look ?? undefined} />}>
+    <Scene
+      bare
+      place={LEVEL_SCENE[level.id]}
+      top={
+        <LevelHud
+          meters={hudPreview ?? game.meters}
+          stars={game.stars - held}
+          look={look ?? undefined}
+          onOpenSettings={() => setShowSettingsModal(true)}
+        />
+      }
+    >
       <LevelZones left={left}>
         {toy ? (
           <ToyHost levelId={level.id} learned={level.learned} onDone={() => setToyDone(true)} />
         ) : (
           <>
         <div className="flex items-end gap-[0.5rem]">
-          <Bubble className="mb-[0.25rem] min-w-0 flex-1 text-[1.0625rem]" speak={step.kind === 'choice' ? `${step.prompt} ${(step as ChoiceStep).options.map((o) => o.label).join('. ')}.` : step.prompt}>{step.kind === 'choice' ? captionFor(step.prompt) : step.prompt}</Bubble>
+          <Bubble
+            className="mb-[0.25rem] min-w-0 flex-1 text-[1.0625rem]"
+            speak={step.kind === 'choice' ? `${tMission(step.prompt)} ${(step as ChoiceStep).options.map((o) => tMission(o.label)).join('. ')}.` : tMission(step.prompt)}
+          >
+            {step.kind === 'choice' ? tMission(captionFor(step.prompt)) : tMission(step.prompt)}
+          </Bubble>
+
           <RoundButton
             icon={Globe}
             label={t('play.3dView')}
             pressed={show3DModal}
             onClick={() => setShow3DModal(true)}
           />
-          {!outcome ? <RoundButton icon={CircleHelp} label={hint ? t('play.hideHint') : t('play.askTwinkle')} pressed={hint} onClick={() => setHint(!hint)} /> : null}
+
+          {!outcome ? (
+            <RoundButton
+              icon={CircleHelp}
+              label={hint ? t('play.hideHint') : t('play.askTwinkle')}
+              pressed={hint}
+              onClick={() => setHint(!hint)}
+            />
+          ) : null}
+
+          <RoundButton
+            icon={Settings}
+            label={lang === 'bn' ? 'সেটিংস' : 'Settings'}
+            pressed={showSettingsModal}
+            onClick={() => setShowSettingsModal(true)}
+          />
         </div>
 
         <div className="relative min-h-0 flex-1">
           {outcome ? (
             <div ref={resultRef} className="rise flex h-full min-h-0 flex-col gap-[0.5rem]">
               <ResultMoment
-                label={chosenLabel}
+                label={tMission(chosenLabel)}
                 outcome={outcome}
                 changes={changes}
                 fallback={ChosenIcon}
-                ribbon={reaction === 'good' ? 'Nice!' : 'What happened'}
+                ribbon={reaction === 'good' ? (lang === 'bn' ? 'চমৎকার!' : 'Nice!') : (lang === 'bn' ? 'কী ঘটল' : 'What happened')}
                 tone={reaction === 'good' ? 'good' : 'danger'}
               />
               <div className="flex justify-end">
@@ -160,7 +196,11 @@ export function Play() {
                   className="!min-h-[3rem] !px-4 sm:!px-6 !text-base sm:!text-xl leading-snug break-words"
                   onClick={() => {
                     setHint(false);
-                    next();
+                    if (last && !retryStep) {
+                      setShowBonus(true);
+                    } else {
+                      next();
+                    }
                   }}
                 >
                   {retryStep ? t('play.tryLandingAgain') : last ? (levelIndex + 1 >= LEVELS.length ? t('play.finishMission') : t('play.nextLevel')) : t('play.next')}
@@ -190,6 +230,9 @@ export function Play() {
           </>
         )}
       </LevelZones>
+
+      {/* Quick Settings & Audio/Language Modal Available Anytime During Missions */}
+      <MissionSettingsModal open={showSettingsModal} onClose={() => setShowSettingsModal(false)} />
 
       {/* 3D Earth Crisis & Hero Rocket Modal */}
       {show3DModal && (
@@ -253,6 +296,21 @@ export function Play() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Bonus Mini-Game Round (Triggered after last step before victory crate) */}
+      {showBonus && (
+        <BonusRound
+          levelIndex={levelIndex}
+          onComplete={(_earned) => {
+            setShowBonus(false);
+            next();
+          }}
+          onSkip={() => {
+            setShowBonus(false);
+            next();
+          }}
+        />
       )}
     </Scene>
   );

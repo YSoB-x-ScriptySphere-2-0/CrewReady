@@ -46,6 +46,8 @@ describe('amounts sized by real data', () => {
     expect(resolve('-(X+5)', s)).toBe(-25);
     expect(resolve('-D', s)).toBe(-15);
     expect(resolve('-(D+10)', s)).toBe(-25);
+    expect(resolve('-max(D, 5)', { ...s, D: 0 })).toBe(-5);
+    expect(resolve('-max(D, 5)', { ...s, D: 15 })).toBe(-15);
   });
   it('a loss never turns into a gain', () => {
     expect(resolve('-(X-10)', startMission(5, 15))).toBe(-0);

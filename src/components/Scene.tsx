@@ -172,7 +172,8 @@ export function Scene({
       >
         <GroundArt place={place} />
       </svg>
-      {rail ? <div className="z-30 h-full shrink-0 self-start">{rail}</div> : null}
+      {rail ? <div className="hidden md:flex z-30 h-full shrink-0 self-start">{rail}</div> : null}
+      {rail ? <div className="md:hidden">{rail}</div> : null}
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         {top}
         {bare ? children : <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-4 pt-5 pb-10">{children}</main>}

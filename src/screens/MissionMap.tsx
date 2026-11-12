@@ -11,7 +11,7 @@ import { Scene } from '../components/Scene';
 import { Kid } from '../components/Twinkle';
 import { LEVELS } from '../content/levels';
 import { missionInProgress, useGame } from '../store/game';
-import { t, useI18n } from '../content/i18n';
+import { t, tMission, useI18n } from '../content/i18n';
 
 type State = 'done' | 'current' | 'locked';
 
@@ -220,8 +220,8 @@ export function MissionMap() {
 
             {LEVELS.map((l, i) => {
               const st = stateOf(i);
-              const title = t(`level${l.id}.title`) || l.title;
-              const place = t(`level${l.id}.place`) || l.place;
+              const title = tMission(t(`level${l.id}.title`) || l.title);
+              const place = tMission(t(`level${l.id}.place`) || l.place);
               const label = `Level ${l.id}, ${title}, ${st === 'done' ? 'badge earned' : st === 'current' ? 'you are here' : 'locked'}`;
 
               return (
@@ -298,7 +298,7 @@ export function MissionMap() {
                   <Award size={18} strokeWidth={2.5} aria-hidden />
                 </span>
                 <span className="font-display text-[0.875rem] sm:text-[0.9375rem] leading-snug font-bold break-words">
-                  {t(`level${learned.id}.teaches`) || learned.learned}
+                  {tMission(t(`level${learned.id}.teaches`) || learned.learned)}
                 </span>
               </div>
               <button

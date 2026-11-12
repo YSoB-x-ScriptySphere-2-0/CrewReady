@@ -8,7 +8,7 @@ import type { GameState, StowStep } from '../../engine/types';
 import { GameButton } from '../GameButton';
 import { usePress } from '../motion';
 import { hop, LeftSlot, ToyArea, type Done } from './shared';
-import { useI18n } from '../../content/i18n';
+import { useI18n, tMission } from '../../content/i18n';
 
 const itemHtml = '<span style="display:grid;place-items:center;width:40px;height:40px;border:2px solid #3a4a8c;border-radius:12px;background:#1c2b63"></span>';
 
@@ -27,6 +27,7 @@ function Seat() {
 }
 
 function ItemCard({ label, inReach, inHold, picked, onClick }: { label: string; inReach: string; inHold: string; picked: boolean; onClick: () => void }) {
+  const lang = useI18n((s) => s.lang);
   const Icon = iconFor(label);
   const press = usePress();
   return (
@@ -41,9 +42,9 @@ function ItemCard({ label, inReach, inHold, picked, onClick }: { label: string; 
         <Icon size={20} strokeWidth={2.25} />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block font-display text-[0.8125rem] leading-[1.1] font-extrabold">{label}</span>
-        <span className={`block text-[0.6875rem] leading-[1.1] ${picked ? 'font-bold' : 'text-muted'}`}>Next to you: {inReach}.</span>
-        <span className={`block text-[0.6875rem] leading-[1.1] ${picked ? 'text-muted' : 'font-bold'}`}>In the hold: {inHold}.</span>
+        <span className="block font-display text-[0.8125rem] leading-[1.1] font-extrabold">{tMission(label)}</span>
+        <span className={`block text-[0.6875rem] leading-[1.1] ${picked ? 'font-bold' : 'text-muted'}`}>{lang === 'bn' ? `কাছে রাখলে: ${tMission(inReach)}` : `Next to you: ${inReach}.`}</span>
+        <span className={`block text-[0.6875rem] leading-[1.1] ${picked ? 'text-muted' : 'font-bold'}`}>{lang === 'bn' ? `হোল্ডে রাখলে: ${tMission(inHold)}` : `In the hold: ${inHold}.`}</span>
       </span>
       {picked ? (
         <span className="grid h-[1.5rem] w-[1.5rem] shrink-0 place-items-center rounded-full bg-go text-go-text" aria-hidden>
@@ -92,7 +93,7 @@ export function Stow({ step, game, onDone, slot }: { step: StowStep; game: GameS
         key={`${k}-${nudge}`}
         onClick={() => empty(k)}
         disabled={!item}
-        label={item ? `Cubby ${k + 1}: ${item.label}. Tap to send it back to the hold.` : `Cubby ${k + 1}: empty`}
+        label={item ? (lang === 'bn' ? `খাঁপ ${k + 1}: ${tMission(item.label)}। ফেরত পাঠাতে ট্যাপ করো।` : `Cubby ${k + 1}: ${item.label}. Tap to send it back to the hold.`) : (lang === 'bn' ? `খাঁপ ${k + 1}: খালি` : `Cubby ${k + 1}: empty`)}
         className={`grid h-[4rem] w-[4rem] shrink-0 place-items-center !bg-space-deep disabled:!bg-space-deep ${nudge && full ? 'anim-wiggle' : ''}`}
       >
         <span ref={(el) => void (cubbyRefs.current[k] = el)} className="grid place-items-center">
@@ -114,7 +115,7 @@ export function Stow({ step, game, onDone, slot }: { step: StowStep; game: GameS
       <LeftSlot slot={slot}>
         {/* Cutaway: cubby, seat, cubby. */}
         <div className="flex h-full w-full flex-col items-center justify-center rounded-panel border-2 border-line bg-panel/85 px-[0.5rem] py-[0.5rem] text-text">
-          <p className="text-center font-display text-[0.9375rem] leading-tight font-extrabold">Next to your seat</p>
+          <p className="text-center font-display text-[0.9375rem] leading-tight font-extrabold">{lang === 'bn' ? 'তোমার আসনের পাশে' : 'Next to your seat'}</p>
           <div className="mt-[0.25rem] flex items-end justify-center gap-[0.25rem]">
             {cubbies.slice(0, half).map((_, k) => cubby(k))}
             <Seat />

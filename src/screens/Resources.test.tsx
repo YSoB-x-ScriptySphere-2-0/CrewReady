@@ -21,7 +21,7 @@ describe('Resources screen (S4)', () => {
     // Sourced kid facts directly from docs/06 §4
     expect(html).toContain('Mars gets less than half the sunlight Earth does.');
     expect(html).toContain('The Space Station now recycles about 98% of its water.');
-    expect(html).toContain('Astronauts ate lettuce grown on the Space Station for the first time in August 2015.');
+    expect(html).toContain('In 2015, astronauts ate red lettuce they grew on the Space Station.');
     expect(html).toContain('Water and food are good radiation shields, so crews plan to shelter behind their supplies.');
 
     // Launch button

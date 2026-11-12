@@ -155,21 +155,23 @@ export function stepGame(state: FlyState, dt: number, commands: FlyCommand[] = [
     .map((p) => ({ ...p, y: p.y - clampedDt * 1.5, age: p.age + clampedDt }))
     .filter((p) => p.age < 0.9);
 
-  // 7. Collision Detection: Obstacles
+  // 7. Collision Detection: Obstacles with swept bounding box
   for (const obs of obstacles) {
     const nextZ = obs.z - deltaDistance;
+    let isPassed = obs.passed;
 
-    // Check collision box: z within [-0.8, 0.8] meters from pilot
-    const inZRange = nextZ >= -0.8 && nextZ <= 0.8;
+    // Check swept collision box: z within [-0.8, 0.8] meters from pilot
+    const minZ = Math.min(obs.z, nextZ);
+    const maxZ = Math.max(obs.z, nextZ);
+    const inZRange = maxZ >= -0.8 && minZ <= 0.8;
     const inLane = Math.abs(laneX - obs.lane) < 0.55;
 
-    if (inZRange && inLane && !obs.passed && stumbleTimer <= 0) {
+    if (inZRange && inLane && !isPassed && stumbleTimer <= 0) {
+      isPassed = true;
       if (obs.kind === 'lowRock' && hopHeight > 0.38) {
         // Successfully hopped over low rock!
-        obs.passed = true;
       } else if (activePower === 'boost') {
         // Boost destroys / passes through obstacles safely!
-        obs.passed = true;
         newPops.push({
           id: nextEntityId++,
           text: 'SMASH!',
@@ -180,7 +182,6 @@ export function stepGame(state: FlyState, dt: number, commands: FlyCommand[] = [
         });
       } else if (activePower === 'shield') {
         // Shield absorbs the blow!
-        obs.passed = true;
         activePower = null;
         powerRemaining = 0;
         stumbleTimer = STUMBLE_DURATION;
@@ -194,7 +195,6 @@ export function stepGame(state: FlyState, dt: number, commands: FlyCommand[] = [
         });
       } else {
         // Hit taken: lose 1 hull pip
-        obs.passed = true;
         hull -= 1;
         stumbleTimer = STUMBLE_DURATION;
         newPops.push({
@@ -212,14 +212,15 @@ export function stepGame(state: FlyState, dt: number, commands: FlyCommand[] = [
     }
 
     if (nextZ > -10) {
-      updatedObstacles.push({ ...obs, z: nextZ });
+      updatedObstacles.push({ ...obs, z: nextZ, passed: isPassed });
     }
   }
 
-  // 8. Collectible Items
+  // 8. Collectible Items with swept bounding box
   for (const item of items) {
     let itemZ = item.z - deltaDistance;
     let itemLane = item.lane;
+    let isCollected = item.collected;
 
     // Magnet Effect: pulls stardust within 18m towards pilot's current position
     if (activePower === 'magnet' && item.kind === 'stardust' && itemZ > 0 && itemZ < 18) {
@@ -228,11 +229,13 @@ export function stepGame(state: FlyState, dt: number, commands: FlyCommand[] = [
       itemZ -= pullSpeed * 0.8;
     }
 
-    const inZRange = itemZ >= -1.0 && itemZ <= 1.0;
+    const minItemZ = Math.min(item.z, itemZ);
+    const maxItemZ = Math.max(item.z, itemZ);
+    const inZRange = maxItemZ >= -1.0 && minItemZ <= 1.0;
     const inLane = Math.abs(laneX - itemLane) < 0.65;
 
-    if (inZRange && inLane && !item.collected) {
-      item.collected = true;
+    if (inZRange && inLane && !isCollected) {
+      isCollected = true;
       if (item.kind === 'stardust') {
         const value = activePower === 'boost' ? 2 : 1;
         stardust += value;
@@ -259,8 +262,8 @@ export function stepGame(state: FlyState, dt: number, commands: FlyCommand[] = [
       }
     }
 
-    if (itemZ > -10 && !item.collected) {
-      updatedItems.push({ ...item, z: itemZ, lane: itemLane });
+    if (itemZ > -10 && !isCollected) {
+      updatedItems.push({ ...item, z: itemZ, lane: itemLane, collected: isCollected });
     }
   }
 

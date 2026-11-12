@@ -22,7 +22,7 @@ import { METERS, type Level, type OutpostResult } from '../engine/types';
 import { useGame } from '../store/game';
 import { fmtDate, useSpace } from '../store/space';
 import type { BoardEntry } from '../store/leaderboard';
-import { t } from '../content/i18n';
+import { t, tMission, useI18n } from '../content/i18n';
 
 const RESULT_ICONS: Record<OutpostResult, LucideIcon> = {
   survives: Shield,
@@ -71,7 +71,7 @@ function LessonBadge({ level, open, onClick, innerRef }: { level: Level; open: b
     >
       <MedalDisc id={level.id} />
       <span className="flex min-w-0 flex-col">
-        <span className="font-display text-[0.8125rem] leading-[1.05] font-extrabold">{level.title}</span>
+        <span className="font-display text-[0.8125rem] leading-[1.05] font-extrabold">{tMission(level.title)}</span>
         <span className="sr-only">Tap to flip</span>
       </span>
     </button>
@@ -80,6 +80,7 @@ function LessonBadge({ level, open, onClick, innerRef }: { level: Level; open: b
 
 /** The open badge, grown over the shelf: it flips to show the line and its source. Tap (or Escape) flips it back. */
 function LessonCard({ level, onClose }: { level: Level; onClose: () => void }) {
+  const lang = useI18n((s) => s.lang);
   const press = usePress();
   const ref = useRef<HTMLButtonElement>(null);
   const [flipped, setFlipped] = useState(false);
@@ -115,17 +116,17 @@ function LessonCard({ level, onClose }: { level: Level; onClose: () => void }) {
         <span className="flip-face flex items-center justify-center gap-[0.75rem] self-stretch rounded-[0.875rem] bg-panel px-[0.75rem]">
           <MedalDisc id={level.id} big />
           <span className="flex min-w-0 flex-col text-left">
-            <span className="font-display text-[1.25rem] leading-tight font-extrabold">{level.title}</span>
-            <span className="text-[0.875rem] font-bold text-muted">Tap to flip</span>
+            <span className="font-display text-[1.25rem] leading-tight font-extrabold">{tMission(level.title)}</span>
+            <span className="text-[0.875rem] font-bold text-muted">{lang === 'bn' ? 'উল্টাতে ট্যাপ করো' : 'Tap to flip'}</span>
           </span>
         </span>
         {/* Back: the line and its source. */}
         <span className="flip-face flip-back flex items-start gap-[0.625rem] self-stretch rounded-[0.875rem] bg-panel-up px-[0.75rem] py-[0.375rem] text-left break-words">
           <MedalDisc id={level.id} />
           <span className="flex h-full min-w-0 flex-1 flex-col gap-[0.25rem]">
-            <span className="font-display text-[0.875rem] font-extrabold text-muted uppercase">I learned</span>
-            <span className="text-[0.9375rem] leading-snug">{level.learned}</span>
-            <span className="mt-auto border-t-2 border-line pt-[0.25rem] text-[0.75rem] leading-snug text-muted">Source: {level.source}</span>
+            <span className="font-display text-[0.875rem] font-extrabold text-muted uppercase">{lang === 'bn' ? 'আমি যা শিখেছি' : 'I learned'}</span>
+            <span className="text-[0.9375rem] leading-snug">{tMission(level.learned)}</span>
+            <span className="mt-auto border-t-2 border-line pt-[0.25rem] text-[0.75rem] leading-snug text-muted">{lang === 'bn' ? `উৎস: ${level.source}` : `Source: ${level.source}`}</span>
           </span>
         </span>
       </span>

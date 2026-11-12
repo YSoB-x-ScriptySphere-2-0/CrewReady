@@ -7,7 +7,7 @@ import { METER_NAMES, type CrewStep, type GameState, type Level, type SlidersSte
 import { ChangeChip, GameButton } from '../GameButton';
 import { METER_COLOR, MeterBadge } from '../meters';
 import { BLOCK_HTML, BatteryBlock, hop, LeftSlot, ToyArea, type Done } from './shared';
-import { useI18n } from '../../content/i18n';
+import { useI18n, tMission } from '../../content/i18n';
 
 export function Power({ step, game, level, onDone, slot }: { step: SlidersStep; game: GameState; level: Level; onDone: Done; slot?: HTMLElement | null }) {
   const lang = useI18n((s) => s.lang);
@@ -38,7 +38,7 @@ export function Power({ step, game, level, onDone, slot }: { step: SlidersStep; 
         <div ref={tray} className="flex h-full w-full flex-col justify-center gap-[0.5rem] rounded-panel border-2 border-line bg-panel/85 px-[0.75rem] py-[0.5rem] text-text" aria-live="polite">
           <span className="sr-only">{left ? `${left} battery blocks left in the tray.` : 'Every block is plugged in.'}</span>
           <span className="flex items-center gap-[0.25rem] self-start rounded-full bg-space-deep px-[0.625rem] font-display text-[1.125rem] leading-snug font-extrabold tabular-nums" aria-hidden>
-            <Zap size={16} strokeWidth={3} /> {left ? `${left} left` : 'Tray empty!'}
+            <Zap size={16} strokeWidth={3} /> {left ? (lang === 'bn' ? `বাকি ${left}টি` : `${left} left`) : (lang === 'bn' ? 'ট্রে খালি!' : 'Tray empty!')}
           </span>
           <div className="flex flex-wrap items-end gap-[0.375rem]">
             {Array.from({ length: left }, (_, k) => (
@@ -59,7 +59,7 @@ export function Power({ step, game, level, onDone, slot }: { step: SlidersStep; 
               <div key={sys.meter} className="flex min-h-0 flex-col rounded-tile border-2 border-line bg-panel text-text">
                 <div className="flex items-center gap-[0.25rem] rounded-t-[0.875rem] px-[0.375rem] py-[0.25rem]" style={{ background: `color-mix(in srgb, ${METER_COLOR[sys.meter]} 55%, #14204d)` }}>
                   <MeterBadge meter={sys.meter} size={24} />
-                  <span className="min-w-0 font-display text-[0.75rem] leading-[1.1] font-extrabold">{sys.label}</span>
+                  <span className="min-w-0 font-display text-[0.75rem] leading-[1.1] font-extrabold">{tMission(sys.label)}</span>
                 </div>
 
                 <div className="flex min-h-0 flex-1 flex-col items-stretch justify-between gap-[0.25rem] p-[0.375rem]">
@@ -68,7 +68,7 @@ export function Power({ step, game, level, onDone, slot }: { step: SlidersStep; 
                     <ToyArea
                       onClick={() => unplug(i)}
                       disabled={!alloc[i]}
-                      label={`Take a block out of ${sys.label}. It has ${alloc[i]} of ${step.want}.`}
+                      label={`Take a block out of ${tMission(sys.label)}. It has ${alloc[i]} of ${step.want}.`}
                       className="flex min-h-[3.25rem] min-w-0 flex-1 items-end justify-center gap-[0.125rem] !bg-space-deep px-[0.125rem] pt-[0.5rem] pb-[0.25rem] disabled:!bg-space-deep"
                     >
                       <span ref={(el) => void (slots.current[i] = el)} className="flex items-end gap-[0.125rem]">
@@ -79,7 +79,7 @@ export function Power({ step, game, level, onDone, slot }: { step: SlidersStep; 
                     <ToyArea
                       onClick={() => plug(i)}
                       disabled={left === 0 || full}
-                      label={`Plug a block into ${sys.label}`}
+                      label={`Plug a block into ${tMission(sys.label)}`}
                       className="grid w-[2.5rem] shrink-0 place-items-center bg-power text-go-text [--lip:#b98a00] disabled:bg-locked disabled:text-muted disabled:[--lip:var(--color-locked-lip)]"
                     >
                       <Plug size={20} strokeWidth={2.75} aria-hidden />

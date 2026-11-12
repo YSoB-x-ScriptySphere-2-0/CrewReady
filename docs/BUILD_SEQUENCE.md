@@ -1,6 +1,6 @@
-# CrewReady — Build Sequence v10.1
+# CrewReady — Build Sequence v11
 
-Goes with `plan.md` v10. The plan says **what** the game is. This file says **how to build it**, in what order, and what "done" means. On game content the plan wins; on look and build order this file wins. Older files in `docs/` (01–05, 07, 08, `BUILD_PROMPTS`, `CHARACTER_CONCEPT_SHEET`, `frontend-ui-prompt-pack`) are history: don't read them.
+Goes with `plan.md` v11. The plan says **what** the game is. This file says **how to build it**, in what order, and what "done" means. On game content the plan wins; on look and build order this file wins. Older files in `docs/` (01–05, 07, 08, `BUILD_PROMPTS`, `CHARACTER_CONCEPT_SHEET`, `frontend-ui-prompt-pack`) are history: don't read them.
 
 ## 1. How to use this file (and spend few tokens)
 
@@ -10,13 +10,17 @@ Goes with `plan.md` v10. The plan says **what** the game is. This file says **ho
 4. Don't move on until the step's **Done when** passes and you've looked at the screenshot yourself.
 5. A fix to the last step is just a sentence in the same chat ("the GO button overlaps Twinkle at 667 wide").
 
-**Start with R0.** A5–A9 are committed (`49aabda`), and so is the welcome screen built in Antigravity (`36f70fb`, `3743293`). R0 brings that work in line with §3 and §4 before anything new is built.
+**v11 (13 Nov): start with §5b.** Phases R, D, S, L and F1 are built. §5b lists the bug fixes (phase B) and the changes for children (phase K) that come from the 13 Nov audit and the child play-test. The older step text below stays as the record of what each part must do.
 
-**The one idea of v10.1:** the game is still more reading than seeing. From now on every screen is judged by §4.1a, *See it, don't read it*, and R5 makes the levels pass it before we film.
+**The one idea of v11:** a child must understand the game without help: simple words, a ? and a bulb on every screen, Twinkle's tour, one points story, and play that feels like play (bonus rounds). **The one idea of v10.1, still true:** the game is still more reading than seeing. From now on every screen is judged by §4.1a, *See it, don't read it*, and R5 makes the levels pass it before we film.
 
 ---
 
-## 2. Where the project stands (12 Nov 2026)
+## 2. Where the project stands
+
+**13 Nov 2026 (v11).** Everything in the table below is built. Tests: 153 passing. The audit found the bugs listed in §5b phase B; the play-test found the game still too hard for a child (phase K). Every on-screen fact now matches `docs/06` §4.
+
+**12 Nov 2026 (v10.1), for the record:**
 
 | Area | State | Files |
 |---|---|---|
@@ -44,8 +48,8 @@ Known: a random player rarely wins level 6 (Air & Water). That's for balance (F3
 2. Reuse what exists. Edit files; don't rewrite them. Never touch engine numbers or level words unless the step says so.
 3. Build from the shared parts (§4.6). If a part is missing, add it to the kit, don't make a look-alike.
 4. Every button does something or is clearly locked. A new screen goes into `BUILT_SCREENS`.
-5. No invented facts or numbers. Facts come from `plan.md` or `docs/06_SCIENCE_AND_NASA_DATA.md` §4. If one is missing, leave it out and say so.
-6. Words are for a 7-year-old: under 15 words a sentence, one idea per screen, a picture before a sentence.
+5. No invented facts or numbers. Facts come only from `docs/06_SCIENCE_AND_NASA_DATA.md` §4, using its **kid wording** column; a fact marked ✗ there never appears. If one is missing, leave it out and say so.
+6. Words are for a 7-year-old in Bangladesh: under 12 words a sentence, the plan §5.5 simple words, one idea per screen, a picture before a sentence. A hard word stays only with an explain card.
 7. Every string a player sees goes through `t()` (from R2 on).
 8. The API key never appears in code, logs, screenshots or replies. Only `src/services/nasa.ts` and `scripts/nasa-snapshot.mjs` read it.
 9. Never commit, push or deploy without a yes in the chat.
@@ -313,6 +317,148 @@ Claude Code stays in the main folder (branch `game-kit-g1-g2`, **Lane A**). Open
 
 After both lanes finish: **F2** (Bangla, with a Bangla speaker) → **F3** → **F4** → **F5**, one lane at a time, because they touch everything.
 
+### 5b. v11 — do these next (13 Nov 2026)
+
+Phases R, D, S, L and F1 below are built. The 13 Nov audit (tests, build, code review, a browser play-through and a map of the points) and the child play-test give the work for the judged build. **Order: B1 → B2 → B3 → K1 → K2 → K3 → K4 → K5 → F4 (second play-test) → F5.** B1–B3 touch different files and can run at the same time; K1 must come before K2; K3 before K5.
+
+**Already done on 13 Nov (don't redo):** every `docs/06` §4 fact checked, and the wrong lines fixed in `levels.ts`, `Resources.tsx`, `Sources.tsx`, `Training.tsx`, `TwinkleTourGuide.tsx` and `services/nasa.ts` (list in `docs/06` §4). The real team names and the ChatGPT art credit are on the Sources page and in `docs/AI_USE.md`. The level 1 hint says 15 per crate. The archive storm is now the 10 May 2024 Kp 9 storm. The build's unused Fly import and `.env.example` (now `DEMO_KEY`) were fixed in the working tree. Tests: 153 passing.
+
+#### Phase B — fix every bug the audit found
+
+##### B1 — Points, saving and data rules (Jawad, about 2.5 h)
+**Read:** `src/store/game.ts`, `src/engine/resources.ts`, `src/engine/profile.ts`, `src/screens/Resources.tsx` (lines 100–300), `src/screens/Home.tsx` (start and continue), `src/services/nasa.ts` (DONKI and Kp).
+
+**Fix**
+1. **Upgrades reach every mission.** Today they apply only from Resources' Launch button; Home, the Map and Success ignore them. Apply them inside the store's `startMission` (game **and** checkpoint, before the first level) and in `retryLevel`'s restart branch. Upgrades are **used up** when a mission launches (plan §5.7). No refund after launch.
+2. **Resources Launch** asks "Start over?" when a mission is in progress, like Home does.
+3. **Prices.** The buttons say 25 ✦; the engine charges 15 then 30. Show the engine's `nextCost`, through `t()`.
+4. **No star farming.** `retryLevel` keeps `max(checkpoint.stars, game.stars)`, so stars from a failed try are kept and earned again. Restart from `checkpoint.stars`.
+5. **Badges and rank last.** Add a saved lifetime `earnedBadges` that a new mission never clears; rank reads it.
+6. **Reset really resets** the whole store, words, Fly totals, cargo and the tour flag. Today the mission comes straight back.
+7. **Home after a loss.** "Continue" resumes the failed level with an empty bar. Send it to Mission Replay (Try again) instead.
+8. **Broken saves never crash.** `persist.merge` checks every field (level index in range, four numeric bars, flags, crew, log); anything wrong starts a fresh mission.
+9. **No free choice in level 4.** With the cliff landing, D is 0, so "Leave them out" changes nothing (plan §5.2). Smallest fix: `P: -max(D, 5)`. Run `npm run balance` and paste the before/after.
+10. **Stars at zero.** Options that cost a star change one thing when you have no stars. Report the real (clamped) change, and add these cases to the "two changes" test as known and documented.
+11. **Live storms use all of DONKI.** The live branch sizes storms from Kp only; also read SEP and CME speed for the same window, so the `docs/06` §3 rules apply live. Remember the event that sized X at mission start and show **that** event on the level 2 card.
+12. **Right badges.** NOAA Kp is labelled `NASA LIVE`: use `NOAA LIVE`. The Sources page's fixed "NASA LIVE" labels become "Live when online" (they are reference cards, not readings).
+
+**Done when** a test proves each of 1, 4, 5, 6, 8 and 9; buying an upgrade then pressing Home → Play starts with 45 in that bar; the balance report still has 20–60% wins; `npm test` and `npm run build` pass.
+
+> **Prompt — B1.** Do step B1 in `docs/BUILD_SEQUENCE.md`. Read §3 and B1, then only its Read line. Fix the twelve items in order with a test for 1, 4, 5, 6, 8 and 9. Change level numbers only for item 9, and show the balance before/after. Check, report, stop.
+
+##### B2 — Fly (Imtiaj, about 1.5 h)
+**Read:** `src/screens/Fly.tsx`, `src/fly/engine.ts`, `src/fly/engine.test.ts`.
+
+**Fix**
+1. **The HUD is frozen mid-run** (hearts, stardust, distance, power timer only update at game over). Keep a small HUD state and set it from the loop only when a shown value changes.
+2. **At 667 × 375 the top of the start card is cut off** and cannot be reached. Fit it without scrolling (two columns), or `justify-start` with `my-auto` inside.
+3. **Fast frames skip rocks.** Test the swept range (`prevZ` to `nextZ`) against the hit box, for obstacles and stardust.
+4. **`stepGame` changes its input.** Copy obstacles and items before setting `passed` / `collected`; add a test that the same state twice gives the same result.
+5. **Input leaks.** Enter on a focused button also starts a run; a tap on the music button changes lane. Ignore keys whose target is a button; stop pointer events on the music button.
+6. "Return home" is about 24 px tall: make it 44 px.
+7. Swipe direction goes through `stageDelta()` (§4.2) if the upright turned stage is kept (B3 item 1).
+
+**Done when** the HUD counts during a run; the start card fits at 667 × 375; the rule tests (including the new two) pass; the 4× CPU slowdown check holds.
+
+> **Prompt — B2.** Do step B2 in `docs/BUILD_SEQUENCE.md`. Read §3 and B2, then only its Read line. Fix the seven Fly items with tests for 3 and 4. Check at 667 × 375 and at 4× slowdown, report, stop.
+
+##### B3 — Screens, stage and the banned list (Barkat, about 2.5 h)
+**Read:** `src/components/Stage.tsx` (and `git diff` on it), `Dock.tsx`, `Decision.tsx`, `3d/HeroCadetRocket3D.tsx`, `3d/CrisisEarth3D.tsx`; `src/screens/Profile.tsx`, `Story.tsx`, `MissionMap.tsx`, `Home.tsx`, `Play.tsx`.
+
+**Fix**
+1. **Stage, upright phones.** The uncommitted change to `Stage.tsx` removed the quarter-turn, the "Turn your phone" hint and the 4:3–21:9 clamp, so a phone held upright now gets a squashed landscape layout. **Decide with the Captain:** restore it (recommended: §4.2 and plan §7.1 promise it), or change §4.2 on purpose. Not both.
+2. **Dock below 768 px** becomes a bottom bar that covers Home's space-weather card and the map. Keep the left rail at every landscape size.
+3. **Profile Motion toggle** only saves a field; call `setReducedMotion` on toggle and at start.
+4. **The astronaut pick is never used** (every screen shows the default). Keep one `hero` field in the game store; Profile and the K4 opening write it; every `Kid` reads it.
+5. **Story swipe vs 3D drag.** Turning the 3D Earth flips the card. Ignore swipes that start inside a `[data-3d]` mount; add `touch-action: none` there.
+6. **3D rebuilds.** `HeroCadetRocket3D` rebuilds its whole renderer on every hero switch and never calls `forceContextLoss()`. Build once and swap the suit material. Same cleanup in `CrisisEarth3D`.
+7. **Timers.** Clear `Decision`'s 320 ms commit timeout on unmount, and ignore a second press while it is pending. Guard the double tap on the map's current stop.
+8. **Touch targets under 44 px:** the 3D modal close buttons (`Play`, `LevelOpening`), the tour's close and step dots, the hook's Skip. Escape closes modals and focus returns.
+9. **The banned list (§4.3)** is broken in many files: `backdrop-blur` (CrisisEarth3D, HeroCadetRocket3D, Dock, MusicToggle, Fly, Hook, Play, LevelOpening, TwinkleTourGuide), looping animations, emoji in string tables. Replace with 70–85% dark fills, end the loops, use lucide icons.
+10. **Kp dot colour.** Kp 4–6 ("Busy Sun") shows the green "calm" dot: test `tone === 'active'`.
+11. **Strings.** Sources, the tour, Play's hint panel ("Twinkle's hint", "Lowest:", "Nice!"), LevelOpening card sentences go through `t()`.
+
+**Done when** `grep -rn "backdrop-blur\|animate-ping\|animate-pulse" src` is empty; 390 × 844 upright works by touch (if kept); every pressable is 44 px or more; the picked hero shows on every screen; tests and build pass.
+
+> **Prompt — B3.** Do step B3 in `docs/BUILD_SEQUENCE.md`. Read §3, §4.2, §4.3 and B3, then only its Read line. Ask me item 1 first and wait. Then fix items 2–11. Check at 844, 667 and upright, report, stop.
+
+#### Phase K — make it easy and fun for a child (plan v11 §4, §5.3, §5.5–5.7)
+
+The play-test said: **still a bit complicated.** Phase K answers it in five steps.
+
+##### K1 — Simple words everywhere (Tasfia with Claude, about 2 h)
+**Read:** plan §5.5; `docs/06` §4 (the kid wording column); `src/content/levels.ts`, `strings.en.ts`, `icons.ts` (`short` labels), `words.ts`.
+
+**Build**
+- Rewrite every player line using plan §5.5: the swap table, under 12 words a sentence, one idea a line. Keep every rule, number and option meaning. Fact lines use the `docs/06` §4 kid wording exactly (or shorter).
+- `src/content/plainWords.test.ts`: fails if a hard word from the §5.5 table ("habitat", "regolith", "specialist", "consequence", "trajectory", "telemetry"…) appears in any player string outside an explain card, or a sentence is over 12 words.
+- Keep a list of the words that stay (radiation, oxygen, solar panel, sol…) with their explain card ids for K2.
+- Bangla: mark changed keys "needs a check" for F2; write no new Bangla.
+
+**Done when** the test passes; a team member reads every changed line aloud at a 7-year-old's pace, and nothing needs explaining.
+
+> **Prompt — K1.** Do step K1 in `docs/BUILD_SEQUENCE.md`. Read §3, plan §5.5 and K1, then only its Read line. Rewrite every player line in simple words (plan §5.5 swap table, under 12 words), fact lines exactly as `docs/06` §4 kid wording, and add the plain-words test. Change no rule, number or option meaning. Show me a before/after table in batches of about 40 lines and stop after each batch.
+
+##### K2 — Twinkle's tour, explain cards (?) and Hint (bulb) (Barkat, about 3 h)
+**Read:** plan §5.3 and §5.5; `src/components/Words.tsx`, `Twinkle.tsx`, `LevelChrome.tsx`, `Hud.tsx`; `src/screens/Play.tsx` (hint panel); `src/store/words.ts`.
+
+**Build**
+- **`ExplainCard`** (grow it from the Space Words card): big picture, title, 2–4 short sentences (40 words at most), Read-to-me, source line. Content in `src/content/explain.ts`, one entry per plan §5.5 list, sentences only from `docs/06` §4 kid wording or plan text.
+- **Two buttons, always in the same place** in the top strip of every level screen, and on Home, Map, Resources and Fly: **?** (explain this screen) and **bulb** (hint, levels only). Each has its icon and its word under it ("Explain", "Hint"); they never look alike.
+- **Twinkle's tour in mission 1:** before the first crate, a spotlight dims the stage except one thing at a time, with Twinkle's one line from plan §5.3: the four bars and the goal → ? → bulb → a choice card and GO → the star and stardust counters. One tap moves on; **Skip tour** always shows. Saved so it shows once; "Replay the tour" in Profile.
+- The Home "flight deck tour" (`TwinkleTourGuide`) stays, with its K1 wording, opened from Home's ? button.
+- Opening an explain card for the first time adds it to the Space Book (and later gives +2 ✦ through K3).
+
+**Done when** a first-time player meets the tour before packing; every level screen has ? and bulb in the same spot; every card's facts match `docs/06`; keyboard and reduced motion work; tests and build pass.
+
+> **Prompt — K2.** Do step K2 in `docs/BUILD_SEQUENCE.md`. Read §3, §4, plan §5.3 and §5.5, and K2, then only its Read line. Build the explain card, the ? and bulb buttons in fixed places, and Twinkle's five-stop tour in mission 1. Facts only from `docs/06` §4. Play mission 1 as a new player, check, report, stop.
+
+##### K3 — One points story (Jawad, about 2 h)
+**Read:** plan §5.7; `src/fly/storage.ts` (stardust), `src/engine/resources.ts`, `src/store/game.ts`, `src/screens/Home.tsx`, `Fly.tsx` (end card), `Resources.tsx` (header).
+
+**Build**
+- `src/store/wallet.ts`: one place for stardust (moves the Fly total over without losing it), with `earn(source, amount)` and `spend(amount)`. Sources: Fly, bonus round (K5), first clear of a level (+10), first explain card (+2). Saved and guarded like the rest.
+- Science Stars: each level's stars count once (B1 item 4); lifetime stars and badges feed the rank.
+- **Home wallet:** ⭐ and ✦ side by side, top right. A tap opens the "How points work" explain card with the loop picture from plan §5.7.
+- **Fly end card:** "Spend it in Resources" button. **Resources header:** "Earn ✦ in Fly and bonus rounds." **Level-complete crate:** shows "+10 ✦" the first time.
+- Tests: every earn path, the spend cap, first-clear only once, the Fly total carried over.
+
+**Done when** a new player can say where stardust comes from and what it buys, from the screens alone; tests and build pass.
+
+> **Prompt — K3.** Do step K3 in `docs/BUILD_SEQUENCE.md`. Read §3, plan §5.7 and K3, then only its Read line. Add the wallet with its earn and spend paths, the Home wallet and the "How points work" card, and the Fly and Resources links, with tests. Check, report, stop.
+
+##### K4 — The 3D opening: "Earth is too full" → you suit up (Barkat in the game, Wasima in Remotion, about 3 h)
+**Read:** plan §4.0 and §4.2; `src/screens/Story.tsx`, `src/components/3d/CrisisEarth3D.tsx`, `HeroCadetRocket3D.tsx`; `src/App.tsx` (hook → story route); `crewready-video/src/` (Remotion).
+
+**Build**
+- `src/screens/Intro.tsx` replaces the three story cards (keep `Story.tsx` until it works). Three beats from plan §4.2, each about 8 s, with the `FICTION` tag and at most 20 words:
+  1. **Too Full:** the 3D Earth turns; city lights on the night side spread and join until it glows (an emissive texture whose mask grows over time). A soft crowd hum when sound is on.
+  2. **A Second Home:** the camera pulls back; Mars slides in; a dotted path draws between them.
+  3. **You!:** two big cards, Orbit and Nova. The pick writes the `hero` field (B3 item 4). The chosen kid steps forward, the helmet closes, a "Junior Astronaut" badge stamps on, Twinkle flies in → mission 1 and the K2 tour.
+- One tap anywhere moves to the next beat; **Skip** always shows. Reduced motion or no WebGL: three still pictures with the same words. Low-end check: steady at 4× CPU slowdown; pixel ratio capped at 1.5.
+- NeoWs leaves the story and goes on the Fly start card with the F4 wording.
+- **Remotion (video only):** an `EarthIntro` composition in `crewready-video/` with the same three beats, 1920 × 1080, for both videos' openings. The game never loads Remotion.
+
+**Done when** a new player goes hook → three beats → hero pick → mission 1 in under 40 seconds (or under 5 with Skip); the picked hero shows everywhere after; no asteroid line is left in the story; tests and build pass.
+
+> **Prompt — K4.** Do step K4 in `docs/BUILD_SEQUENCE.md`. Read §3, §4, plan §4.0 and §4.2, and K4, then only its Read line. Build the three-beat 3D opening with the hero pick, its still-picture fallback, and move NeoWs to Fly. No new facts. Check at 844, 667 and 4× slowdown, report, stop.
+
+##### K5 — Bonus rounds: one mini-game per level (Imtiaj, about 4 h)
+**Read:** plan §5.6; `src/components/toys/` (the Try-it toys: copy their structure); `src/screens/Play.tsx` (where the level ends and the crate shows); `src/store/wallet.ts` (from K3).
+
+**Build**
+- `src/minigames/`: pure rules for each game (spawn, hit, score, end), tested; same seed, same game.
+- `BonusRound` shell: one picture and at most 5 words, a 3-2-1, a timer bar, the score turning into stardust (at most 30), **Skip**, Play again once. Shown after the level's last step, before the reward crate.
+- The six games in plan §5.6, built in this order: L2 Space Rock Zapper, L3 Leak Patrol, L4 Panel Wipe, then L1 Countdown, L5 Seed Match, L6 Rock Sorter.
+- Rules: stardust only, never bars or stars (a test proves the game store is untouched); one thumb or the keyboard; 44 px targets; colour is never the only clue (Seed Match and Rock Sorter also use shape); reduced motion keeps them playable; our own art, no copied game.
+
+**Done when** each built level offers its round, skipping works, stardust lands in the wallet, the store test passes, and each plays at 667 × 375.
+
+> **Prompt — K5.** Do step K5 in `docs/BUILD_SEQUENCE.md`. Read §3, §4, plan §5.6 and K5, then only its Read line. Build the BonusRound shell and the six games in the listed order with pure tested rules; stardust only. Stop after each game for me to play it.
+
+##### After K5 — the second play-test
+Run F4 again with a child aged 7–12 who has not played. Ask afterwards: "What were you trying to do?" (the answer should be "keep the bars up") and "What is stardust for?" Fix what they stumble on.
+
 ### Phase R — rework what's built
 
 #### R0 — Bring the Antigravity work in line (about 45 min)
@@ -567,6 +713,8 @@ A keyboard-only run, a reduced-motion run, an upright-phone run, an offline run.
 | S2–S4 | 7.5 |
 | F2–F5 | 5.5 |
 
+**v11 (phase B and K, about 18 h with three people in parallel):** B1 2.5 · B2 1.5 · B3 2.5 · K1 2 · K2 3 · K3 2 · K4 3 · K5 4 · second play-test 1. If short: drop K5 games from the end of its list (keep three), then K4 down to its three still pictures. Never cut phase B, K1, the ? and bulb, or the tour's goal line.
+
 **If time runs short, cut in this order:** sound → Bangla level text (keep the switch and buttons) → Resources upgrades → Space Words → Try-it toys → leaderboard (keep badges) → Fly → the welcome picture change (keep the screen).
 
 **Never cut:** the six levels · the four meters and the HUD · landscape · the hook · Look first · the level-2 storm and level-4 dust event moments · the chain reaction · Mission Replay · source lines · live DONKI in level 2 · the Sources page · the crew reacting.
@@ -580,11 +728,13 @@ Real deadlines are in plan §12.1: the 240-second video on **Fri 13 Nov, 6:30 PM
 | Needed | By step | If missing |
 |---|---|---|
 | **Wide welcome pictures** (nice to have): the same two scenes as 16:9, at least 1920 × 1080, no text, crew on the right two-thirds, same framing | R2 | The cleaned upright pictures ship, with the backdrop fade |
-| The name of the AI image tool used for the crew and welcome art | F1, S1 | Credited as "AI-generated by the team" |
+| ~~The name of the AI image tool~~ **Done 13 Nov:** ChatGPT image generation (OpenAI) | — | — |
 | A hosting choice, and a yes before each push | F1 | The build stays local |
-| Confirmation of each "Confirm" fact in `docs/06` §4 | D2, L2 | The sentence stays out |
-| One chosen OSDR Veggie study (accession number, title, one plain sentence) | D2 | Level 5 shows the lettuce photo only |
-| The five real names and roles; who is under 18; the Local Lead's answer on naming them | S1, videos | Placeholders, clearly marked |
+| ~~Confirmation of each "Confirm" fact~~ **Done 13 Nov** (`docs/06` §4). The Science lead opens each link once before judging | — | A ✗ fact stays out |
+| ~~One OSDR Veggie study~~ **Done:** OSD-745 | — | — |
+| ~~The real names and roles~~ **Done:** six members, Cumilla (plan §10). Still needed: who is under 18, and the Local Lead's answer on naming them | videos | — |
+| The Captain's decision on the upright phone stage (B3 item 1) | B3 | Restore §4.2 |
+| A second child aged 7–12 for the play-test after K5 | F4 | The youngest person available, and say so |
 | A narrator aged 18 or older | Video | An adult member reads |
 | A Bangla speaker to check every line | F2 | Bangla stays on the switch and buttons only |
 | The licence of each file in `public/assets/audio/` | S3 | No sound |

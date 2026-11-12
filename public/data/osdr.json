@@ -1,11 +1,12 @@
 {
   "fetchedAt": "2026-11-12T09:28:33.159Z",
-  "source": "https://osdr.nasa.gov/osdr/data/search?term=OSD-268&type=cgene",
+  "source": "https://osdr.nasa.gov/osdr/data/osd/meta/745",
   "badge": "NASA ARCHIVE",
-  "accession": "OSD-268",
-  "title": "Microbiological and nutritional analysis of lettuce crops grown on the International Space Station-VEG01B",
+  "accession": "OSD-745",
+  "title": "Microbiological and Nutritional Analysis of Lettuce Crops Grown on the International Space Station",
   "mission": "International Space Station (ISS)",
-  "finding": "Space-grown lettuce on the Space Station was safe to eat and had the same nutrients as lettuce grown on Earth.",
-  "details": "Lettuce crops grown in the Veggie payload aboard the ISS were harvested and returned for chemical, microbiological and nutritional analysis.",
-  "date": "August 2015"
+  "finding": "Lettuce grown on the Space Station was safe to eat.",
+  "details": "Red romaine lettuce grown in the Veggie garden was tested for harmful germs and for nutrients. No harmful germs were found.",
+  "date": "August 2015",
+  "checkedAt": "2026-11-13"
 }

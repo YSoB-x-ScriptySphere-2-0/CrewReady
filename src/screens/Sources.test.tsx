@@ -35,8 +35,8 @@ describe('Sources screen (S1)', () => {
     // 5. Image & Third-Party Credits
     expect(html).toContain('Photography &amp; Media Credits');
     expect(html).toContain('Generated &amp; Third-Party Content');
-    expect(html).toContain('Midjourney');
-    expect(html).toContain('Google Imagen');
+    expect(html).toContain('ChatGPT image generation');
+    expect(html).toContain('Ahnaf Nabil');
 
     // 6. The Team
     expect(html).toContain('The Team');

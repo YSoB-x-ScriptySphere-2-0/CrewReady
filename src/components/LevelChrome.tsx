@@ -5,6 +5,7 @@ import { House } from 'lucide-react';
 import { LEVELS } from '../content/levels';
 import { METERS, type Meter, type Outcome } from '../engine/types';
 import { useGame } from '../store/game';
+import { useI18n, tMission } from '../content/i18n';
 import type { Change } from './GameButton';
 import { RoundButton } from './GameButton';
 import { Hud } from './Hud';
@@ -14,7 +15,8 @@ import type { ScenePlace } from './Scene';
 export const LEVEL_SCENE: Record<number, ScenePlace> = { 1: 'earth', 2: 'space', 3: 'mars', 4: 'dust', 5: 'mars', 6: 'mars' };
 
 /** The level's steps as task-list items; the first `done` are ticked. */
-export const tasksFor = (levelIndex: number, done: number) => LEVELS[levelIndex].steps.map((s, i) => ({ label: s.task, done: i < done }));
+export const tasksFor = (levelIndex: number, done: number) =>
+  LEVELS[levelIndex].steps.map((s, i) => ({ label: tMission(s.task), done: i < done }));
 
 /** Every meter and star change in an outcome, in meter order. */
 export function outcomeChanges(o: Pick<Outcome, 'delta' | 'starsDelta'>): Change[] {
@@ -40,26 +42,40 @@ export function LevelZones({ left, children }: { left?: ReactNode; children: Rea
 }
 
 /** The level HUD: Home, which level, the four meters and the stars. `look` is Look first (see Hud). */
-export function LevelHud({ meters, stars, levelLabel, look }: { meters: Record<Meter, number>; stars: number; levelLabel?: string; look?: Partial<Record<Meter, number>> }) {
+export function LevelHud({
+  meters,
+  stars,
+  levelLabel,
+  look,
+  onOpenSettings,
+}: {
+  meters: Record<Meter, number>;
+  stars: number;
+  levelLabel?: string;
+  look?: Partial<Record<Meter, number>>;
+  onOpenSettings?: () => void;
+}) {
   const { goHome, levelIndex } = useGame();
   const current = LEVELS[levelIndex];
+  const lang = useI18n((s) => s.lang);
   return (
     <Hud
       meters={meters}
       stars={stars}
       look={look}
+      onOpenSettings={onOpenSettings}
       lead={
         <div className="flex flex-wrap items-center gap-1.5">
-          <RoundButton icon={House} label="Home" onClick={goHome} className="!h-[2.75rem] !w-[2.75rem] !mb-[0.3rem]" />
+          <RoundButton icon={House} label={lang === 'bn' ? 'হোম' : 'Home'} onClick={goHome} className="!h-[2.75rem] !w-[2.75rem] !mb-[0.3rem]" />
           <span className="rounded-full border-2 border-line bg-panel px-3 py-0.5 font-display text-[1rem] leading-snug font-extrabold whitespace-nowrap text-text">
-            {levelLabel ?? `Level ${levelIndex + 1} of ${LEVELS.length}`}
+            {levelLabel ?? (lang === 'bn' ? `লেভেল ${levelIndex + 1} / ${LEVELS.length}` : `Level ${levelIndex + 1} of ${LEVELS.length}`)}
           </span>
           {current?.place ? (
             <span
               className="rounded-full border-2 border-line bg-sky-space px-2.5 py-0.5 font-display text-sm font-extrabold whitespace-nowrap text-text max-[760px]:hidden"
               aria-label={`Mission stage: ${current.place}`}
             >
-              {current.place}
+              {tMission(current.place)}
             </span>
           ) : null}
         </div>

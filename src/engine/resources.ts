@@ -164,6 +164,39 @@ export function refundAllCargo(
   return { refundedStardust: totalSpent };
 }
 
+export function consumeUpgrades(): Record<MeterKey, number> {
+  const current = loadUpgrades();
+  const bonus: Record<MeterKey, number> = {
+    P: current.P * BONUS_PER_TIER,
+    L: current.L * BONUS_PER_TIER,
+    F: current.F * BONUS_PER_TIER,
+    S: current.S * BONUS_PER_TIER,
+  };
+  saveUpgrades({ ...DEFAULT_UPGRADES });
+  return bonus;
+}
+
+export function applyUpgradesToState(state: GameState, consume = false): GameState {
+  const bonus = consume
+    ? consumeUpgrades()
+    : {
+        P: (loadUpgrades().P || 0) * BONUS_PER_TIER,
+        L: (loadUpgrades().L || 0) * BONUS_PER_TIER,
+        F: (loadUpgrades().F || 0) * BONUS_PER_TIER,
+        S: (loadUpgrades().S || 0) * BONUS_PER_TIER,
+      };
+
+  return {
+    ...state,
+    meters: {
+      P: state.meters.P + bonus.P,
+      L: state.meters.L + bonus.L,
+      F: state.meters.F + bonus.F,
+      S: state.meters.S + bonus.S,
+    },
+  };
+}
+
 export function getUpgradedStartingMeters(base = 40): Record<MeterKey, number> {
   const upgrades = loadUpgrades();
   return {

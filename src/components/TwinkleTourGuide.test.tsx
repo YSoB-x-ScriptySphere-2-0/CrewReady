@@ -12,8 +12,8 @@ describe('TwinkleTourGuide component', () => {
     expect(html).toContain("Twinkle&#x27;s Flight Deck Tour");
 
     // Check step 1 button
-    expect(html).toContain('PLAY / CONTINUE');
-    expect(html).toContain('Main Launch Button');
+    expect(html).toContain('PLAY');
+    expect(html).toContain('Start here');
 
     // Check data source in small font
     expect(html).toContain('NASA &amp; NOAA Science Data Used');
@@ -30,8 +30,8 @@ describe('TwinkleTourGuide component', () => {
     const handleClose = vi.fn();
     const html = renderToString(<TwinkleTourGuide onClose={handleClose} initialStepIndex={1} />);
 
-    expect(html).toContain('FLY (Orbital Spacecraft Runner)');
-    expect(html).toContain('NOAA Space Weather Prediction Center');
-    expect(html).toContain('Planetary K-Index');
+    expect(html).toContain('Fly fast!');
+    expect(html).toContain('NOAA SWPC');
+    expect(html).toContain('Kp');
   });
 });

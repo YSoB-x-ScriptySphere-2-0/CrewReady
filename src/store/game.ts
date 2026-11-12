@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { LEVELS } from '../content/levels';
 import { costliest, enterLevel, enterSteps, startMission, type LogEntry } from '../engine/engine';
+import { applyUpgradesToState } from '../engine/resources';
 import type { GameState, Meter, Outcome } from '../engine/types';
 import { recordRun, type BoardEntry } from './leaderboard';
 import { currentStormX, level6Storm } from './space';
@@ -132,7 +133,8 @@ export const useGame = create<Store>()(
 
       startMission: (X = currentStormX()) => {
         const D = DUST_CASES[Math.floor(Math.random() * DUST_CASES.length)];
-        set({ levelIndex: 0, badges: [], screen: 'level', runId: get().runId + 1, ...enter(startMission(X, D), 0) });
+        const initial = applyUpgradesToState(startMission(X, D), true);
+        set({ levelIndex: 0, badges: [], screen: 'level', runId: get().runId + 1, ...enter(initial, 0) });
       },
       beginLevel: () => set({ screen: 'play' }),
       act: (outcome, opts) => {

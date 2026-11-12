@@ -2,10 +2,13 @@
 // It owns the gain/loss feedback (§4.4): a loss shakes the pill, flashes it red, counts down and floats
 // a "−15" chip; a gain pops it, counts up and floats a "+10" chip. Phones: 2×2. Laptops: one row.
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { Settings, Sparkles } from 'lucide-react';
 import { METERS, METER_NAMES, type Meter } from '../engine/types';
 import { METER_COLOR, MeterBadge, StarIcon } from './meters';
 import { useCountTo } from './motion';
 import { MusicToggle } from './MusicToggle';
+import { useI18n } from '../content/i18n';
+import { useWallet } from '../store/wallet';
 
 let seq = 0;
 type Fx = { dir: 'up' | 'down'; id: number } | null;
@@ -125,10 +128,50 @@ export function StarCounter({ n }: { n: number }) {
   );
 }
 
+/** Stardust counter (✦) tracking economy wallet balance */
+export function StardustCounter() {
+  const dust = useWallet((s) => s.stardust);
+  const shown = useCountTo(dust, 400);
+  const { fx, chips } = useChangeFx(dust);
+  return (
+    <div className="relative" data-hud-target="stardust">
+      <div
+        key={fx?.id ?? 0}
+        className={`flex items-center gap-1.5 rounded-full border-2 border-line bg-panel py-[0.125rem] pr-[0.75rem] pl-[0.125rem] text-text shadow-[0_0.15rem_0_var(--color-lip)] ${fx ? 'anim-pop' : ''}`}
+        aria-label={`${dust} stardust`}
+        role="status"
+      >
+        <span className="grid h-[1.875rem] w-[1.875rem] place-items-center rounded-full bg-amber-400 text-black" aria-hidden>
+          <Sparkles size={16} />
+        </span>
+        <span className="font-display text-[1.125rem] leading-none font-extrabold tabular-nums text-amber-300" aria-hidden>
+          {shown} ✦
+        </span>
+      </div>
+      {chips.map((c) => (
+        <FloatChip key={c.id} d={c.d} />
+      ))}
+    </div>
+  );
+}
+
 /**
  * The top strip, about 3 rem tall, always one row: `lead` (Home button, level chip), the four meter pills, the stars.
  */
-export function Hud({ meters, stars, lead, look }: { meters: Record<Meter, number>; stars: number; lead?: ReactNode; look?: Partial<Record<Meter, number>> }) {
+export function Hud({
+  meters,
+  stars,
+  lead,
+  look,
+  onOpenSettings,
+}: {
+  meters: Record<Meter, number>;
+  stars: number;
+  lead?: ReactNode;
+  look?: Partial<Record<Meter, number>>;
+  onOpenSettings?: () => void;
+}) {
+  const lang = useI18n((s) => s.lang);
   return (
     <header className="sticky top-0 z-30 border-b-2 border-line bg-space-deep/90 px-[0.75rem] pt-[0.25rem] pb-[0.5rem] text-text" aria-label="Outpost meters">
       <div className="flex flex-nowrap items-center gap-[0.5rem]">
@@ -138,8 +181,22 @@ export function Hud({ meters, stars, lead, look }: { meters: Record<Meter, numbe
             <MeterPill key={m} meter={m} value={meters[m]} look={look?.[m]} />
           ))}
         </div>
-        <StarCounter n={stars} />
+        <div className="flex items-center gap-1.5">
+          <StarCounter n={stars} />
+          <StardustCounter />
+        </div>
         <MusicToggle compact />
+        {onOpenSettings && (
+          <button
+            type="button"
+            onClick={onOpenSettings}
+            title={lang === 'bn' ? 'মিশন সেটিংস' : 'Mission Settings'}
+            aria-label="Settings"
+            className="group relative grid h-[2.75rem] w-[2.75rem] cursor-pointer place-items-center rounded-full border border-white/20 bg-panel/80 text-text shadow-sm backdrop-blur-md transition hover:border-go/50 hover:bg-panel active:scale-95"
+          >
+            <Settings size={18} strokeWidth={2.4} className="text-muted/70 group-hover:text-go" />
+          </button>
+        )}
       </div>
     </header>
   );

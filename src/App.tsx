@@ -5,7 +5,6 @@ import { Play } from './screens/Play';
 import { LevelOpening } from './screens/LevelOpening';
 import { MissionMap } from './screens/MissionMap';
 import { Replay } from './screens/Replay';
-import { Story } from './screens/Story';
 import { Success } from './screens/Success';
 import { Sources } from './screens/Sources';
 import { Fly } from './screens/Fly';
@@ -17,6 +16,7 @@ import { useGame } from './store/game';
 import { useSpace } from './store/space';
 import { WordCardHost } from './components/Words';
 import { TwinkleTourGuide } from './components/TwinkleTourGuide';
+import { CinematicIntro3D } from './components/3d/CinematicIntro3D';
 import { spaceMusic } from './services/audio';
 
 /** Hidden dev page with every game-kit part (G1). Not linked from the game. */
@@ -34,6 +34,7 @@ function useHash() {
 function Screens() {
   const [welcomeDismissed, setWelcomeDismissed] = useState(false);
   const [showTour, setShowTour] = useState(false);
+  const [showCinematicIntro, setShowCinematicIntro] = useState(false);
   const { screen, seenIntro, go } = useGame();
   const hash = useHash();
   // Real NASA data starts loading as soon as the app opens, so the storm size is known by PLAY.
@@ -63,15 +64,27 @@ function Screens() {
       <Welcome
         onStart={() => {
           setWelcomeDismissed(true);
-          // Before the intro: if not seen intro yet, show Twinkle's Tour first!
+          // Show Marvel cinematic intro if player hasn't seen the intro yet
           if (!seenIntro) {
-            setShowTour(true);
+            setShowCinematicIntro(true);
           } else if (screen === 'hook') {
             go('home');
           }
         }}
         onOpenTour={() => {
           setWelcomeDismissed(true);
+          setShowTour(true);
+        }}
+      />
+    );
+  }
+
+  // Marvel-style Cinematic 3D Intro
+  if (showCinematicIntro) {
+    return (
+      <CinematicIntro3D
+        onComplete={() => {
+          setShowCinematicIntro(false);
           setShowTour(true);
         }}
       />
@@ -93,7 +106,15 @@ function Screens() {
   }
 
   if (screen === 'hook') return <Hook />;
-  if (screen === 'story') return <Story />;
+  if (screen === 'story') {
+    return (
+      <CinematicIntro3D
+        onComplete={() => {
+          go('home');
+        }}
+      />
+    );
+  }
   if (screen === 'map') return <MissionMap />;
   if (screen === 'level') return <LevelOpening />;
   if (screen === 'play') return <Play />;

@@ -62,7 +62,7 @@ const DATASETS: DatasetEntry[] = [
     dateOrMode: 'Daily full-disc natural color imagery',
     url: 'https://epic.gsfc.nasa.gov/',
     description:
-      'Photographs the entire sunlit side of Earth from the Lagrange 1 point, 1.5 million kilometers away in deep space.',
+      'Photographs the entire sunlit side of Earth from about 1.6 million kilometres (one million miles) away, toward the Sun.',
   },
   {
     name: 'InSight Mars Weather Service (TWINS / SEIS)',
@@ -75,14 +75,14 @@ const DATASETS: DatasetEntry[] = [
       'Real Martian atmospheric data recorded on Elysium Planitia. Sol 675 measured daily temperatures averaging −62.3 °C (from −96.9 °C to −15.9 °C).',
   },
   {
-    name: 'Open Science Data Repository (OSDR) Veggie Study OSD-268',
+    name: 'Open Science Data Repository (OSDR) Veggie Study OSD-745',
     agency: 'NASA Biological & Physical Sciences',
     whereUsed: 'Level 5 (Space Station greenhouse and lettuce farming)',
     badge: 'NASA ARCHIVE',
     dateOrMode: 'August 2015 (VEG-01B mission)',
     url: 'https://osdr.nasa.gov/osdr/data/search?term=veggie&type=cgene',
     description:
-      'Microbiological and nutritional analysis of red romaine lettuce grown on the ISS. Proved space-grown lettuce was safe to eat and had the same nutrients as Earth-grown crops.',
+      'Microbiological and nutritional analysis of lettuce crops grown on the ISS. Checks of the space-grown lettuce for harmful germs and for nutrients.',
   },
   {
     name: 'Astronomy Picture of the Day (APOD)',
@@ -139,8 +139,17 @@ const SIMPLIFICATIONS = [
   },
   {
     inGame: 'Radioing Earth costs a fixed amount of air and water',
-    inReality: 'The true cost depends on orbital positions (5 to 20 minutes message travel time each way) and the physical rate of outpost life-support consumption.',
+    inReality: 'The true cost depends on orbital positions (about 3 to 22 minutes message travel time each way) and the physical rate of outpost life-support consumption.',
   },
+];
+
+const TEAM = [
+  { name: 'Ahnaf Nabil', role: 'Team Lead & Systems Architect' },
+  { name: 'Barkat Ullah Shah Riyad', role: 'UI/UX Designer & Developer' },
+  { name: 'Jawad Hossain Rian', role: 'Back-End Developer & Debugger' },
+  { name: 'Tasfia Zaman Totiny', role: 'Researcher & Script Writer' },
+  { name: 'Wasima Haque Syeda', role: 'Video Editor & Script Writer' },
+  { name: 'Imtiaj Mahmud Ormi', role: 'Front-End Developer & Designer' },
 ];
 
 const CLASS_LEARNINGS = [
@@ -283,7 +292,7 @@ export function Sources() {
           </div>
 
           <blockquote className="rounded-2xl border-2 border-good/40 bg-good/10 p-6 text-base italic leading-relaxed text-ink shadow-sm sm:text-lg">
-            “The asteroid and the Mars Continuity Programme are fiction made for this game. NASA tracks near-Earth asteroids and tests ways to deflect them, and predicts no dangerous impact. Mars is not yet a safe home for people. Our meter numbers are simplified for play and are not engineering values. Everything else — the storms, the dust, the delay, the lettuce — is real, and each screen names its source.”
+            “The asteroid and the Mars Continuity Programme are fiction made for this game. NASA tracks near-Earth asteroids and tests ways to deflect them, and knows of no asteroid that is a real danger to Earth in the next 100 years. Mars is not yet a safe home for people. Our meter numbers are simplified for play and are not engineering values. Everything else — the storms, the dust, the delay, the lettuce — is real, and each screen names its source.”
           </blockquote>
         </section>
 
@@ -313,7 +322,7 @@ export function Sources() {
               <strong>Solar Eruptions & Prominences:</strong> NASA Solar Dynamics Observatory (SDO) / SOHO.
             </li>
             <li className="rounded-xl border border-ink/10 bg-white/60 p-3.5">
-              <strong>Featured APOD (“Aurora over Earth”):</strong> Photograph by Lorenzo Spiss, courtesy of NASA Astronomy Picture of the Day archive.
+              <strong>Saved APOD (“Aurora over Earth”, shown only when today’s picture cannot load):</strong> Photograph by Lorenzo Spiss, via NASA Astronomy Picture of the Day.
             </li>
           </ul>
         </section>
@@ -331,14 +340,14 @@ export function Sources() {
             <div className="rounded-xl border border-ink/10 bg-white/60 p-4">
               <h3 className="font-display text-base font-extrabold text-ink">Character & Welcome Art</h3>
               <p className="mt-1">
-                Astronaut crew cutouts (Orbit, Nova, Twinkle) and the welcome scene mockups were generated with Midjourney and Google Imagen, then meticulously retouched, cleaned of mock-up artifacts, and transparently cut out by the team. In strict accordance with competition rules, no NASA insignias or copyrighted agency logos appear on suits or hardware.
+                The crew pictures (Orbit, Nova, Twinkle) and the welcome scenes were made with ChatGPT image generation (OpenAI). The team chose the poses, removed mock-up text and cut out the backgrounds. No NASA logo appears on any suit or machine.
               </p>
             </div>
 
             <div className="rounded-xl border border-ink/10 bg-white/60 p-4">
               <h3 className="font-display text-base font-extrabold text-ink">Sound & Audio</h3>
               <p className="mt-1">
-                Authentic mission audio courtesy of NASA’s public domain Artemis II communications archive (liftoff and comms check). Tactile UI audio effects provided by Kenney.nl under Creative Commons Zero (CC0 1.0 Universal).
+                Every sound is made in code by the game itself (Web Audio). No recorded sound files are played.
               </p>
             </div>
 
@@ -352,7 +361,7 @@ export function Sources() {
             <div className="rounded-xl border border-ink/10 bg-white/60 p-4">
               <h3 className="font-display text-base font-extrabold text-ink">AI Code & Design Assistants</h3>
               <p className="mt-1">
-                Claude Code (Anthropic) and Antigravity (Google DeepMind) served as development agents assisting the team with level simulation balancing, TypeScript test authoring, and workflow automation. All scientific datasets, facts, and game rules were independently audited against NASA primary literature.
+                Claude Code (Anthropic) and Antigravity (Google DeepMind) served as development agents assisting the team with level simulation balancing, TypeScript test authoring, and workflow automation. Every fact on screen was checked on 13 Nov 2026 against the NASA or NOAA source named for it (docs/06 §4); facts we could not confirm were removed.
               </p>
             </div>
           </div>
@@ -367,27 +376,14 @@ export function Sources() {
             </h2>
           </div>
 
+          <p className="mb-3 text-sm text-ink/70">Team CrewReady · Cumilla, Bangladesh</p>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border border-ink/10 bg-white/60 p-3.5">
-              <p className="text-xs font-bold uppercase tracking-wider text-ink/50">Team Lead & Systems Architect</p>
-              <p className="font-display text-base font-extrabold text-ink">[Team Lead]</p>
-            </div>
-            <div className="rounded-xl border border-ink/10 bg-white/60 p-3.5">
-              <p className="text-xs font-bold uppercase tracking-wider text-ink/50">Science & NASA Data Lead</p>
-              <p className="font-display text-base font-extrabold text-ink">[Science Lead]</p>
-            </div>
-            <div className="rounded-xl border border-ink/10 bg-white/60 p-3.5">
-              <p className="text-xs font-bold uppercase tracking-wider text-ink/50">Frontend & Simulation Engineer</p>
-              <p className="font-display text-base font-extrabold text-ink">[Frontend Engineer]</p>
-            </div>
-            <div className="rounded-xl border border-ink/10 bg-white/60 p-3.5">
-              <p className="text-xs font-bold uppercase tracking-wider text-ink/50">UI/UX & Character Artist</p>
-              <p className="font-display text-base font-extrabold text-ink">[UI/UX Artist]</p>
-            </div>
-            <div className="rounded-xl border border-ink/10 bg-white/60 p-3.5 sm:col-span-2">
-              <p className="text-xs font-bold uppercase tracking-wider text-ink/50">Localization & Accessibility Lead</p>
-              <p className="font-display text-base font-extrabold text-ink">[Localization Lead]</p>
-            </div>
+            {TEAM.map((m) => (
+              <div key={m.name} className="rounded-xl border border-ink/10 bg-white/60 p-3.5">
+                <p className="text-xs font-bold uppercase tracking-wider text-ink/50">{m.role}</p>
+                <p className="font-display text-base font-extrabold text-ink">{m.name}</p>
+              </div>
+            ))}
           </div>
         </section>
 

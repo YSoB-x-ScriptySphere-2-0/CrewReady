@@ -10,6 +10,7 @@ import {
   refundAllCargo,
   getUpgradedStartingMeters,
   applyResourcesToGameState,
+  applyUpgradesToState,
   MAX_CARGO_SLOTS,
   type UpgradesState,
 } from './resources';
@@ -145,5 +146,21 @@ describe('Cargo Resources & Upgrades (S4)', () => {
       F: 40,
       S: 45,
     });
+  });
+
+  it('consumeUpgrades uses up packed cargo and adds bonus to launched mission (B1 item 1)', () => {
+    saveUpgrades({ P: 1, L: 0, F: 0, S: 2 }); // P:+5, S:+10
+    const baseGame = startMission(20, 15);
+
+    const launchedGame = applyUpgradesToState(baseGame, true);
+    expect(launchedGame.meters).toEqual({
+      P: 45,
+      L: 40,
+      F: 40,
+      S: 50,
+    });
+
+    // Upgrades must now be used up in storage
+    expect(loadUpgrades()).toEqual({ P: 0, L: 0, F: 0, S: 0 });
   });
 });

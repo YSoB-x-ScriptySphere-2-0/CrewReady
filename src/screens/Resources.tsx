@@ -58,7 +58,7 @@ const SYSTEMS: SystemConfig[] = [
     name: 'Food Supply',
     color: '#2FA84F',
     icon: Apple,
-    fact: 'Astronauts ate lettuce grown on the Space Station for the first time in August 2015.',
+    fact: 'In 2015, astronauts ate red lettuce they grew on the Space Station.',
     source: 'NASA Veggie pages; OSDR Veggie studies',
   },
   {

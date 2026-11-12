@@ -17,9 +17,10 @@ import { enterSteps, type EnterStep } from '../engine/engine';
 import { METERS } from '../engine/types';
 import { useGame } from '../store/game';
 import { fmtDate, useSpace } from '../store/space';
-import { t, useI18n } from '../content/i18n';
+import { t, tMission, useI18n } from '../content/i18n';
 import { CrisisEarth3D } from '../components/3d/CrisisEarth3D';
 import { HeroCadetRocket3D } from '../components/3d/HeroCadetRocket3D';
+import { MissionSettingsModal } from '../components/MissionSettingsModal';
 
 /** Time before the first carry-over lands, and between the next ones (the HUD's own effect is 600 ms). */
 const FIRST_MS = 500;
@@ -137,6 +138,7 @@ export function LevelOpening() {
   const reduce = useReducedMotion();
   const steps = useMemo(() => enterSteps(checkpoint, level), [checkpoint, level]);
   const [show3DModal, setShow3DModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [active3DTab, setActive3DTab] = useState<'earth' | 'rocket'>('earth');
 
   const [played, setPlayed] = useState(reduce ? steps.length : 0);
@@ -155,9 +157,9 @@ export function LevelOpening() {
   const tasks = tasksFor(levelIndex, 0);
   const latest = played > 0 ? steps[played - 1] : null;
 
-  const titleText = t(`level${level.id}.title`) || level.title;
-  const teachesText = t(`level${level.id}.teaches`) || level.teaches;
-  const placeText = t(`level${level.id}.place`) || level.place;
+  const titleText = tMission(t(`level${level.id}.title`) || level.title);
+  const teachesText = tMission(t(`level${level.id}.teaches`) || level.teaches);
+  const placeText = tMission(t(`level${level.id}.place`) || level.place);
 
   const left = (
     <>
@@ -172,11 +174,11 @@ export function LevelOpening() {
   );
 
   return (
-    <Scene bare place={LEVEL_SCENE[level.id]} top={<LevelHud meters={meters} stars={game.stars} />}>
+    <Scene bare place={LEVEL_SCENE[level.id]} top={<LevelHud meters={meters} stars={game.stars} onOpenSettings={() => setShowSettingsModal(true)} />}>
       <LevelZones left={left}>
         <div className="flex flex-wrap items-center justify-between gap-x-[0.625rem] gap-y-[0.25rem]">
           <div className="flex flex-wrap items-center gap-2">
-            <Ribbon tone="go">{`Level ${level.id} · ${titleText}`}</Ribbon>
+            <Ribbon tone="go">{lang === 'bn' ? `লেভেল ${level.id} · ${titleText}` : `Level ${level.id} · ${titleText}`}</Ribbon>
             <span className="rounded-full bg-panel/85 px-[0.625rem] font-display text-[0.875rem] leading-snug font-bold text-text">
               {placeText}
             </span>
@@ -301,6 +303,9 @@ export function LevelOpening() {
           </div>
         </div>
       )}
+
+      {/* Quick Settings & Audio/Language Modal */}
+      <MissionSettingsModal open={showSettingsModal} onClose={() => setShowSettingsModal(false)} />
     </Scene>
   );
 }

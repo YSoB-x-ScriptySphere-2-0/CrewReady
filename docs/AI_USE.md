@@ -12,7 +12,7 @@ In full compliance with the NASA Space Apps Challenge Universal Rules and Bangla
 |---|---|---|---|
 | **Claude (Anthropic)** | Large Language Model / Coding Agent | Drafted TypeScript boilerplate, test scaffolding, state logic, and initial English/Bangla text keys. | Architected system requirements, vetted scientific formulas against NASA documentation, designed the educational pedagogy, reviewed and corrected every line of code. |
 | **Antigravity (Google DeepMind)** | Autonomous Agent / Assistant | Implemented pure simulation modules (`stormSize`, NASA snapshot pipelines, PWA service worker, runner physics, and resource upgrades). | Defined build sequences, enforced non-functional constraints (no `backdrop-blur`, zero key leakage), verified unit test validity. |
-| **Midjourney & Google Imagen** | Generative AI Image Synthesis | Generated preliminary 3D concept renders for the astronaut crew (Orbit & Nova) and the welcome cinematic backdrop. | Prompt-engineered specific astronaut poses, removed fictional/unauthorized agency patches, manually cut out alpha transparency sheets (`public/art/`), and ensured visual consistency across landscape viewports. |
+| **ChatGPT image generation (OpenAI)** | Image generation | Made the crew pictures (Orbit, Nova, Twinkle) and the welcome scenes. | Chose the poses, removed mock-up text and logos, cut out the backgrounds (`public/art/`), and kept the look the same across screens. |
 
 ---
 
@@ -26,6 +26,7 @@ In full compliance with the NASA Space Apps Challenge Universal Rules and Bangla
 
 ## 3. Code, Science & Fact Integrity
 
-- **NASA Data Integrity:** All formulas, thresholds (e.g. NOAA Kp storm scale, InSight temperature ranges, MOXIE production rates, OSDR Veggie study dates) were verified by the team against published NASA technical papers and APIs before integration.
-- **Human Verification:** No AI model had unchecked authority over science facts. Every fact displayed on screen has an explicit source attribution and is verified in `docs/06_SCIENCE_AND_NASA_DATA.md`.
-- **Bangla Translations:** All drafted Bengali strings have been curated and reviewed by native Bangla speakers to ensure appropriate syntax, natural tone for children, and accurate terminology.
+- **Facts.** On 13 Nov 2026 every on-screen fact was checked against the NASA or NOAA page named for it, using Claude for web research and a second, independent AI review that tried to disprove each one. The results, with links, are in `docs/06_SCIENCE_AND_NASA_DATA.md` §4. Facts that could not be confirmed were removed from the game. A team member (Tasfia Zaman Totiny, Researcher) opens each link once before judging.
+- **Sources on screen.** Every fact in the game carries a source line, and the Sources page lists every dataset.
+- **Bangla.** Bangla text was drafted with AI. A Bangla-speaking team member checks every line before it ships; lines not yet checked are marked "needs a check" in `src/content/strings.bn.ts`.
+- **Team:** Ahnaf Nabil, Barkat Ullah Shah Riyad, Jawad Hossain Rian, Tasfia Zaman Totiny, Wasima Haque Syeda, Imtiaj Mahmud Ormi · Cumilla, Bangladesh.
