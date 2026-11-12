@@ -9,6 +9,9 @@ import { Story } from './screens/Story';
 import { Success } from './screens/Success';
 import { Sources } from './screens/Sources';
 import { Fly } from './screens/Fly';
+import { Resources } from './screens/Resources';
+import { Profile } from './screens/Profile';
+import { Training } from './screens/Training';
 import { Welcome } from './screens/Welcome';
 import { useGame } from './store/game';
 import { useSpace } from './store/space';
@@ -62,5 +65,8 @@ export default function App() {
   if (screen === 'success') return <Success />;
   if (screen === 'sources') return <Sources />;
   if (screen === 'fly') return <Fly />;
+  if (screen === 'resources') return <Resources />;
+  if (screen === 'profile') return <Profile />;
+  if (screen === 'training') return <Training />;
   return <Home />;
 }
