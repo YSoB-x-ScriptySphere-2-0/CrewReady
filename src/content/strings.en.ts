@@ -1,0 +1,17 @@
+export const stringsEn: Record<string, string> = {
+  'app.name': 'CrewReady',
+  'app.tagline': 'BEYOND US',
+  'app.subtitle': 'Junior Astronaut Training',
+  'welcome.play': 'Play',
+  'welcome.howToPlay': 'How to Play',
+  'welcome.loading': 'Preparing Mission…',
+  'welcome.ready': 'Ready for Launch',
+  'howToPlay.title': 'How to Play',
+  'howToPlay.step1.title': 'Watch Your 4 Meters',
+  'howToPlay.step1.desc': 'Power, Air & Water, Food, and Radiation Shield. Keep every system above zero!',
+  'howToPlay.step2.title': 'Every Choice Is a Trade',
+  'howToPlay.step2.desc': 'Tap a choice to see what it touches. Tap GO to confirm your command.',
+  'howToPlay.step3.title': 'Failure Is Training',
+  'howToPlay.step3.desc': 'If a meter runs out, Mission Replay shows real NASA science and lets you try again.',
+  'howToPlay.close': 'Got It, Commander',
+};

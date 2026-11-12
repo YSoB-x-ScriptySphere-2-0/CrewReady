@@ -14,17 +14,54 @@ import { BUILT_SCREENS, missionInProgress, useGame } from '../store/game';
 /** Sample until B4 wires live data. Confirmed in DONKI: Kp reached 9.0 on 11 May 2024 (docs/06 §4). */
 const SPACE_WEATHER_SAMPLE = { kp: 9, date: '11 May 2024' };
 
-/** Sun storm level as nine blocks, 0–9. */
+function getNoaaStormTier(kp: number): { scale: string; label: string; tone: 'calm' | 'active' | 'storm' | 'extreme'; barColor: string } {
+  if (kp >= 9) return { scale: 'NOAA G5', label: 'Extreme Solar Storm', tone: 'extreme', barColor: 'bg-danger' };
+  if (kp >= 8) return { scale: 'NOAA G4', label: 'Severe Solar Storm', tone: 'extreme', barColor: 'bg-danger' };
+  if (kp >= 7) return { scale: 'NOAA G3', label: 'Strong Solar Storm', tone: 'storm', barColor: 'bg-[#e85d04]' };
+  if (kp >= 6) return { scale: 'NOAA G2', label: 'Moderate Storm', tone: 'storm', barColor: 'bg-power' };
+  if (kp >= 5) return { scale: 'NOAA G1', label: 'Minor Storm', tone: 'active', barColor: 'bg-power' };
+  if (kp >= 4) return { scale: 'Active Sun', label: 'Elevated Activity', tone: 'active', barColor: 'bg-power' };
+  return { scale: 'Quiet Sun', label: 'Calm Space Weather', tone: 'calm', barColor: 'bg-good' };
+}
+
+/** Sun storm level as nine graduated blocks with NOAA classification and live pulse. */
 function KpGauge({ kp }: { kp: number }) {
+  const tier = getNoaaStormTier(kp);
   return (
-    <span className="flex w-full flex-col items-center gap-2">
-      <span className="flex gap-1" aria-hidden>
-        {Array.from({ length: 9 }, (_, i) => (
-          <span key={i} className={`w-5 rounded-[5px] border-[3px] border-ink sm:w-7 ${i < kp ? 'bg-go' : 'bg-sky-space'}`} style={{ height: 14 + i * 4 }} />
-        ))}
+    <div className="flex w-full flex-col items-center gap-2.5 py-1">
+      <div className="flex items-center gap-2 rounded-full border-2 border-ink bg-paper px-3 py-1 text-ink shadow-[0_2px_0_var(--color-ink)]">
+        <span
+          className={`h-2.5 w-2.5 rounded-full ${tier.tone === 'extreme' ? 'anim-pop bg-danger shadow-[0_0_8px_var(--color-danger)]' : tier.tone === 'storm' ? 'bg-[#e85d04]' : 'bg-good'}`}
+          aria-hidden
+        />
+        <span className="font-display text-sm font-extrabold uppercase tracking-wider">{tier.scale}</span>
+        <span className="text-sm font-bold text-muted">· {tier.label}</span>
+      </div>
+
+      <span className="flex items-end gap-1.5" aria-hidden>
+        {Array.from({ length: 9 }, (_, i) => {
+          const active = i < kp;
+          const isHigh = i >= 6;
+          return (
+            <span
+              key={i}
+              className={`w-5 rounded-[6px] border-[3px] border-ink transition-all sm:w-7 ${
+                active
+                  ? isHigh
+                    ? 'bg-danger shadow-[0_0_6px_rgba(217,58,58,0.4)]'
+                    : tier.barColor
+                  : 'bg-sky-space opacity-40'
+              }`}
+              style={{ height: 16 + i * 4 }}
+            />
+          );
+        })}
       </span>
-      <span className="text-[28px]">Kp {kp} of 9</span>
-    </span>
+      <div className="flex items-baseline gap-2">
+        <span className="font-display text-[30px] font-extrabold text-paper">Kp {kp}</span>
+        <span className="text-base font-bold text-paper/80">of 9 max</span>
+      </div>
+    </div>
   );
 }
 
@@ -108,8 +145,8 @@ export function Home() {
         badge="NASA ARCHIVE"
         date={SPACE_WEATHER_SAMPLE.date}
         figure={<KpGauge kp={SPACE_WEATHER_SAMPLE.kp} />}
-        sentence={`Sun storm level: ${SPACE_WEATHER_SAMPLE.kp} of 9.`}
-        source={`NASA DONKI · ARCHIVE · ${SPACE_WEATHER_SAMPLE.date}`}
+        sentence={`Sun storm level: Kp ${SPACE_WEATHER_SAMPLE.kp} (NOAA G5 Extreme). In deep space, solar storms blast radiation — crews must shelter behind water tanks.`}
+        source={`NASA DONKI + NOAA SWPC · ARCHIVE · ${SPACE_WEATHER_SAMPLE.date}`}
       />
     </Scene>
   );

@@ -7,6 +7,7 @@ import { MissionMap } from './screens/MissionMap';
 import { Replay } from './screens/Replay';
 import { Story } from './screens/Story';
 import { Success } from './screens/Success';
+import { Welcome } from './screens/Welcome';
 import { useGame } from './store/game';
 
 /** Hidden dev page with every game-kit part (G1). Not linked from the game. */
@@ -22,14 +23,33 @@ function useHash() {
 }
 
 export default function App() {
-  const screen = useGame((s) => s.screen);
+  const [welcomeDismissed, setWelcomeDismissed] = useState(false);
+  const { screen, seenIntro, go } = useGame();
   const hash = useHash();
+
   if (hash === '#kit')
     return (
       <Suspense fallback={null}>
         <Kit />
       </Suspense>
     );
+
+  // Every time someone opens/refreshes the game, show Welcome first
+  if (!welcomeDismissed) {
+    return (
+      <Welcome
+        onStart={() => {
+          setWelcomeDismissed(true);
+          if (!seenIntro) {
+            go('hook');
+          } else if (screen === 'hook') {
+            go('home');
+          }
+        }}
+      />
+    );
+  }
+
   if (screen === 'hook') return <Hook />;
   if (screen === 'story') return <Story />;
   if (screen === 'map') return <MissionMap />;

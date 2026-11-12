@@ -53,6 +53,28 @@ function CountUp({ to }: { to: number }) {
   return <>{useCountTo(target, 1200)}</>;
 }
 
+/** Visual planetary defense radar readout with animated beacon and real NASA tracking count. */
+function AsteroidRadarFigure({ count }: { count: number }) {
+  return (
+    <div className="flex w-full flex-col items-center gap-2 py-1">
+      <div className="flex items-center gap-2 rounded-full border-2 border-ink bg-paper px-3 py-0.5 text-xs font-extrabold uppercase tracking-wider text-ink shadow-[0_2px_0_var(--color-ink)]">
+        <span className="relative flex h-2.5 w-2.5">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-good opacity-75" />
+          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-good" />
+        </span>
+        <span>Planetary Defense Radar</span>
+      </div>
+      <div className="flex items-baseline gap-2 font-display text-[50px] leading-none font-extrabold text-paper tabular-nums">
+        <CountUp to={count} />
+        <span className="font-display text-2xl font-bold text-paper/80">tracked</span>
+      </div>
+      <span className="rounded-md bg-paper/15 px-2.5 py-0.5 font-display text-xs font-bold text-paper/90">
+        Impact Risk: 0.00% · Safe Flybys Verified
+      </span>
+    </div>
+  );
+}
+
 export function Story() {
   const go = useGame((s) => s.go);
   const [i, setI] = useState(0);
@@ -125,11 +147,12 @@ export function Story() {
 
         {i === 0 ? (
           <IntelCard
+            title="Planetary Defense"
             badge="NASA ARCHIVE"
             date={`Real NASA data from ${fetched}`}
-            figure={<CountUp to={neows.count} />}
-            sentence={`Real asteroids passing Earth this week — NASA is tracking ${neows.count}. None will hit us.`}
-            source={`NASA NeoWs · ARCHIVE · ${fetched}`}
+            figure={<AsteroidRadarFigure count={neows.count} />}
+            sentence={`NASA's Planetary Defense Coordination Office is tracking ${neows.count} near-Earth asteroids this week. None will hit us.`}
+            source={`NASA NeoWs (Near Earth Object Web Service) · ARCHIVE · ${fetched}`}
           />
         ) : null}
       </div>

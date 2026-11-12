@@ -43,19 +43,31 @@ function DockButton({ label, icon: Icon, open, here, onClick }: { label: string;
 export function Dock() {
   const { screen, go } = useGame();
   return (
-    <nav aria-label="Main" className="on-paper sticky bottom-0 z-30 border-t-[3px] border-ink bg-paper pt-1.5 pb-[max(6px,env(safe-area-inset-bottom))]">
-      <ul className="mx-auto grid max-w-xl grid-cols-5">
-        {ITEMS.map(({ label, icon, screen: target, alsoActive }) => (
-          <li key={label}>
-            <DockButton
-              label={label}
-              icon={icon}
-              open={BUILT_SCREENS.has(target)}
-              here={screen === target || !!alsoActive?.includes(screen)}
-              onClick={() => go(target)}
-            />
-          </li>
-        ))}
+    <nav
+      aria-label="Main"
+      className="on-paper sticky bottom-0 z-30 border-t-[3px] border-ink/85 bg-paper/85 backdrop-blur-xl pt-1.5 pb-[max(8px,env(safe-area-inset-bottom))] shadow-[0_-4px_24px_rgba(27,31,59,0.16),inset_0_1.5px_0_rgba(255,255,255,0.75)] transition-colors"
+    >
+      <ul className="mx-auto grid max-w-xl grid-cols-5 gap-1 px-1">
+        {ITEMS.map(({ label, icon, screen: target, alsoActive }) => {
+          const isHere = screen === target || !!alsoActive?.includes(screen);
+          return (
+            <li key={label} className="relative flex flex-col items-center">
+              <DockButton
+                label={label}
+                icon={icon}
+                open={BUILT_SCREENS.has(target)}
+                here={isHere}
+                onClick={() => go(target)}
+              />
+              {isHere ? (
+                <span
+                  aria-hidden
+                  className="anim-pop absolute -bottom-1 h-1 w-6 rounded-full bg-go shadow-[0_0_8px_var(--color-go)]"
+                />
+              ) : null}
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );

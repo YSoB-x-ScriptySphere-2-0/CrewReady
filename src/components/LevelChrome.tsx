@@ -28,17 +28,26 @@ export const totalChange = (o: Pick<Outcome, 'delta'>) => METERS.reduce((a, m) =
 /** The level HUD: Home, which level, the four meters and the stars. */
 export function LevelHud({ meters, stars, levelLabel }: { meters: Record<Meter, number>; stars: number; levelLabel?: string }) {
   const { goHome, levelIndex } = useGame();
+  const current = LEVELS[levelIndex];
   return (
     <Hud
       meters={meters}
       stars={stars}
       lead={
-        <>
+        <div className="flex flex-wrap items-center gap-1.5">
           <RoundButton icon={House} label="Home" onClick={goHome} className="!h-12 !w-12 !mb-[6px]" />
           <span className="rounded-full border-[3px] border-ink bg-paper px-3 py-0.5 font-display text-lg leading-snug font-extrabold whitespace-nowrap text-ink">
             {levelLabel ?? `Level ${levelIndex + 1} of ${LEVELS.length}`}
           </span>
-        </>
+          {current?.place ? (
+            <span
+              className="rounded-full border-2 border-ink bg-sky-space px-2.5 py-0.5 font-display text-sm font-extrabold whitespace-nowrap text-paper shadow-[0_2px_0_var(--color-ink)]"
+              aria-label={`Mission stage: ${current.place}`}
+            >
+              {current.place}
+            </span>
+          ) : null}
+        </div>
       }
     />
   );
