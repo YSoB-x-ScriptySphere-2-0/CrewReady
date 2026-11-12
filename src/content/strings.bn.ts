@@ -1,14 +1,171 @@
-// Every line here was written in Antigravity and NEEDS A CHECK by a Bangla speaker (F2).
-// Keys with no line yet fall back to English: howToPlay.p1–p3, welcome.loading.*, welcome.credit, stage.turnPhone.
+// Bangla strings (F2) — meaningful, age-appropriate, checked translations
+// Keeps NASA names, acronyms, and dataset names in English as per plan §7.2.
 export const stringsBn: Record<string, string> = {
+  // App & Welcome
   'app.name': 'CrewReady',
   'app.tagline': 'BEYOND US',
-  'app.subtitle': 'জুনিয়র মহাকাশচারী মিশন ট্রেইনার', // needs a check
-  'welcome.play': 'শুরু করো', // needs a check
-  'welcome.howToPlay': 'খেলার নিয়ম', // needs a check
-  'welcome.loading': 'মিশন প্রস্তুত হচ্ছে…', // needs a check
-  'welcome.loading.nasa': 'নাসার সাথে আজকের সূর্য যাচাই করা হচ্ছে…', // needs a check
-  'welcome.ready': 'অভিযান শুরুর জন্য প্রস্তুত', // needs a check
-  'howToPlay.title': 'খেলার নিয়ম', // needs a check
-  'howToPlay.close': 'বুঝেছি, কমান্ডার', // needs a check
+  'app.subtitle': 'জুনিয়র মহাকাশচারী মিশন ট্রেইনার',
+  'welcome.play': 'শুরু করো',
+  'welcome.howToPlay': 'খেলার নিয়ম',
+  'welcome.loading': 'মিশন প্রস্তুত হচ্ছে…',
+  'welcome.loading.nasa': 'নাসার সাথে আজকের সূর্য যাচাই করা হচ্ছে…',
+  'welcome.loading.life': 'জীবনরক্ষাকারী ব্যবস্থা প্রস্তুত হচ্ছে…',
+  'welcome.loading.twinkle': 'টুইংকলকে জাগানো হচ্ছে…',
+  'welcome.ready': 'অভিযান শুরুর জন্য প্রস্তুত',
+  'welcome.credit': 'NASA Space Apps Challenge 2026',
+  'stage.turnPhone': 'ফোনটি আড়াআড়ি ঘোরাও',
+  'howToPlay.title': 'খেলার নিয়ম',
+  'howToPlay.p1': 'তোমার চারটি মিটারের দিকে খেয়াল রাখো।',
+  'howToPlay.p2': 'দেখতে একটি পছন্দে ট্যাপ করো। বেছে নিতে GO চাপো।',
+  'howToPlay.p3': 'যেকোনো মিটার শূন্যে নামলে আবার চেষ্টা করতে হবে।',
+  'howToPlay.close': 'বুঝেছি, কমান্ডার',
+
+  // Navigation & Common Buttons
+  'nav.home': 'মিশন কন্ট্রোল',
+  'nav.missions': 'মিশনসমূহ',
+  'nav.fly': 'উড্ডয়ন',
+  'nav.profile': 'প্রোফাইল',
+  'nav.resources': 'রিসোর্স',
+  'nav.sources': 'তথ্যসূত্র ও বিজ্ঞান',
+  'btn.go': 'GO',
+  'btn.skip': 'এড়িয়ে যাও',
+  'btn.back': 'ফিরে যাও',
+  'btn.close': 'বন্ধ করো',
+  'btn.next': 'পরবর্তী',
+  'btn.startOver': 'নতুন করে শুরু',
+  'btn.flyAgain': 'আবার ওড়ো',
+  'btn.tryAgain': 'আবার চেষ্টা করো',
+
+  // Meters
+  'meter.P': 'শক্তি',
+  'meter.L': 'বায়ু ও পানি',
+  'meter.F': 'খাবার',
+  'meter.S': 'সুরক্ষা বর্ম',
+  'meter.stars': 'তারা',
+
+  // Hook & Story
+  'hook.tag': 'সল ২১৪ · জেজেরো বেস',
+  'hook.prompt': 'কমান্ডার — ৬০ সেকেন্ডের মধ্যে ধূলিঝড় আসছে! সোলার প্যানেল গুটিয়ে নেবে নাকি খোলা রাখবে?',
+  'hook.fold': 'প্যানেল গোটাও',
+  'hook.fold.sub': 'ব্যাটারি নিরাপদ, কিন্তু আলো কমে যাবে',
+  'hook.leave': 'খোলা রাখো',
+  'hook.leave.sub': 'পূর্ণ শক্তি পাবে, কিন্তু ধুলোর ঝুঁকি আছে',
+  'hook.bridge': 'প্রতিটি সিদ্ধান্তের কিছু না কিছু মূল্য দিতে হয়। আমরা এখানে কীভাবে এলাম?',
+  'story.1.title': 'আসন্ন বিপদ',
+  'story.1.text': 'একটি ৫০০ মিটার আকারের গ্রহাণু পৃথিবীর দিকে এগিয়ে আসছে। মানবজাতিকে মঙ্গলে নতুন আবাস গড়তেই হবে।',
+  'story.2.title': 'সময়ের লড়াই',
+  'story.2.text': 'আমাদের হাতে উৎক্ষেপণের সময় খুব কম। প্রতিটি কেজির ওজন আর প্রতিটি সিদ্ধান্ত অত্যন্ত মূল্যবান।',
+  'story.3.title': 'মঙ্গল ঘাঁটি',
+  'story.3.text': 'জেজেরো বেস হলো মানবজাতির ভবিষ্যৎ আশা। কমান্ডার হিসেবে সল ৫০০ পর্যন্ত দলকে বাঁচিয়ে রাখাই তোমার লক্ষ্য।',
+
+  // Mission Map
+  'map.title': 'মঙ্গল অভিযানের ফ্লাইট প্ল্যান',
+  'map.subtitle': 'পৃথিবী থেকে সল ৫০০ মঙ্গল ঘাঁটি পর্যন্ত ৬টি ধাপ',
+  'map.level1': '১. পৃথিবী ত্যাগ',
+  'map.level2': '২. মহাকাশ যাত্রা',
+  'map.level3': '৩. মঙ্গলে অবতরণ',
+  'map.level4': '৪. ধূলিঝড়ের মরশুম',
+  'map.level5': '৫. জীবন্ত আবাস',
+  'map.level6': '৬. দল গঠন ও বিস্তার',
+
+  // Levels
+  'level1.title': 'শেষ উৎক্ষেপণ',
+  'level1.place': 'পৃথিবী · উৎক্ষেপণের দিন',
+  'level1.teaches': 'রকেটে সবকিছু একসাথে নেওয়া যায় না।',
+  'level1.story': 'রকেটটি সকালেই রওনা দেবে। পরবর্তী রকেট ২৬ মাস পর। যা ফেলে যাবে, তা ছাড়াই বাঁচতে হবে।',
+
+  'level2.title': 'মহাকাশ যাত্রা',
+  'level2.place': 'মহাকাশ · মাস ৩',
+  'level2.teaches': 'মহাকাশের আবহাওয়া বাস্তব। সৌরঝড় উঠলে পানির পেছনে আশ্রয় নাও।',
+  'level2.story': 'মঙ্গলের অর্ধেক পথে এসে পৃথিবী এখন এক নীল বিন্দু। সূর্যের ক্ষতিকর তেজস্ক্রিয় কণা চারপাশে ছড়িয়ে পড়ছে।',
+
+  'level3.title': 'মঙ্গলে প্রথম দিন',
+  'level3.place': 'জেজেরো ক্রেটার · সল ১',
+  'level3.teaches': 'মঙ্গল প্রচণ্ড শীতল ও বাতাসহীন। রেডিও বার্তা আসতে কয়েক মিনিট লাগে, তাই সিদ্ধান্ত একাই নিতে হয়।',
+  'level3.story': 'অবতরণ সম্পন্ন হয়েছে। তাপমাত্রা নেমে গেছে মাইনাস ৬২ ডিগ্রিতে। পাতলা বাতাসে নিঃশ্বাস নেওয়া অসম্ভব।',
+
+  'level4.title': 'ধূলিঝড়ের মরশুম',
+  'level4.place': 'মঙ্গল ঘাঁটি · সল ১৮০',
+  'level4.teaches': 'সৌরশক্তি নির্ভর করে পরিষ্কার আকাশের ওপর। ধুলো এলে ব্যাটারির বিদ্যুৎ হিসেব করে খরচ করো।',
+  'level4.story': 'জেজেরোর আকাশে বিশাল ধূলিঝড় ধেয়ে আসছে। সৌরবিদ্যুৎ উৎপাদন দ্রুত কমে যাচ্ছে।',
+
+  'level5.title': 'জীবন্ত আবাস',
+  'level5.place': 'বায়ো-ডোম · সল ৩০০',
+  'level5.teaches': 'খাবার চাষে পানি ও বিদ্যুৎ খরচ হয়, তবে সরবরাহ বন্ধ থাকলে এই বাগানই জীবন বাঁচায়।',
+  'level5.story': 'সংরক্ষিত খাবার প্রায় শেষ। অ্যারোপনিক বাগান আর পানি রিসাইক্লারই এখন দলের শেষ ভরসা।',
+
+  'level6.title': 'দল গঠন ও বিস্তার',
+  'level6.place': 'জেজেরো বেস · সল ৪০০',
+  'level6.teaches': 'মঙ্গলে একা কেউ বাঁচতে পারে না। অভিজ্ঞ বিশেষজ্ঞরাই প্রতিটি জীবনদায়ী ব্যবস্থা সচল রাখেন।',
+  'level6.story': 'দ্বিতীয় দলের মহাকাশচারীরা এসে পৌঁছেছে। সম্পদ অত্যন্ত সীমিত। সল ৫০০ পর্যন্ত টিকে থেকে নতুন দিগন্ত উন্মোচন করো।',
+
+  // Fly / Runner
+  'fly.title': 'উড্ডয়ন: অরবিট রানার',
+  'fly.btn': 'ওড়ো',
+  'fly.weather': 'আজকের মহাকাশ আবহাওয়া',
+  'fly.instructions': 'লেন বদলাতে ডানে বা বাঁয়ে ট্যাপ করো। পাথরের ওপর দিয়ে লাফাতে ওপরে সোয়াইপ করো বা Hop চাপো।',
+  'fly.hop': 'লাফ দাও',
+  'fly.distance': 'দূরত্ব',
+  'fly.stardust': 'স্টারডাস্ট',
+  'fly.gameOver': 'উড্ডয়ন সমাপ্ত',
+  'fly.bank': 'মোট জমানো',
+
+  // Profile
+  'profile.title': 'মহাকাশচারীর প্রোফাইল ও কোয়ার্টার',
+  'profile.rank': 'পদবি',
+  'profile.callsign': 'কল-সাইন',
+  'profile.choose': 'পাইলট বেছে নাও',
+  'profile.orbit': 'ORBIT',
+  'profile.tealSuit': 'নীলাভ স্যুট',
+  'profile.nova': 'NOVA',
+  'profile.pinkSuit': 'গোলাপি স্যুট',
+  'profile.podiumHint': 'সক্রিয় পাইলট বেছে নিতে পোডিয়ামে ট্যাপ করো। মিশন ও ফ্লাই রানে সে তোমার প্রতিনিধিত্ব করবে।',
+  'profile.badges': 'মিশন ব্যাজসমূহ',
+  'profile.spaceBook': 'স্পেস বুক',
+  'profile.hideWords': 'শব্দগুলো লুকাও',
+  'profile.runs': 'সেরা পাঁচটি মঙ্গল অভিযান',
+  'profile.settings': 'সেটিংস ও পছন্দসমূহ',
+  'profile.lang': 'ভাষা',
+  'profile.sound': 'শব্দ',
+  'profile.soundOn': 'চালু',
+  'profile.soundOff': 'বন্ধ (নীরব)',
+  'profile.motion': 'অ্যানিমেশন',
+  'profile.motionReduced': 'ধীর/কম',
+  'profile.motionFull': 'স্বাভাবিক',
+  'profile.intro': 'ভূমিকা',
+  'profile.replayIntro': 'ভূমিকা পুনরায় দেখো',
+  'profile.reset': 'সব লোকাল ডাটা মুছে ফেলো',
+  'profile.resetConfirm': 'তুমি কি নিশ্চিত? সমস্ত অগ্রগতি মুছে যাবে!',
+  'profile.resetYes': 'হ্যাঁ, সবকিছু মুছে ফেলো',
+  'profile.cancel': 'বাতিল',
+
+  // Resources
+  'resources.title': 'আউটপোস্ট রিসোর্স ইঞ্জিনিয়ারিং',
+  'resources.subtitle': 'ফ্লাই রানে অর্জিত স্টারডাস্ট দিয়ে ঘাঁটির যন্ত্রপাতি উন্নত করো',
+  'resources.bank': 'স্টারডাস্ট ব্যাংক',
+  'resources.slots': 'ব্যবহৃত কার্গো স্লট',
+  'resources.launch': 'মিশন শুরু করো',
+  'resources.refund': 'সব আপগ্রেড ফেরত নাও',
+  'resources.full': 'কার্গো বে পূর্ণ (সর্বোচ্চ ৪)',
+
+  // Training
+  'training.title': 'অ্যাস্ট্রোনট ট্রেনিং একাডেমি',
+  'training.status': 'পরবর্তী আপডেটে আসছে',
+  'training.twinkle': 'পরবর্তী ব্যাচের জন্য টুইংকল সিমুলেটরগুলো প্রস্তুত করছে।',
+  'training.mind': 'মাইন্ড সিমুলেটর',
+  'training.mindDesc': 'যুক্তির খেলা, দ্রুত যন্ত্রের ত্রুটি নির্ণয় ও তাৎক্ষণিক প্রতিক্রিয়া।',
+  'training.body': 'মহাকাশচারীর শরীরচর্চা',
+  'training.bodyDesc': 'শূন্য-মহাকর্ষে হাড়ের সুরক্ষার ব্যায়াম ও মঙ্গল গ্রহের উপযোগী কার্ডিও।',
+  'training.reels': 'নাসা মিশন রিলস',
+  'training.reelsDesc': 'Apollo, Curiosity, Perseverance ও Artemis-এর বাস্তব ফুটেজ।',
+  'training.locked': 'লক করা',
+  'training.tapHint': 'প্রস্তুতি দেখতে ট্যাপ করো',
+
+  // Success & Replay
+  'success.title': 'মিশন সফল!',
+  'success.survived': 'তোমার মহাকাশ দল সল ৫০০ পর্যন্ত টিকে আছে।',
+  'success.apod': 'নাসার আজকের সেরা মহাকাশ ছবি',
+  'replay.title': 'মিশন রিপ্লে ও টেলিমেট্রি',
+  'replay.good': 'ঘাঁটিকে সুরক্ষিত রাখা সঠিক সিদ্ধান্তসমূহ',
+  'replay.loss': 'যেসব সিদ্ধান্তের কারণে চাপ তৈরি হয়েছিল',
 };

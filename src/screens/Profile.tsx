@@ -13,8 +13,10 @@ import {
   FileText,
   AlertTriangle,
   Trophy,
+  Star,
 } from 'lucide-react';
 import { useGame } from '../store/game';
+import { useI18n } from '../content/i18n';
 import { SPACE_WORDS } from '../content/words';
 import { useWords } from '../store/words';
 import { Kid } from '../components/Twinkle';
@@ -34,6 +36,7 @@ export function Profile() {
   const [confirmReset, setConfirmReset] = useState(false);
   const [showSpaceBook, setShowSpaceBook] = useState(false);
 
+  const lang = useI18n((s) => s.lang);
   const { badges, leaderboard, go } = useGame();
   const collected = useWords((s) => s.collected);
 
@@ -63,9 +66,11 @@ export function Profile() {
   };
 
   const handleToggleLang = () => {
-    const updated = { ...profile, language: profile.language === 'en' ? ('bn' as const) : ('en' as const) };
+    const nextLang = lang === 'en' ? ('bn' as const) : ('en' as const);
+    const updated = { ...profile, language: nextLang };
     setProfile(updated);
     saveProfile(updated);
+    useI18n.getState().setLang(nextLang);
   };
 
   const handleReplayIntro = () => {
@@ -106,7 +111,7 @@ export function Profile() {
             <h1 className="font-display text-lg sm:text-2xl font-extrabold uppercase tracking-wider text-text">
               Astronaut Profile &amp; Quarters
             </h1>
-            <p className="text-[11px] text-muted sm:text-xs">
+            <p className="text-xs text-muted">
               Rank: <span className="font-bold text-go">{rank}</span> · Call-sign: <span className="font-bold text-text">{profile.callsign}</span>
             </p>
           </div>
@@ -165,7 +170,7 @@ export function Profile() {
                 <span className="font-display text-xs font-extrabold tracking-wide text-[#19A7B8]">
                   ORBIT
                 </span>
-                <span className="text-[9px] font-bold text-muted">Teal Suit</span>
+                <span className="text-xs font-semibold text-muted">Teal Suit</span>
               </div>
             </div>
 
@@ -193,12 +198,12 @@ export function Profile() {
                 <span className="font-display text-xs font-extrabold tracking-wide text-[#E8338B]">
                   NOVA
                 </span>
-                <span className="text-[9px] font-bold text-muted">Pink Suit</span>
+                <span className="text-xs font-semibold text-muted">Pink Suit</span>
               </div>
             </div>
           </div>
 
-          <p className="text-center text-[10px] text-muted">
+          <p className="text-center text-xs text-muted">
             Tap podium to choose active pilot. Represents you in missions and Fly.
           </p>
         </div>
@@ -239,8 +244,8 @@ export function Profile() {
                     title={earned ? `${info.title}: ${info.desc}` : `Level ${lvl} Badge (Locked)`}
                   >
                     <Award className="h-6 w-6" />
-                    <span className="mt-1 font-display text-[11px] font-extrabold">Lvl {lvl}</span>
-                    <span className="text-[9px] line-clamp-1">{earned ? info.title : 'Locked'}</span>
+                    <span className="mt-1 font-display text-xs font-extrabold">Lvl {lvl}</span>
+                    <span className="text-xs font-medium line-clamp-1">{earned ? info.title : 'Locked'}</span>
                   </div>
                 );
               })}
@@ -253,17 +258,17 @@ export function Profile() {
                   <span className="font-display text-xs font-bold uppercase tracking-wider text-text">
                     Space Book — Mission Vocabulary
                   </span>
-                  <span className="text-[10px] text-muted">{collected.length} of {SPACE_WORDS.length} collected</span>
+                  <span className="text-xs text-muted">{collected.length} of {SPACE_WORDS.length} collected</span>
                 </div>
                 <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto pr-1">
                   {SPACE_WORDS.filter((w) => collected.includes(w.id)).map((item) => (
                     <div key={item.id} className="rounded-lg border border-line/50 bg-panel/60 p-2">
                       <div className="font-display text-xs font-extrabold text-go">{item.word}</div>
-                      <div className="mt-0.5 text-[11px] text-muted">{item.sentence}</div>
-                      <div className="mt-1 text-[9px] text-muted/70">{item.source}</div>
+                      <div className="mt-0.5 text-xs text-muted">{item.sentence}</div>
+                      <div className="mt-1 text-xs text-muted/70">{item.source}</div>
                     </div>
                   ))}
-                  {collected.length === 0 ? <p className="text-[11px] text-muted">Tap an underlined word in the game to collect it.</p> : null}
+                  {collected.length === 0 ? <p className="text-xs text-muted">Tap an underlined word in the game to collect it.</p> : null}
                 </div>
               </div>
             )}
@@ -283,9 +288,12 @@ export function Profile() {
                       <span className="font-bold uppercase text-text">{entry.result}</span>
                     </div>
                     <div className="flex items-center gap-3 text-muted">
-                      <span>{entry.stars} ⭐</span>
+                      <span className="inline-flex items-center gap-1 font-bold text-star">
+                        <Star className="h-3.5 w-3.5 fill-[var(--color-star)] text-star" aria-hidden="true" />
+                        <span>{entry.stars}</span>
+                      </span>
                       <span>{entry.healthy}/4 Systems</span>
-                      <span className="text-[10px] text-muted/60">{new Date(entry.at).toLocaleDateString()}</span>
+                      <span className="text-xs text-muted/70">{new Date(entry.at).toLocaleDateString()}</span>
                     </div>
                   </div>
                 ))}
@@ -306,9 +314,9 @@ export function Profile() {
                 className="flex flex-col items-center justify-center rounded-xl border-2 border-line bg-panel p-2.5 text-center transition hover:border-text active:translate-y-0.5"
               >
                 <Globe className="h-5 w-5 text-go" />
-                <span className="mt-1 text-[11px] font-bold text-muted">Language</span>
+                <span className="mt-1 text-xs font-bold text-muted">Language</span>
                 <span className="font-display text-xs font-extrabold text-text">
-                  {profile.language === 'en' ? 'English' : 'বাংলা'}
+                  {lang === 'en' ? 'English' : 'বাংলা'}
                 </span>
               </button>
 
@@ -318,7 +326,7 @@ export function Profile() {
                 className="flex flex-col items-center justify-center rounded-xl border-2 border-line bg-panel p-2.5 text-center transition hover:border-text active:translate-y-0.5"
               >
                 {profile.sound ? <Volume2 className="h-5 w-5 text-go" /> : <VolumeX className="h-5 w-5 text-muted" />}
-                <span className="mt-1 text-[11px] font-bold text-muted">Sound</span>
+                <span className="mt-1 text-xs font-bold text-muted">Sound</span>
                 <span className="font-display text-xs font-extrabold text-text">
                   {profile.sound ? 'ON' : 'OFF (Silent)'}
                 </span>
@@ -330,7 +338,7 @@ export function Profile() {
                 className="flex flex-col items-center justify-center rounded-xl border-2 border-line bg-panel p-2.5 text-center transition hover:border-text active:translate-y-0.5"
               >
                 <Eye className="h-5 w-5 text-go" />
-                <span className="mt-1 text-[11px] font-bold text-muted">Motion</span>
+                <span className="mt-1 text-xs font-bold text-muted">Motion</span>
                 <span className="font-display text-xs font-extrabold text-text">
                   {profile.reducedMotion ? 'Reduced' : 'Full'}
                 </span>
@@ -342,7 +350,7 @@ export function Profile() {
                 className="flex flex-col items-center justify-center rounded-xl border-2 border-line bg-panel p-2.5 text-center transition hover:border-text active:translate-y-0.5"
               >
                 <RotateCcw className="h-5 w-5 text-star" />
-                <span className="mt-1 text-[11px] font-bold text-muted">Intro</span>
+                <span className="mt-1 text-xs font-bold text-muted">Intro</span>
                 <span className="font-display text-xs font-extrabold text-text">Replay Hook</span>
               </button>
             </div>
