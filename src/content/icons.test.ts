@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { LEVELS } from './levels';
-import { OPTION_ICON } from './icons';
+import { OPTION_ICON, TASK_ICON } from './icons';
 
 describe('option icons', () => {
   it('every choice option has its own icon', () => {
@@ -11,5 +11,12 @@ describe('option icons', () => {
   });
   it('every step has a short task label', () => {
     for (const l of LEVELS) for (const s of l.steps) expect(s.task.split(' ').length).toBeLessThanOrEqual(4);
+  });
+  it('no hint gives the answer away', () => {
+    for (const l of LEVELS) for (const s of l.steps) expect(s.hint).not.toMatch(/\b(best|right|answer)\b/i);
+  });
+  it('every hands-on step has an icon for Mission Replay', () => {
+    const missing = LEVELS.flatMap((l) => l.steps.filter((s) => s.kind !== 'choice').map((s) => s.task)).filter((t) => !TASK_ICON[t]);
+    expect(missing).toEqual([]);
   });
 });

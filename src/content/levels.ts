@@ -11,7 +11,7 @@ const LIVING: Extra = {
 };
 const SUNLIGHT: Extra[] = [
   { unless: ['panelsBuried'], effects: { P: 10 }, reason: 'Sunlight charged the batteries.' },
-  { if: ['panelsBuried'], reason: 'Remember the panels you left out in the storm? Dust buried them. No charge today.' },
+  { if: ['panelsBuried'], about: 'P', reason: 'Remember the panels you left out in the storm? Dust buried them. No charge today.' },
 ];
 
 export const LEVELS: Level[] = [
@@ -137,7 +137,7 @@ export const LEVELS: Level[] = [
         kind: 'choice',
         task: 'Pick a landing spot',
         prompt: 'Mars is in the window! Where in Jezero Crater will you land?',
-        hint: 'Sun means power. A cliff means cover. The old river bed has the best rocks.',
+        hint: 'Sun means power. A cliff means cover. The old river bed has great rocks.',
         options: [
           {
             label: 'The flat plain — smooth and sunny',
@@ -212,7 +212,7 @@ export const LEVELS: Level[] = [
         kind: 'choice',
         task: 'Stop the air leak',
         prompt: 'Alarm! Air is leaking out of the base!',
-        hint: 'Mission Control knows the best fix. How long does a message take?',
+        hint: 'Mission Control knows a lot. But how long does a message take?',
         options: [
           {
             label: 'Ask Mission Control what to do',
@@ -431,7 +431,7 @@ export const LEVELS: Level[] = [
         kind: 'choice',
         task: 'Collect rocks',
         prompt: 'Last job: collect Mars rocks to send back to Earth.',
-        hint: 'The best rocks are far away. Do you have the air and Shield for the trip?',
+        hint: 'The great rocks are far away. Do you have the air and Shield for the trip?',
         options: [
           {
             label: 'The whole crew drives to the old river bed',

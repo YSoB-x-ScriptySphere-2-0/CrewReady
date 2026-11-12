@@ -1,6 +1,8 @@
 // One icon per option, kept out of levels.ts so the Story lead can change words without touching icons.
 // Keyed by the option's exact label. A missing label falls back to a neutral icon (and a test warns).
 import {
+  Backpack,
+  BatteryMedium,
   Bed,
   Bot,
   Brush,
@@ -15,11 +17,13 @@ import {
   GlassWater,
   Hammer,
   HandHelping,
+  Hourglass,
   House,
   Leaf,
   Microscope,
   Mountain,
   Package,
+  PlaneLanding,
   Radio,
   Recycle,
   RotateCw,
@@ -33,6 +37,7 @@ import {
   Tent,
   Tractor,
   Truck,
+  UsersRound,
   Wind,
   Wrench,
   type LucideIcon,
@@ -97,3 +102,15 @@ export const OPTION_ICON: Record<string, LucideIcon> = {
 };
 
 export const iconFor = (label: string): LucideIcon => OPTION_ICON[label] ?? CircleHelp;
+
+/** Hands-on steps, by their task label (Mission Replay shows these when a step cost the most). */
+export const TASK_ICON: Record<string, LucideIcon> = {
+  'Pack the rocket': Package,
+  'Stow your gear': Backpack,
+  'Land on Mars': PlaneLanding,
+  'Share the battery': BatteryMedium,
+  'Pick your crew': UsersRound,
+};
+
+/** Icon for anything in the level log: an option, a hands-on step, or the time passing on arrival. */
+export const iconForEntry = (label: string, living?: boolean): LucideIcon => (living ? Hourglass : (OPTION_ICON[label] ?? TASK_ICON[label] ?? CircleHelp));

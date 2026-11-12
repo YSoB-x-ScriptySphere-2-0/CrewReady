@@ -1,7 +1,8 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { Home } from './screens/Home';
 import { Hook } from './screens/Hook';
-import { LevelOpening, Play } from './screens/Level';
+import { Play } from './screens/Play';
+import { LevelOpening } from './screens/LevelOpening';
 import { MissionMap } from './screens/MissionMap';
 import { Replay } from './screens/Replay';
 import { Story } from './screens/Story';

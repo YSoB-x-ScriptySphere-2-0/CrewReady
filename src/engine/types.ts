@@ -24,6 +24,8 @@ export interface Extra extends Cond {
   effects?: Effects;
   stars?: number;
   reason: string;
+  /** The meter a no-change reminder is about (so the level opening can colour it). */
+  about?: Meter;
 }
 
 export interface Option {

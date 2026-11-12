@@ -103,6 +103,37 @@ export function enterLevel(state: GameState, level: Level): Outcome {
   return { ...out, reasons: [...out.reasons, ...notes] };
 }
 
+/** One carry-over on entering a level: its reason, what it changed, and the meters after it. */
+export interface EnterStep {
+  reason: string;
+  delta: Partial<Record<Meter, number>>;
+  meters: Record<Meter, number>;
+  /** The meters it is about: the ones it moved, or the one a reminder names. */
+  about: Meter[];
+}
+
+/**
+ * The same as `enterLevel`, one carry-over at a time, so the level opening can play each onto the HUD.
+ * Same order as `enterLevel`'s reasons; storm and dust changes (X → Shield, D → Power) come last.
+ */
+export function enterSteps(state: GameState, level: Level): EnterStep[] {
+  let s = state;
+  const adjusts: EnterStep[] = [];
+  for (const a of level.adjust ?? []) {
+    if (!holds(s, a)) continue;
+    s = { ...s, [a.var]: Math.max(0, s[a.var] + a.add) };
+    adjusts.push({ reason: a.reason, delta: {}, meters: s.meters, about: [a.var === 'X' ? 'S' : 'P'] });
+  }
+  const steps: EnterStep[] = [];
+  for (const e of level.onEnter.filter((x) => holds(s, x))) {
+    const out = apply(s, [e]);
+    s = out.state;
+    const moved = METERS.filter((m) => out.delta[m]);
+    steps.push({ reason: e.reason, delta: out.delta, meters: s.meters, about: moved.length ? moved : e.about ? [e.about] : [] });
+  }
+  return [...steps, ...adjusts.map((a) => ({ ...a, meters: s.meters }))];
+}
+
 export function chooseOption(state: GameState, option: Option, mods: Mods = NO_MODS): Outcome {
   const extras: Extra[] = (option.extras ?? []).filter((e) => holds(state, e));
   const flag = option.setFlag && holds(state, option.setFlagCond ?? {}) ? option.setFlag : undefined;
@@ -155,6 +186,26 @@ export function pickCrew(state: GameState, step: CrewStep, ids: string[]): Outco
   }
   const out = apply(state, [{ effects, reason: 'Three more people to feed and keep breathing.' }]);
   return { ...out, state: { ...out.state, crew: ids } };
+}
+
+/** One thing that changed the meters during a level: a choice, a hands-on step, or the costs of entering it. */
+export interface LogEntry {
+  label: string;
+  delta: Partial<Record<Meter, number>>;
+  /** Living costs and other carry-overs from entering the level. */
+  living?: boolean;
+}
+
+/**
+ * Mission Replay's "what cost the most": the entry with the biggest loss to `meter`.
+ * A tie goes to the earlier entry. Living costs count only when no choice cost that meter.
+ */
+export function costliest(log: LogEntry[], meter: Meter): LogEntry | null {
+  const losers = log.filter((e) => (e.delta[meter] ?? 0) < 0);
+  const pool = losers.some((e) => !e.living) ? losers.filter((e) => !e.living) : losers;
+  let best: LogEntry | null = null;
+  for (const e of pool) if (!best || e.delta[meter]! < best.delta[meter]!) best = e; // strict: ties keep the earlier
+  return best;
 }
 
 export function outpostCheck(state: GameState): { healthy: Meter[]; result: OutpostResult } {

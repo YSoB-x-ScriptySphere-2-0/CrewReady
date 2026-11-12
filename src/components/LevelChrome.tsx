@@ -12,6 +12,9 @@ import type { ScenePlace } from './Scene';
 /** Where each level happens. */
 export const LEVEL_SCENE: Record<number, ScenePlace> = { 1: 'earth', 2: 'space', 3: 'mars', 4: 'dust', 5: 'mars', 6: 'mars' };
 
+/** The level's steps as task-list items; the first `done` are ticked. */
+export const tasksFor = (levelIndex: number, done: number) => LEVELS[levelIndex].steps.map((s, i) => ({ label: s.task, done: i < done }));
+
 /** Every meter and star change in an outcome, in meter order. */
 export function outcomeChanges(o: Pick<Outcome, 'delta' | 'starsDelta'>): Change[] {
   const out: Change[] = METERS.filter((m) => o.delta[m]).map((m) => ({ meter: m, amount: o.delta[m]! }));
