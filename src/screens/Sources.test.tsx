@@ -36,7 +36,7 @@ describe('Sources screen (S1)', () => {
     expect(html).toContain('Photography &amp; Media Credits');
     expect(html).toContain('Generated &amp; Third-Party Content');
     expect(html).toContain('ChatGPT image generation');
-    expect(html).toContain('Ahnaf Nabil');
+    expect(html).toContain('Barkat Ullah Shah Riyad');
 
     // 6. The Team
     expect(html).toContain('The Team');

@@ -144,12 +144,12 @@ const SIMPLIFICATIONS = [
 ];
 
 const TEAM = [
-  { name: 'Ahnaf Nabil', role: 'Team Lead & Systems Architect' },
   { name: 'Barkat Ullah Shah Riyad', role: 'UI/UX Designer & Developer' },
-  { name: 'Jawad Hossain Rian', role: 'Back-End Developer & Debugger' },
-  { name: 'Tasfia Zaman Totiny', role: 'Researcher & Script Writer' },
-  { name: 'Wasima Haque Syeda', role: 'Video Editor & Script Writer' },
-  { name: 'Imtiaj Mahmud Ormi', role: 'Front-End Developer & Designer' },
+  { name: 'Student teammate', role: 'Team Lead & Systems Architect' },
+  { name: 'Student teammate', role: 'Back-End Developer & Debugger' },
+  { name: 'Student teammate', role: 'Researcher & Script Writer' },
+  { name: 'Student teammate', role: 'Video Editor & Script Writer' },
+  { name: 'Student teammate', role: 'Front-End Developer & Designer' },
 ];
 
 const CLASS_LEARNINGS = [
@@ -379,7 +379,7 @@ export function Sources() {
           <p className="mb-3 text-sm text-ink/70">Team CrewReady · Cumilla, Bangladesh</p>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {TEAM.map((m) => (
-              <div key={m.name} className="rounded-xl border border-ink/10 bg-white/60 p-3.5">
+              <div key={m.role} className="rounded-xl border border-ink/10 bg-white/60 p-3.5">
                 <p className="text-xs font-bold uppercase tracking-wider text-ink/50">{m.role}</p>
                 <p className="font-display text-base font-extrabold text-ink">{m.name}</p>
               </div>

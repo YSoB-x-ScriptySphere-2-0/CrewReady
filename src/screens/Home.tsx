@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Map as MapIcon, Play, RotateCcw, Rocket, Sparkles, Volume2, Square, Bot, HelpCircle } from 'lucide-react';
 import { Dock } from '../components/Dock';
 import { StarCounter, StardustCounter } from '../components/Hud';
@@ -174,17 +174,6 @@ export function Home() {
   const [explainIndex, setExplainIndex] = useState(0);
   const [speaking, setSpeaking] = useState(false);
   const canSpeak = useCanSpeak();
-
-  // Auto-launch Twinkle Tour on the user's very first visit to the Home Screen
-  useEffect(() => {
-    if (typeof localStorage !== 'undefined') {
-      const hasSeen = localStorage.getItem(TOUR_SEEN_KEY);
-      if (!hasSeen) {
-        setShowTour(true);
-        localStorage.setItem(TOUR_SEEN_KEY, 'true');
-      }
-    }
-  }, []);
 
   const closeTour = () => {
     setShowTour(false);

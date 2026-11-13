@@ -74,7 +74,7 @@ export const Scene2C_DataPoint: React.FC = () => {
             lineHeight: 1.5,
           }}
         >
-          If a coronal mass ejection erupts toward Earth today, CrewReady's space weather telemetry increases mission difficulty in real time.
+          If a coronal mass ejection erupts toward Earth today, CrewReady sizes the in-game storm from real NASA space-weather data.
         </p>
 
         {/* Live telemetry readout panel */}

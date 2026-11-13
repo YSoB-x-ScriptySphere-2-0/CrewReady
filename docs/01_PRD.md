@@ -13,7 +13,7 @@ Companion Avatar Identifier: Twinkle (Autonomous Scout Drone and Cadre Mentor)
 ## 0. Mandatory Authoring and UI/UX Directives
 
 ### 0.1 Downstream Documentation Directive
-All downstream technical, design, and data documents (docs/02_SRS.md through docs/11_SUBMISSION_CHECKLIST.md and subsequent code implementations) must adhere strictly to these principles:
+All downstream technical, design, and data documents (docs/02_SRS.md through docs/10_VIDEO_30S_SCRIPT.md and subsequent code implementations) must adhere strictly to these principles:
 - Zero Generic AI/LLM Text Patterns: Exclude conversational filler, hyperbolic adjectives, marketing mottoes, and cliché transition phrases (such as "delve", "tapestry", "testament", "game changer", "beacon", "foster", or "seamless integration").
 - Zero Childish Emojis: Prohibit unicode emojis across all system documentation, telemetry displays, data fixtures, and HUD components. UI icons must exclusively use verified SVG vectors from the Lucide React library.
 - Authentic Aerospace Aesthetic: All interfaces must reflect functional mission control hardware and modern aerospace flight software standards. The visual style must never resemble generic automated templates or novelty game clones.

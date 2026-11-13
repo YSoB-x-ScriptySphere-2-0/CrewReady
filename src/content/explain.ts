@@ -90,7 +90,7 @@ export const EXPLAIN_ENTRIES: ExplainEntry[] = [
     icon: Radiation,
     source: 'NASA Orion storm-shelter pages',
     genAlphaComment: {
-      en: 'Water shields are remarkably effective at blocking high-energy cosmic rays!',
+      en: 'Water shields work like magic to block harmful space rays!',
       bn: 'পানি দিয়ে তৈরি ঢাল মহাকাশের ক্ষতিকর রশ্মি অত্যন্ত কার্যকরভাবে আটকে দেয়!',
     },
   },
@@ -200,7 +200,7 @@ export const EXPLAIN_ENTRIES: ExplainEntry[] = [
     icon: Gauge,
     source: 'NOAA Space Weather Prediction Center',
     genAlphaComment: {
-      en: 'A Kp 9 reading signals an intense geomagnetic storm—maximum shielding required!',
+      en: 'A Kp 9 reading means a super huge Sun storm—keep shields ready!',
       bn: 'কেপি ৯ মানে অত্যন্ত শক্তিশালী সৌর ঝড়—সর্বোচ্চ সুরক্ষা নেওয়া জরুরি!',
     },
   },
@@ -222,7 +222,7 @@ export const TWINKLE_GEN_ALPHA = {
     { en: 'Dust alert! The Martian storm is blocking sunlight from the panels!', bn: 'ধুলোঝড়ের সংকেত! ধুলোয় সৌর প্যানেলে রোদ পৌঁছানো বাধা পাচ্ছে!' },
   ],
   hint: [
-    { en: 'Commander tip: Water doubles as hydration and a shield against radiation!', bn: 'কমান্ডার টিপ: পানি যেমন তৃষ্ণা মেটায়, তেমনই ক্ষতিকর রশ্মিও প্রতিহত করে!' },
-    { en: 'Pro tip: Spotless panels mean uninterrupted power for life support!', bn: 'টিপ: পরিষ্কার প্যানেল মানেই লাইফ সাপোর্টের জন্য নিরবচ্ছিন্ন বিদ্যুৎ!' },
+    { en: 'Commander tip: Water is great to drink and also blocks space radiation!', bn: 'কমান্ডার টিপ: পানি যেমন তৃষ্ণা মেটায়, তেমনই ক্ষতিকর রশ্মিও প্রতিহত করে!' },
+    { en: 'Pro tip: Clean panels keep batteries charged and oxygen flowing!', bn: 'টিপ: পরিষ্কার প্যানেল মানেই লাইফ সাপোর্টের জন্য নিরবচ্ছিন্ন বিদ্যুৎ!' },
   ],
 };

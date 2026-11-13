@@ -3,12 +3,12 @@
 NASA Space Apps Challenge 2026 · Challenge: **Build a Junior Astronaut Mission Trainer** · Team CrewReady, Cumilla, Bangladesh
 
 ### Team Members & Individual Roles:
-- **Ahnaf Nabil** — Team Leader & Researcher
+- **Team Lead** — Team Leader & Researcher
 - **Barkat Ullah Shah Riyad** — UI/UX Designer & Developer
-- **Jawad Hossain Rian** — Back-End Developer & Debugger
-- **Tasfia Zaman Totiny** — Researcher & Script Writer
-- **Wasima Haque Syeda** — Video Editor & Script Writer
-- **Imtiaj Mahmud Ormi** — Front-End Developer & Designer
+- **Back-End Developer** — Back-End Developer & Debugger
+- **Researcher** — Researcher & Script Writer
+- **Video Editor** — Video Editor & Script Writer
+- **Front-End Developer** — Front-End Developer & Designer
 **Location:** Cumilla, Bangladesh  
 **Hard limit:** 240 s. **Target:** 237 s. **~490 words at ~2.1 words/second.**  
 **Structure:** NASA Space Apps "240 Seconds of Glory" — WHO (45s) · WHY (60s) · WHAT (60s) · SO WHAT NEXT (75s)  

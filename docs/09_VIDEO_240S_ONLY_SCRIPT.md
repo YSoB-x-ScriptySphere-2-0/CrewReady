@@ -24,8 +24,8 @@ When young minds look up at the night sky, their curiosity is boundless—yet tr
 
 ## 3. Best Features & Hook Highlights
 
-- **Dynamic Difficulty Driven by Live NASA & NOAA Telemetry:**  
-  The game doesn't fake danger. Through live hooks into NASA DONKI and NOAA Space Weather Prediction APIs, if a real solar storm or coronal mass ejection erupts today, solar radiation spikes in-game and shield degradation accelerates in real time.
+- **Storm Size and Runner Speed Set by Live NASA & NOAA Data:**  
+  The game doesn't fake danger. Through live hooks into NASA DONKI and NOAA Space Weather Prediction APIs, the size of the in-game solar storm (small, medium or large) is set from real NASA DONKI space-weather readings, and the Fly runner's starting speed follows today's NOAA Kp index. A quiet Sun means a gentler storm; a stormy Sun means a harder one.
 - **Twinkle — The Gen Alpha Companion Drone:**  
   Forget stiff robotic manuals. Twinkle is an expressive scout drone who speaks Gen Alpha's language, drops humorous cultural quips, and delivers Socratic guidance that nudges critical thinking without ever giving away the answers.
 - **Learning Through Consequence & High-Stakes Decision-Making:**  
@@ -91,7 +91,7 @@ TIMECODE MAP (Total: 3:57 / 237 Seconds)
 - **Visual:** Split screen: Left side shows NASA's live DONKI Solar Weather API feed and NOAA Kp index. Right side shows CrewReady's shield meter dropping dynamically in response to an active solar flare alert.
 - **On-Screen Badges:** `LIVE API: NASA DONKI` · `NOAA SWPC` · `NASA InSight` · `NASA NeoWs` · `100% CITED`
 - **Voiceover (Narrator - Authoritative, proud):**  
-  > *"Here is our core innovation: the danger is not simulated—it is real. If the Sun erupts with a solar storm right now, our game pulls the live NASA DONKI telemetry, and your spacecraft's shields drain faster today than yesterday. When kids realize real space weather is altering their game in real time, their eyes light up. Science isn't textbook homework anymore—it's survival."*
+  > *"Here is our core innovation: the danger is not simulated—it is real. If the Sun erupts with a solar storm right now, our game reads NASA DONKI space-weather data and sizes the in-game storm to match, so a stormy Sun hits your shields harder. When kids realize real space weather is shaping their game, their eyes light up. Science isn't textbook homework anymore—it's survival."*
 
 ---
 
@@ -116,14 +116,14 @@ TIMECODE MAP (Total: 3:57 / 237 Seconds)
 - **Voiceover (Narrator - Enthusiastic, collaborative):**  
   > *"To keep young cadets hooked, we built an in-game economy powered by micro-games they already love—including 'Fly', an endless reflex runner where dodging orbital debris earns tech credits for life-support upgrades."*
 - **Visual:** Rapid team montage spotlighting individual roles on screen with name cards and git commits:
-  - *Ahnaf* running gamification research
-  - *Tasfia* verifying NASA datasets & writing the script
-  - *Jawad* architecting backend logic & state management
-  - *Ormi* crafting responsive frontend interfaces
+  - *the Team Lead* running gamification research
+  - *the Researcher* verifying NASA datasets & writing the script
+  - *the Back-End Developer* architecting backend logic & state management
+  - *the Front-End Developer* crafting responsive frontend interfaces
   - *Riyad* designing UI/UX & game feel
-  - *Wasima* directing video storytelling
+  - *the Video Editor* directing video storytelling
 - **Voiceover:**  
-  > *"Building this took relentless teamwork: Ahnaf researched gamification psychology to lock in attention; Tasfia aligned every scenario with verified NASA science; Jawad led the core architecture; Ormi and Riyad engineered the responsive UI and 3D interactions; while Wasima scripted and cut our story to perfection. Together, we built a fully functional prototype ready on any phone in under two seconds."*
+  > *"Building this took relentless teamwork: the Team Lead researched gamification psychology to lock in attention; the Researcher aligned every scenario with verified NASA science; the Back-End Developer led the core architecture; the Front-End Developer and Riyad engineered the responsive UI and 3D interactions; while the Video Editor scripted and cut our story to perfection. Together, we built a fully functional prototype ready on any phone in under two seconds."*
 
 ---
 
@@ -181,7 +181,7 @@ TIMECODE MAP (Total: 3:57 / 237 Seconds)
 > Enter cadets Orbit and Nova, guided by Twinkle—our AI scout drone who actually understands Gen Alpha humor. Together, their mission is clear: blast off from Earth and find humanity’s new shelter among the stars.  
 > 
 > [1:16]  
-> Here is our core innovation: the danger is not simulated—it is real. If the Sun erupts with a solar storm right now, our game pulls live NASA DONKI telemetry, and your spacecraft's shields drain faster today than yesterday. When kids realize real space weather is altering their game in real time, science stops being homework—it becomes survival.  
+> Here is our core innovation: the danger is not simulated—it is real. If the Sun erupts with a solar storm right now, our game reads NASA DONKI space-weather data and sizes the in-game storm to match, so a stormy Sun hits your shields harder. When kids realize real space weather is shaping their game, science stops being homework—it becomes survival.  
 > 
 > [1:45]  
 > CrewReady takes cadets through a six-level epic. In Level 1, you pack the rocket—realizing every kilogram costs precious fuel. In Level 2, you dodge deep-space radiation storms. In Level 3, a cabin leak tests your nerves under a real seven-minute communication delay! Level 4 forces you through a brutal Martian dust storm. Level 5 challenges you to grow hydroponic food using real NASA space biology data. And in Level 6, you select your final specialist crew to establish humanity's permanent sanctuary. Run out of resources? Mission fails. Humanity stays stranded.  
@@ -190,7 +190,7 @@ TIMECODE MAP (Total: 3:57 / 237 Seconds)
 > To keep young cadets hooked, we built an in-game economy powered by micro-games they already love—including 'Fly', an endless reflex runner where dodging orbital debris earns tech credits for life-support upgrades.  
 > 
 > [2:27]  
-> Building this took relentless teamwork: Ahnaf researched gamification psychology; Tasfia aligned every scenario with verified NASA science; Jawad led the core architecture; Ormi and Riyad engineered the responsive UI and 3D interactions; while Wasima scripted and cut our story to perfection.  
+> Building this took relentless teamwork: the Team Lead researched gamification psychology; the Researcher aligned every scenario with verified NASA science; the Back-End Developer led the core architecture; the Front-End Developer and Riyad engineered the responsive UI and 3D interactions; while the Video Editor scripted and cut our story to perfection.  
 > 
 > [2:45]  
 > CrewReady doesn't just train astronauts—it prepares kids for life. When a child learns that keeping life support running requires sacrificing shield recharge, they are mastering opportunity cost, systems thinking, and resource budgeting. That same mental model helps them budget their pocket money, conserve energy at home, and solve problems under pressure in their everyday lives.  
@@ -212,15 +212,15 @@ TIMECODE MAP (Total: 3:57 / 237 Seconds)
 ## 6. Team Contributions & Technical Citations
 
 ### 6.1 Team Collaboration Matrix
-- **Ahnaf Nabil (Team Lead & Research Lead):** Conducted player engagement and attention-retention research, synthesizing Gen Alpha behavioural patterns into micro-game reward mechanics.
-- **Tasfia Zaman Totiny (Scientific Researcher & Co-Writer):** Researched, mapped, and mathematically adapted NASA and NOAA datasets (DONKI, NeoWs, OSDR) into game balance formulas.
-- **Jawad Hossain Rian (Backend & Systems Architect):** Architected game engine logic, state machines, offline persistence, and dynamic difficulty scaling algorithms.
-- **Imtiaj Mahmud Ormi (Frontend Engineer & Interactive Design):** Developed responsive client components, HUD telemetry modules, and localized string management.
+- **The Team Lead (Team Lead & Research Lead):** Conducted player engagement and attention-retention research, synthesizing Gen Alpha behavioural patterns into micro-game reward mechanics.
+- **The Researcher (Scientific Researcher & Co-Writer):** Researched, mapped, and mathematically adapted NASA and NOAA datasets (DONKI, NeoWs, OSDR) into game balance formulas.
+- **Back-End Developer (Systems Architect):** Architected game engine logic, state machines, offline persistence, and the mapping from NASA space-weather readings to storm strength.
+- **The Front-End Developer (Frontend Engineer & Interactive Design):** Developed responsive client components, HUD telemetry modules, and localized string management.
 - **Barkat Ullah Shah Riyad (UI/UX Designer & 3D Interactive Systems):** Engineered accessible UI layouts (44px touch targets, 4.5:1 contrast), Three.js kinetic scenes, and character avatars (Orbit, Nova, Twinkle).
-- **Wasima Haque Syeda (Narrative Lead & Video Production):** Authored the narrative script, managed visual pacing, and directed final video editing to ensure high emotional impact.
+- **The Video Editor (Narrative Lead & Video Production):** Authored the narrative script, managed visual pacing, and directed final video editing to ensure high emotional impact.
 
 ### 6.2 Verified NASA & NOAA Data Integrations
-1. **NASA DONKI (Space Weather Database):** Real-time Coronal Mass Ejection (CME) and solar flare telemetry for dynamic in-game radiation hazards.
+1. **NASA DONKI (Space Weather Database):** Recent Coronal Mass Ejection (CME), solar energetic particle and geomagnetic-storm records that set the in-game storm size.
 2. **NOAA SWPC (Space Weather Prediction Center):** Live geomagnetic planetary K-index driving the speed and hazard density in the "Fly" runner.
 3. **NASA NeoWs (Near Earth Object Web Service):** Real-time tracking of near-Earth asteroids anchoring the prologue's existential stakes.
 4. **NASA InSight Mission Telemetry:** Historical Martian diurnal surface temperature profiles and atmospheric pressure metrics for Sol 214.

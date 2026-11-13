@@ -710,12 +710,12 @@ Team CrewReady, **Cumilla, Bangladesh**. These names are used everywhere (Source
 
 | Name | Role | Owns in this plan |
 |---|---|---|
-| **Ahnaf Nabil** | Team Leader & Researcher (Captain) | Scope, schedule, check-ins, research sign-off, project page, submission |
+| **Team Lead** | Team Leader & Researcher (Captain) | Scope, schedule, check-ins, research sign-off, project page, submission |
 | **Barkat Ullah Shah Riyad** | UI/UX Designer & Developer | Look, landscape stage, the 3D opening, Twinkle's tour, explain cards |
-| **Jawad Hossain Rian** | Back-End Developer & Debugger | Game rules, points flow, NASA service, saved data, tests, phase B bug fixes |
-| **Tasfia Zaman Totiny** | Researcher & Script Writer | Facts and sources (`docs/06` §4), simple-word pass, explain card text, video script |
-| **Wasima Haque Syeda** | Video Editor & Script Writer | Both videos, subtitles, citations, the Remotion opening for video, teamwork log |
-| **Imtiaj Mahmud Ormi** | Front-End Developer & Designer | Bonus rounds, Fly, Resources, Profile, home and map screens |
+| **Back-End Developer** | Back-End Developer & Debugger | Game rules, points flow, NASA service, saved data, tests, phase B bug fixes |
+| **Researcher** | Researcher & Script Writer | Facts and sources (`docs/06` §4), simple-word pass, explain card text, video script |
+| **Video Editor** | Video Editor & Script Writer | Both videos, subtitles, citations, the Remotion opening for video, teamwork log |
+| **Front-End Developer** | Front-End Developer & Designer | Bonus rounds, Fly, Resources, Profile, home and map screens |
 
 Still to confirm: who is under 18 (see the rule below) and who narrates (18 or older).
 
@@ -763,7 +763,7 @@ The narrator is one of us — a woman on the team, **aged 18 or older**, speakin
 | 1:34–1:48 | Levels 5 and 6 | "You grow lettuce, and pay for it in water. And at the end, five specialists arrive and you can only keep three. Whoever you leave behind, that's the system you can't protect." | Farm; lettuce photo; crew pick · `NASA OSDR (Veggie)` · `NASA Perseverance` |
 | 1:48–2:02 | Replay + sources | "And if you run out of air? No game over. The game shows you which choice did it, what real astronauts do, and lets you try again. Under every screen there's a little line saying where the fact came from." | Meter hits zero; Mission Replay; a source line is tapped; Sources page | 
 | 2:02–2:20 | **Why it fits** | "Life support, radiation, power, food, and the delay to Earth — the five things the challenge asked for, all connected. The data is live from NASA and NOAA, and anything from the archive says so." | Five icons linked; the three badges · `NASA · NOAA` |
-| 2:20–2:58 | **Teamwork** | "There are six of us, from Cumilla. [Narrator's name] here. Ahnaf leads us and checked our research. Tasfia found that NASA lists every solar storm and took it to Jawad, who turned storm size into shield damage. A nine-year-old tester told us it was still too hard, so Tasfia rewrote every line in simple words and Barkat added Twinkle's explain cards. Imtiaj built a bonus game for every level, and Wasima cut this video. We used Claude to draft code and text and ChatGPT to make our art, and a person checked every fact." | A role card as each name is said. Then real clips from the teamwork log, in the order told |
+| 2:20–2:58 | **Teamwork** | "There are six of us, from Cumilla. [Narrator's name] here. The Team Lead leads us and checked our research. The Researcher found that NASA lists every solar storm and took it to the Back-End Developer, who turned storm size into shield damage. A nine-year-old tester told us it was still too hard, so the Researcher rewrote every line in simple words and Barkat added Twinkle's explain cards. The Front-End Developer built a bonus game for every level, and the Video Editor cut this video. We used Claude to draft code and text and ChatGPT to make our art, and a person checked every fact." | A role card as each name is said. Then real clips from the teamwork log, in the order told |
 | 2:58–3:14 | **Impact** | "It opens in any phone browser. No download, no account. So a classroom in Dhaka can play it as easily as one in Houston — and every kid walks away knowing six true things about living off Earth." | The game on a phone; the six "I learned" lines; play-test hands |
 | 3:14–3:36 | **Future + close** | "Next up: Crew Mode, where you and your friends each take a role. New worlds after Mars. And a Training deck for your mind, your body, and NASA reels. Our poet Nazrul wrote, 'I will not stay in a closed room — I will see the world.' We made CrewReady so kids can start. Come play." | The locked cards from the app; the Nazrul line in Bangla; end card with all names, links and the challenge name · `Kazi Nazrul Islam, "Shonkolpo"` |
 
@@ -822,12 +822,12 @@ The 240-second video (due **18:30 today**) uses the build as it stands, after th
 
 | Order | Step (`docs/BUILD_SEQUENCE.md`) | Owner | About |
 |---|---|---|---|
-| 1 | **B1–B3** bug fixes | Jawad, Imtiaj | 3 h |
-| 2 | **K1** simple words + **K2** Twinkle's tour, explain cards, Hint | Tasfia, Barkat | 3 h |
-| 3 | **K3** points flow | Jawad | 2 h |
-| 4 | **K4** the 3D opening | Barkat (game), Wasima (Remotion for video) | 3 h |
-| 5 | **K5** bonus rounds (L2, L3, L4 first, then L1, L5, L6) | Imtiaj | 4 h |
-| 6 | A second child play-test, then F4 fixes | Ahnaf | 1 h |
+| 1 | **B1–B3** bug fixes | the Back-End Developer, the Front-End Developer | 3 h |
+| 2 | **K1** simple words + **K2** Twinkle's tour, explain cards, Hint | the Researcher, Barkat | 3 h |
+| 3 | **K3** points flow | the Back-End Developer | 2 h |
+| 4 | **K4** the 3D opening | Barkat (game), the Video Editor (Remotion for video) | 3 h |
+| 5 | **K5** bonus rounds (L2, L3, L4 first, then L1, L5, L6) | the Front-End Developer | 4 h |
+| 6 | A second child play-test, then F4 fixes | the Team Lead | 1 h |
 
 If time runs out, cut from the bottom of K5 first (keep three bonus rounds), then K4 down to three still pictures. **Never cut** the simple-word pass, the Hint/? buttons, the tour's goal line, or the bug fixes.
 

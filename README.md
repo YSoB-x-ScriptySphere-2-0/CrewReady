@@ -58,7 +58,7 @@ Every fact, storm alert, and planetary reading in the simulation maps directly t
    *Source & Link:* [NASA DONKI](https://kauai.ccmc.gsfc.nasa.gov/DONKI/)
 
 2. **NOAA SWPC Planetary K-Index**  
-   *Used for:* Real-time planetary geomagnetic activity determining space weather speed tiers in Fly.  
+   *Used for:* Today's planetary geomagnetic activity, which sets the starting speed tier in Fly.  
    *Source & Link:* [NOAA Space Weather Prediction Center](https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json)
 
 3. **NASA NeoWs (Near-Earth Object Web Service)**  

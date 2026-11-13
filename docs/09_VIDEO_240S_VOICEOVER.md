@@ -10,11 +10,11 @@ CrewReady is a space survival game where kids become junior astronauts, make sma
 
 ## Summary (for the submission form)
 
-Space games are either too hard or too simple, so kids never get the real science with the fun. CrewReady fixes that. Kids play as Orbit or Nova, guided by Twinkle, a sidekick who speaks Gen Alpha. Across six levels built on NASA data, every choice costs resources, and the difficulty rises with live space data. It comes with the micro-games kids already love, and it works in English and Bangla.
+Space games are either too hard or too simple, so kids never get the real science with the fun. CrewReady fixes that. Kids play as Orbit or Nova, guided by Twinkle, a sidekick who speaks Gen Alpha. Across six levels built on NASA data, every choice costs resources, and the storm size and runner speed come from today's real space weather. It comes with the micro-games kids already love, and it works in English and Bangla.
 
 ## Best features (the hook highlights)
 
-1. Difficulty that rises with real, live NASA data
+1. Storm size and runner speed set by today's real NASA and NOAA space weather
 2. Twinkle, a guide who knows Gen Alpha slang
 3. Learning by doing: every decision costs something
 4. Micro-games kids already play, to keep attention
@@ -33,7 +33,7 @@ Space games are either too hard or too simple, so kids never get the real scienc
 ### 0:15 – 0:40 | WHAT MAKES IT SPECIAL
 
 > Why kids won't put it down:
-> Difficulty rises with live NASA data, because space has no "easy mode."
+> The storm is sized from real NASA space weather, because space has no "easy mode."
 > Twinkle speaks fluent Gen Alpha, so learning never sounds like homework.
 > Every choice costs something, so kids learn by deciding.
 > Mini-games they already love keep them focused.
@@ -57,7 +57,7 @@ Space games are either too hard or too simple, so kids never get the real scienc
 ### 1:55 – 2:20 | THE CREW
 
 > Speaking of crewmates, meet ours!
-> Ahnaf studied what keeps young gamers hooked. Tasfia dug through NASA data, so every fact is real. Jawad led development and built the engine. Ormi built the front end, Riyad designed the look and feel, and Wasima wrote the script, yes, including this joke.
+> The Team Lead studied what keeps young gamers hooked. The Researcher dug through NASA data, so every fact is real. The Back-End Developer led development and built the engine. The Front-End Developer built the front end, the UI/UX Designer designed the look and feel, and the Video Editor wrote the script, yes, including this joke.
 > And all of us made this video together.
 
 ### 2:20 – 2:55 | FEATURES & EVIDENCE

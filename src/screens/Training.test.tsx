@@ -12,11 +12,11 @@ describe('Training screen (S3)', () => {
     expect(html).toContain('Coming in Next Update');
 
     // Twinkle Sleepy banner
-    expect(html).toContain('Twinkle is calibrating the simulators');
+    expect(html).toContain('Twinkle is setting up fun training games');
     expect(html).toContain('twinkle-sleepy');
 
     // 3 Modules
-    expect(html).toContain('Mind Simulator');
+    expect(html).toContain('Mind Training Game');
     expect(html).toContain('Astronaut Fitness');
     expect(html).toContain('NASA Mission Reels');
 

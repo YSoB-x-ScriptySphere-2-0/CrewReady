@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
-  timeout: 30000,
+  timeout: 60000,
   forbidOnly: !!process.env.CI,
   retries: 0,
   workers: 1, // run sequentially to avoid port contention

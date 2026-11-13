@@ -28,7 +28,7 @@ describe('Fly screen (S2)', () => {
     // Obstacles section
     expect(html).toContain('Martian Obstacles');
     expect(html).toContain('Low Rock Ridge');
-    expect(html).toContain('Tall Spire Monolith');
+    expect(html).toContain('Tall Rock Pillar');
     expect(html).toContain('Orbital Space Debris');
 
     // Power-ups section

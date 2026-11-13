@@ -26,7 +26,15 @@ In full compliance with the NASA Space Apps Challenge Universal Rules and Bangla
 
 ## 3. Code, Science & Fact Integrity
 
-- **Facts.** On 13 Nov 2026 every on-screen fact was checked against the NASA or NOAA page named for it, using Claude for web research and a second, independent AI review that tried to disprove each one. The results, with links, are in `docs/06_SCIENCE_AND_NASA_DATA.md` §4. Facts that could not be confirmed were removed from the game. A team member (Tasfia Zaman Totiny, Researcher) opens each link once before judging.
+- **Facts.** On 13 Nov 2026 every on-screen fact was checked against the NASA or NOAA page named for it, using Claude for web research and a second, independent AI review that tried to disprove each one. The results, with links, are in `docs/06_SCIENCE_AND_NASA_DATA.md` §4. Facts that could not be confirmed were removed from the game. A team researcher opens each link once before judging.
 - **Sources on screen.** Every fact in the game carries a source line, and the Sources page lists every dataset.
 - **Bangla.** Bangla text was drafted with AI. A Bangla-speaking team member checks every line before it ships; lines not yet checked are marked "needs a check" in `src/content/strings.bn.ts`.
-- **Team:** Ahnaf Nabil, Barkat Ullah Shah Riyad, Jawad Hossain Rian, Tasfia Zaman Totiny, Wasima Haque Syeda, Imtiaj Mahmud Ormi · Cumilla, Bangladesh.
+- **Team:** Barkat Ullah Shah Riyad (UI/UX Designer & Developer) and five student teammates (Team Lead, Back-End Developer, Researcher, Video Editor, Front-End Developer), whose names are not published because they are under 18 · Cumilla, Bangladesh.
+
+---
+
+## 4. Prompts and Reasoning
+
+- **Why we used AI:** a small student team had about two weeks, so AI sped up boilerplate, tests and first drafts. It did not choose the idea, the science or the design.
+- **How we prompted:** short, specific tasks (for example "write a pure function that maps Kp, CME speed and SEP to a storm size, with tests"), always followed by human review, unit tests and a fact-check against the NASA or NOAA source page.
+- **Where the team's own work went:** the concept and story, the six-level mission design, the meter rules and balance, which datasets to use and how, the characters' direction, the Bangla review, and the videos.

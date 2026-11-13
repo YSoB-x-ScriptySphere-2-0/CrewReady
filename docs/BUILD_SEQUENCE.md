@@ -1,6 +1,6 @@
 # CrewReady — Build Sequence v11
 
-Goes with `plan.md` v11. The plan says **what** the game is. This file says **how to build it**, in what order, and what "done" means. On game content the plan wins; on look and build order this file wins. Older files in `docs/` (01–05, 07, 08, `BUILD_PROMPTS`, `CHARACTER_CONCEPT_SHEET`, `frontend-ui-prompt-pack`) are history: don't read them.
+Goes with `plan.md` v11. The plan says **what** the game is. This file says **how to build it**, in what order, and what "done" means. On game content the plan wins; on look and build order this file wins. Older files in `docs/` (01–05, 07, 08, `CHARACTER_CONCEPT_SHEET`) are history: don't read them.
 
 ## 1. How to use this file (and spend few tokens)
 
@@ -325,7 +325,7 @@ Phases R, D, S, L and F1 below are built. The 13 Nov audit (tests, build, code r
 
 #### Phase B — fix every bug the audit found
 
-##### B1 — Points, saving and data rules (Jawad, about 2.5 h)
+##### B1 — Points, saving and data rules (the Back-End Developer, about 2.5 h)
 **Read:** `src/store/game.ts`, `src/engine/resources.ts`, `src/engine/profile.ts`, `src/screens/Resources.tsx` (lines 100–300), `src/screens/Home.tsx` (start and continue), `src/services/nasa.ts` (DONKI and Kp).
 
 **Fix**
@@ -346,7 +346,7 @@ Phases R, D, S, L and F1 below are built. The 13 Nov audit (tests, build, code r
 
 > **Prompt — B1.** Do step B1 in `docs/BUILD_SEQUENCE.md`. Read §3 and B1, then only its Read line. Fix the twelve items in order with a test for 1, 4, 5, 6, 8 and 9. Change level numbers only for item 9, and show the balance before/after. Check, report, stop.
 
-##### B2 — Fly (Imtiaj, about 1.5 h)
+##### B2 — Fly (the Front-End Developer, about 1.5 h)
 **Read:** `src/screens/Fly.tsx`, `src/fly/engine.ts`, `src/fly/engine.test.ts`.
 
 **Fix**
@@ -386,7 +386,7 @@ Phases R, D, S, L and F1 below are built. The 13 Nov audit (tests, build, code r
 
 The play-test said: **still a bit complicated.** Phase K answers it in five steps.
 
-##### K1 — Simple words everywhere (Tasfia with Claude, about 2 h)
+##### K1 — Simple words everywhere (the Researcher with Claude, about 2 h)
 **Read:** plan §5.5; `docs/06` §4 (the kid wording column); `src/content/levels.ts`, `strings.en.ts`, `icons.ts` (`short` labels), `words.ts`.
 
 **Build**
@@ -413,7 +413,7 @@ The play-test said: **still a bit complicated.** Phase K answers it in five step
 
 > **Prompt — K2.** Do step K2 in `docs/BUILD_SEQUENCE.md`. Read §3, §4, plan §5.3 and §5.5, and K2, then only its Read line. Build the explain card, the ? and bulb buttons in fixed places, and Twinkle's five-stop tour in mission 1. Facts only from `docs/06` §4. Play mission 1 as a new player, check, report, stop.
 
-##### K3 — One points story (Jawad, about 2 h)
+##### K3 — One points story (the Back-End Developer, about 2 h)
 **Read:** plan §5.7; `src/fly/storage.ts` (stardust), `src/engine/resources.ts`, `src/store/game.ts`, `src/screens/Home.tsx`, `Fly.tsx` (end card), `Resources.tsx` (header).
 
 **Build**
@@ -427,7 +427,7 @@ The play-test said: **still a bit complicated.** Phase K answers it in five step
 
 > **Prompt — K3.** Do step K3 in `docs/BUILD_SEQUENCE.md`. Read §3, plan §5.7 and K3, then only its Read line. Add the wallet with its earn and spend paths, the Home wallet and the "How points work" card, and the Fly and Resources links, with tests. Check, report, stop.
 
-##### K4 — The 3D opening: "Earth is too full" → you suit up (Barkat in the game, Wasima in Remotion, about 3 h)
+##### K4 — The 3D opening: "Earth is too full" → you suit up (Barkat in the game, the Video Editor in Remotion, about 3 h)
 **Read:** plan §4.0 and §4.2; `src/screens/Story.tsx`, `src/components/3d/CrisisEarth3D.tsx`, `HeroCadetRocket3D.tsx`; `src/App.tsx` (hook → story route); `crewready-video/src/` (Remotion).
 
 **Build**
@@ -443,7 +443,7 @@ The play-test said: **still a bit complicated.** Phase K answers it in five step
 
 > **Prompt — K4.** Do step K4 in `docs/BUILD_SEQUENCE.md`. Read §3, §4, plan §4.0 and §4.2, and K4, then only its Read line. Build the three-beat 3D opening with the hero pick, its still-picture fallback, and move NeoWs to Fly. No new facts. Check at 844, 667 and 4× slowdown, report, stop.
 
-##### K5 — Bonus rounds: one mini-game per level (Imtiaj, about 4 h)
+##### K5 — Bonus rounds: one mini-game per level (the Front-End Developer, about 4 h)
 **Read:** plan §5.6; `src/components/toys/` (the Try-it toys: copy their structure); `src/screens/Play.tsx` (where the level ends and the crate shows); `src/store/wallet.ts` (from K3).
 
 **Build**

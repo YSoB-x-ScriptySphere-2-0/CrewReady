@@ -540,7 +540,7 @@ export function Profile() {
                         <Compass className="mx-auto h-7 w-7 text-muted/40 mb-1" />
                         <div className="font-display text-xs font-extrabold text-text">No Flight Records Yet</div>
                         <p className="mt-0.5 text-xs text-muted max-w-xs mx-auto">
-                          Blast off in Fly mode, dodge asteroids and spire monoliths, and set your distance high score!
+                          Blast off in Fly mode, dodge asteroids and rock pillars, and set your distance high score!
                         </p>
                         <button
                           onClick={() => go('fly')}
@@ -587,7 +587,7 @@ export function Profile() {
                   Global Planetary Leaderboard
                 </h3>
                 <p className="mt-1 text-xs text-muted max-w-md mx-auto leading-relaxed">
-                  Worldwide astronaut rankings are currently calibrating! In future we will add global and local leaderboard features. Compete with space cadets across Earth &amp; Mars for the longest flight distance and highest outpost survival score in the next update.
+                  Worldwide astronaut rankings are being prepared! In future we will add global and local leaderboard features. Compete with space cadets across Earth &amp; Mars for the longest flight distance and highest outpost survival score in the next update.
                 </p>
 
                 {/* Futuristic Mockup */}
