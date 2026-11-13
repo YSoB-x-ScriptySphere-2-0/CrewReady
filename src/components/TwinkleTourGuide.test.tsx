@@ -23,7 +23,7 @@ describe('TwinkleTourGuide component', () => {
     // Check buttons
     expect(html).toContain('Next');
     expect(html).toContain('Previous');
-    expect(html).toContain('Skip to Intro');
+    expect(html).not.toContain('Skip to Intro');
   });
 
   it('renders Fly spacecraft step and its data sources', () => {

@@ -45,9 +45,9 @@ const ITEMS: Item[] = [
 ];
 
 const PRAISE: L[] = [
-  { en: 'W pick! You’re cooking 🔥 All 4 right, no cap!', bn: 'দারুণ! তুমি তো পুরো ফায়ার 🔥 ৪টাই একদম ঠিক, নো ক্যাপ!' },
-  { en: 'Big brain energy! 🧠 That loadout is chef’s kiss. Absolute legend!', bn: 'বিগ ব্রেইন এনার্জি! 🧠 একদম পারফেক্ট বাছাই। তুমি লিজেন্ড!' },
-  { en: 'Lowkey genius! 💯 You get it: survival first, vibes later.', bn: 'লোকি জিনিয়াস! 💯 আগে বেঁচে থাকা, তারপর মজা। ঠিক ধরেছো!' },
+  { en: 'Stellar choice! 🚀 All 4 packed with precision!', bn: 'চমৎকার পছন্দ! 🚀 ৪টি সামগ্রীই নিখুঁতভাবে বেছে নেওয়া হয়েছে!' },
+  { en: 'Brilliant thinking! 🧠 You packed exactly what keeps humans alive in deep space.', bn: 'দারুণ বুদ্ধি! 🧠 গভীর মহাকাশে মানুষকে বাঁচিয়ে রাখার আসল ৪টি জিনিসই তুমি বেছে নিয়েছ।' },
+  { en: 'True astronaut instincts! 🌟 Life support systems are ready for launch.', bn: 'সত্যিকারের নভোচারী প্রতিভা! 🌟 লাইফ সাপোর্ট সিস্টেম এখন উৎক্ষেপণের জন্য সম্পূর্ণ প্রস্তুত।' },
 ];
 const ENCOURAGE: L[] = [
   { en: 'Not quite, but that’s how explorers learn. Check the real four 👇', bn: 'পুরোপুরি হয়নি, তবে অভিযাত্রীরা এভাবেই শেখে। আসল চারটা দেখো 👇' },

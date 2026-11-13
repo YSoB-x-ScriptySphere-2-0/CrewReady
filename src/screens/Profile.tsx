@@ -14,6 +14,10 @@ import {
   AlertTriangle,
   Trophy,
   Star,
+  Rocket,
+  Compass,
+  Sparkles,
+  Users,
 } from 'lucide-react';
 import { useGame } from '../store/game';
 import { t, useI18n } from '../content/i18n';
@@ -30,6 +34,7 @@ import {
   type Astronaut,
   type ProfileSettings,
 } from '../engine/profile';
+import { getFlyStats, getFlyLeaderboard, type FlyStats, type FlyRunEntry } from '../fly/storage';
 import { spaceMusic } from '../services/audio';
 
 export function Profile() {
@@ -38,8 +43,15 @@ export function Profile() {
   const [showSpaceBook, setShowSpaceBook] = useState(false);
 
   const lang = useI18n((s) => s.lang);
-  const { badges, leaderboard, go } = useGame();
+  const badges = useGame((s) => s.badges);
+  const leaderboard = useGame((s) => s.leaderboard);
+  const go = useGame((s) => s.go);
   const collected = useWords((s) => s.collected);
+
+  const [leaderboardScope, setLeaderboardScope] = useState<'own' | 'global' | 'local'>('own');
+  const [ownCategory, setOwnCategory] = useState<'missions' | 'fly'>('missions');
+  const [flyStats, setFlyStats] = useState<FlyStats>(() => getFlyStats());
+  const [flyRuns, setFlyRuns] = useState<FlyRunEntry[]>(() => getFlyLeaderboard());
 
   const handlePickAstronaut = (who: Astronaut) => {
     const updated = { ...profile, astronaut: who };
@@ -90,6 +102,8 @@ export function Profile() {
       lastSavedRun: -1,
     });
     setProfile(loadProfile());
+    setFlyStats(getFlyStats());
+    setFlyRuns([]);
     setConfirmReset(false);
     go('home');
   };
@@ -276,32 +290,383 @@ export function Profile() {
             )}
           </div>
 
-          {/* Leaderboard Summary */}
-          {leaderboard.length > 0 && (
-            <div className="rounded-2xl border-2 border-line bg-panel/70 p-3 sm:p-4">
-              <span className="font-display text-xs sm:text-sm font-extrabold uppercase tracking-wide text-text">
-                Best Five Outpost Runs
-              </span>
-              <div className="mt-2 divide-y divide-line/30">
-                {leaderboard.slice(0, 5).map((entry, idx) => (
-                  <div key={idx} className="flex items-center justify-between py-1.5 text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="font-display font-extrabold text-star">#{idx + 1}</span>
-                      <span className="font-bold uppercase text-text">{entry.result}</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-muted">
-                      <span className="inline-flex items-center gap-1 font-bold text-star">
-                        <Star className="h-3.5 w-3.5 fill-[var(--color-star)] text-star" aria-hidden="true" />
-                        <span>{entry.stars}</span>
-                      </span>
-                      <span>{entry.healthy}/4 Systems</span>
-                      <span className="text-xs text-muted/70">{new Date(entry.at).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                ))}
+          {/* Leaderboard Section */}
+          <div className="rounded-2xl border-2 border-line bg-panel/70 p-3 sm:p-4">
+            {/* Header with Title and Scope Selector */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-line/40 pb-2.5">
+              <div className="flex items-center gap-2">
+                <Trophy className="h-4 w-4 text-star" />
+                <span className="font-display text-xs sm:text-sm font-extrabold uppercase tracking-wide text-text">
+                  Leaderboard &amp; Records
+                </span>
+              </div>
+
+              {/* Scope Switcher: Own Records | Global | Local */}
+              <div className="flex items-center gap-1.5 overflow-x-auto text-xs">
+                <button
+                  onClick={() => setLeaderboardScope('own')}
+                  className={`rounded-lg px-2.5 py-1 font-bold transition ${
+                    leaderboardScope === 'own'
+                      ? 'bg-go text-go-text shadow-sm'
+                      : 'bg-panel-up text-muted hover:text-text'
+                  }`}
+                >
+                  Your Best Runs
+                </button>
+                <button
+                  onClick={() => setLeaderboardScope('global')}
+                  className={`relative inline-flex items-center gap-1 rounded-lg px-2.5 py-1 font-bold transition ${
+                    leaderboardScope === 'global'
+                      ? 'bg-go text-go-text shadow-sm'
+                      : 'bg-panel-up text-muted hover:text-text'
+                  }`}
+                  title="Global Leaderboard (Coming to next update)"
+                >
+                  <Globe className="h-3 w-3" />
+                  <span>Global</span>
+                  <span className="rounded bg-star/20 px-1 py-0.2 text-[9px] font-extrabold text-star">
+                    Next update
+                  </span>
+                </button>
+                <button
+                  onClick={() => setLeaderboardScope('local')}
+                  className={`relative inline-flex items-center gap-1 rounded-lg px-2.5 py-1 font-bold transition ${
+                    leaderboardScope === 'local'
+                      ? 'bg-go text-go-text shadow-sm'
+                      : 'bg-panel-up text-muted hover:text-text'
+                  }`}
+                  title="Local Leaderboard (Coming to next update)"
+                >
+                  <Users className="h-3 w-3" />
+                  <span>Local</span>
+                  <span className="rounded bg-star/20 px-1 py-0.2 text-[9px] font-extrabold text-star">
+                    Next update
+                  </span>
+                </button>
               </div>
             </div>
-          )}
+
+            {/* View 1: Own Records / Your Best Runs (Missions & Fly) */}
+            {leaderboardScope === 'own' && (
+              <div className="mt-3">
+                {/* Category Switcher: Missions vs Fly */}
+                <div className="flex items-center justify-between">
+                  <div className="inline-flex rounded-xl border border-line bg-panel p-0.5 text-xs font-bold">
+                    <button
+                      onClick={() => setOwnCategory('missions')}
+                      className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1 transition ${
+                        ownCategory === 'missions'
+                          ? 'bg-panel-up text-text font-extrabold shadow-sm'
+                          : 'text-muted hover:text-text'
+                      }`}
+                    >
+                      <Rocket className="h-3.5 w-3.5 text-go" />
+                      <span>Missions ({leaderboard.length})</span>
+                    </button>
+                    <button
+                      onClick={() => setOwnCategory('fly')}
+                      className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1 transition ${
+                        ownCategory === 'fly'
+                          ? 'bg-panel-up text-text font-extrabold shadow-sm'
+                          : 'text-muted hover:text-text'
+                      }`}
+                    >
+                      <Compass className="h-3.5 w-3.5 text-[#19A7B8]" />
+                      <span>Fly Runner ({flyStats.bestDistance > 0 ? `${flyStats.bestDistance}m` : '0m'})</span>
+                    </button>
+                  </div>
+                  <span className="text-[11px] font-medium text-muted hidden sm:inline">
+                    Own Personal Records
+                  </span>
+                </div>
+
+                {/* Missions Best Runs */}
+                {ownCategory === 'missions' && (
+                  <div className="mt-3">
+                    {/* Mission Highlights */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+                      <div className="rounded-xl border border-line/60 bg-space/60 p-2 text-center">
+                        <div className="text-[10px] font-bold uppercase text-muted">Best Outcome</div>
+                        <div className="mt-0.5 font-display text-xs font-extrabold text-go truncate">
+                          {leaderboard[0]?.result ? leaderboard[0].result.toUpperCase() : 'No runs yet'}
+                        </div>
+                      </div>
+                      <div className="rounded-xl border border-line/60 bg-space/60 p-2 text-center">
+                        <div className="text-[10px] font-bold uppercase text-muted">Peak Stars</div>
+                        <div className="mt-0.5 font-display text-xs font-extrabold text-star inline-flex items-center justify-center gap-1">
+                          <Star className="h-3 w-3 fill-[var(--color-star)] text-star" />
+                          <span>{leaderboard.length > 0 ? Math.max(...leaderboard.map((e) => e.stars)) : 0} Stars</span>
+                        </div>
+                      </div>
+                      <div className="rounded-xl border border-line/60 bg-space/60 p-2 text-center">
+                        <div className="text-[10px] font-bold uppercase text-muted">Best Systems</div>
+                        <div className="mt-0.5 font-display text-xs font-extrabold text-good">
+                          {leaderboard.length > 0 ? Math.max(...leaderboard.map((e) => e.healthy)) : 0}/4 Healthy
+                        </div>
+                      </div>
+                      <div className="rounded-xl border border-line/60 bg-space/60 p-2 text-center">
+                        <div className="text-[10px] font-bold uppercase text-muted">Total Sol 500</div>
+                        <div className="mt-0.5 font-display text-xs font-extrabold text-text">
+                          {leaderboard.length} Completed
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Mission Runs List */}
+                    {leaderboard.length > 0 ? (
+                      <div>
+                        <div className="text-[11px] font-bold uppercase tracking-wider text-muted mb-1.5">
+                          Top Outpost Survival Runs (Best 5)
+                        </div>
+                        <div className="divide-y divide-line/30 rounded-xl border border-line/40 bg-space/40 px-2.5 py-1">
+                          {leaderboard.slice(0, 5).map((entry, idx) => (
+                            <div key={idx} className="flex items-center justify-between py-1.5 text-xs">
+                              <div className="flex items-center gap-2">
+                                <span className={`font-display font-extrabold ${idx === 0 ? 'text-star' : 'text-muted'}`}>
+                                  #{idx + 1}
+                                </span>
+                                <span
+                                  className={`rounded px-1.5 py-0.5 font-display text-[10px] font-extrabold uppercase ${
+                                    entry.result === 'thriving'
+                                      ? 'border border-[#2fa84f]/40 bg-[#2fa84f]/20 text-[#2fa84f]'
+                                      : entry.result === 'stable'
+                                      ? 'border border-go/40 bg-go/20 text-go'
+                                      : 'border border-star/40 bg-star/20 text-star'
+                                  }`}
+                                >
+                                  {entry.result}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-3 text-muted">
+                                <span className="inline-flex items-center gap-1 font-bold text-star">
+                                  <Star className="h-3.5 w-3.5 fill-[var(--color-star)] text-star" aria-hidden="true" />
+                                  <span>{entry.stars}</span>
+                                </span>
+                                <span className="font-medium">{entry.healthy}/4 Systems</span>
+                                <span className="text-[11px] text-muted/70">{new Date(entry.at).toLocaleDateString()}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="rounded-xl border border-line/40 bg-space/40 p-4 text-center">
+                        <Rocket className="mx-auto h-7 w-7 text-muted/40 mb-1" />
+                        <div className="font-display text-xs font-extrabold text-text">No Mission Records Yet</div>
+                        <p className="mt-0.5 text-xs text-muted max-w-xs mx-auto">
+                          Survive Sol 500 in Mission Control to evaluate your base and record your outpost survival rank!
+                        </p>
+                        <button
+                          onClick={() => go('home')}
+                          className="mt-2.5 inline-flex items-center gap-1.5 rounded-lg border border-go bg-go/20 px-3 py-1 font-display text-xs font-bold text-go hover:bg-go hover:text-go-text transition"
+                        >
+                          <Rocket className="h-3 w-3" />
+                          <span>Launch Mission</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Fly Best Runs */}
+                {ownCategory === 'fly' && (
+                  <div className="mt-3">
+                    {/* Fly Highlights */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+                      <div className="rounded-xl border border-line/60 bg-space/60 p-2 text-center">
+                        <div className="text-[10px] font-bold uppercase text-muted">Best Distance</div>
+                        <div className="mt-0.5 font-display text-xs font-extrabold text-go truncate">
+                          {flyStats.bestDistance.toLocaleString()} m
+                        </div>
+                      </div>
+                      <div className="rounded-xl border border-line/60 bg-space/60 p-2 text-center">
+                        <div className="text-[10px] font-bold uppercase text-muted">Stardust Bank</div>
+                        <div className="mt-0.5 font-display text-xs font-extrabold text-star inline-flex items-center justify-center gap-1">
+                          <Sparkles className="h-3 w-3 text-star" />
+                          <span>{flyStats.totalStardust.toLocaleString()} ✦</span>
+                        </div>
+                      </div>
+                      <div className="rounded-xl border border-line/60 bg-space/60 p-2 text-center">
+                        <div className="text-[10px] font-bold uppercase text-muted">Flight Mastery</div>
+                        <div className="mt-0.5 font-display text-xs font-extrabold text-[#19A7B8] truncate">
+                          {flyStats.bestDistance >= 2000
+                            ? 'Ace Navigator'
+                            : flyStats.bestDistance >= 1000
+                            ? 'Flight Specialist'
+                            : flyStats.bestDistance >= 500
+                            ? 'Orbit Pilot'
+                            : 'Cadet Pilot'}
+                        </div>
+                      </div>
+                      <div className="rounded-xl border border-line/60 bg-space/60 p-2 text-center">
+                        <div className="text-[10px] font-bold uppercase text-muted">Runs Tracked</div>
+                        <div className="mt-0.5 font-display text-xs font-extrabold text-text">
+                          {flyRuns.length} Runs
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Fly Runs List */}
+                    {flyRuns.length > 0 ? (
+                      <div>
+                        <div className="text-[11px] font-bold uppercase tracking-wider text-muted mb-1.5">
+                          Top Orbit Flight Runs (Best 5)
+                        </div>
+                        <div className="divide-y divide-line/30 rounded-xl border border-line/40 bg-space/40 px-2.5 py-1">
+                          {flyRuns.slice(0, 5).map((entry, idx) => (
+                            <div key={idx} className="flex items-center justify-between py-1.5 text-xs">
+                              <div className="flex items-center gap-2">
+                                <span className={`font-display font-extrabold ${idx === 0 ? 'text-star' : 'text-muted'}`}>
+                                  #{idx + 1}
+                                </span>
+                                <span className="inline-flex items-center gap-1 font-bold text-text">
+                                  <Compass className="h-3.5 w-3.5 text-[#19A7B8]" />
+                                  <span>{entry.distance.toLocaleString()} m</span>
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-3 text-muted">
+                                <span className="inline-flex items-center gap-1 font-bold text-star">
+                                  <Sparkles className="h-3 w-3 text-star" />
+                                  <span>+{entry.stardust} ✦</span>
+                                </span>
+                                <span className="text-[11px] text-muted/70">{new Date(entry.at).toLocaleDateString()}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="rounded-xl border border-line/40 bg-space/40 p-4 text-center">
+                        <Compass className="mx-auto h-7 w-7 text-muted/40 mb-1" />
+                        <div className="font-display text-xs font-extrabold text-text">No Flight Records Yet</div>
+                        <p className="mt-0.5 text-xs text-muted max-w-xs mx-auto">
+                          Blast off in Fly mode, dodge asteroids and spire monoliths, and set your distance high score!
+                        </p>
+                        <button
+                          onClick={() => go('fly')}
+                          className="mt-2.5 inline-flex items-center gap-1.5 rounded-lg border border-[#19A7B8] bg-[#19A7B8]/20 px-3 py-1 font-display text-xs font-bold text-[#19A7B8] hover:bg-[#19A7B8] hover:text-space transition"
+                        >
+                          <Compass className="h-3 w-3" />
+                          <span>Start Flying</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Future Update Teaser Banner */}
+                <div className="mt-3 flex items-center justify-between rounded-xl border border-line/50 bg-space/60 px-3 py-2 text-xs text-muted">
+                  <div className="flex items-center gap-2">
+                    <Globe className="h-4 w-4 text-go flex-shrink-0" />
+                    <span>
+                      <strong className="text-text">Global &amp; Local Leaderboard</strong> — In future we will add global and local leaderboard, coming to the next update!
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setLeaderboardScope('global')}
+                    className="text-xs font-bold text-go hover:underline whitespace-nowrap ml-2"
+                  >
+                    Preview
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* View 2: Global Leaderboard (Future Preview) */}
+            {leaderboardScope === 'global' && (
+              <div className="mt-3 rounded-xl border border-line/60 bg-space/80 p-4 text-center">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-go/40 bg-go/10 text-go mb-2">
+                  <Globe className="h-6 w-6 animate-pulse" />
+                </div>
+                <div>
+                  <span className="inline-block rounded-full border border-star/40 bg-star/15 px-2.5 py-0.5 text-[11px] font-extrabold uppercase tracking-wider text-star mb-1">
+                    Coming to the next update
+                  </span>
+                </div>
+                <h3 className="font-display text-base font-extrabold text-text">
+                  Global Planetary Leaderboard
+                </h3>
+                <p className="mt-1 text-xs text-muted max-w-md mx-auto leading-relaxed">
+                  Worldwide astronaut rankings are currently calibrating! In future we will add global and local leaderboard features. Compete with space cadets across Earth &amp; Mars for the longest flight distance and highest outpost survival score in the next update.
+                </p>
+
+                {/* Futuristic Mockup */}
+                <div className="mt-3.5 rounded-xl border border-line/40 bg-panel/60 p-3 max-w-sm mx-auto text-left text-xs space-y-2 opacity-90">
+                  <div className="flex items-center justify-between font-bold text-muted/70 text-[10px] uppercase border-b border-line/30 pb-1">
+                    <span>Expedition Pilot</span>
+                    <span>Best Run</span>
+                  </div>
+                  <div className="flex items-center justify-between text-muted">
+                    <span className="font-medium">1. Commander Chen · ISS Alpha</span>
+                    <span className="font-bold text-star">3,420 m · Thriving</span>
+                  </div>
+                  <div className="flex items-center justify-between text-muted">
+                    <span className="font-medium">2. Captain Amara · Olympus Base</span>
+                    <span className="font-bold text-star">2,890 m · Thriving</span>
+                  </div>
+                  <div className="flex items-center justify-between text-text bg-panel-up/70 rounded-lg px-2 py-1 border border-go/30">
+                    <span className="font-bold text-go">3. {profile.callsign} (Your Record)</span>
+                    <span className="font-bold text-go">
+                      {flyStats.bestDistance > 0 ? `${flyStats.bestDistance.toLocaleString()} m` : 'Your Record'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-3">
+                  <button
+                    onClick={() => setLeaderboardScope('own')}
+                    className="inline-flex items-center gap-1 text-xs font-bold text-go hover:underline"
+                  >
+                    <span>Back to Your Records</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* View 3: Local Leaderboard (Future Preview) */}
+            {leaderboardScope === 'local' && (
+              <div className="mt-3 rounded-xl border border-line/60 bg-space/80 p-4 text-center">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-go/40 bg-go/10 text-go mb-2">
+                  <Users className="h-6 w-6" />
+                </div>
+                <div>
+                  <span className="inline-block rounded-full border border-star/40 bg-star/15 px-2.5 py-0.5 text-[11px] font-extrabold uppercase tracking-wider text-star mb-1">
+                    Coming to the next update
+                  </span>
+                </div>
+                <h3 className="font-display text-base font-extrabold text-text">
+                  Local Squad &amp; Classroom Leaderboard
+                </h3>
+                <p className="mt-1 text-xs text-muted max-w-md mx-auto leading-relaxed">
+                  Local and squad rankings are in development! In future we will add global and local leaderboard systems so you can challenge your classmates, school space club, and local Wi-Fi squadron. Coming to the next update!
+                </p>
+
+                <div className="mt-3.5 grid grid-cols-1 sm:grid-cols-3 gap-2 max-w-md mx-auto text-xs">
+                  <div className="rounded-xl border border-line/40 bg-panel/50 p-2.5 text-center">
+                    <div className="font-display font-extrabold text-go">Classroom Squad</div>
+                    <div className="text-[10px] text-muted mt-0.5">PIN-based local roster</div>
+                  </div>
+                  <div className="rounded-xl border border-line/40 bg-panel/50 p-2.5 text-center">
+                    <div className="font-display font-extrabold text-star">Local Wi-Fi Beacon</div>
+                    <div className="text-[10px] text-muted mt-0.5">Zero-login peer sync</div>
+                  </div>
+                  <div className="rounded-xl border border-line/40 bg-panel/50 p-2.5 text-center">
+                    <div className="font-display font-extrabold text-[#19A7B8]">Squad Co-op</div>
+                    <div className="text-[10px] text-muted mt-0.5">Shared Mars outpost</div>
+                  </div>
+                </div>
+
+                <div className="mt-3">
+                  <button
+                    onClick={() => setLeaderboardScope('own')}
+                    className="inline-flex items-center gap-1 text-xs font-bold text-go hover:underline"
+                  >
+                    <span>Back to Your Records</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Big Settings Toggles */}
           <div className="rounded-2xl border-2 border-line bg-panel/70 p-3 sm:p-4">

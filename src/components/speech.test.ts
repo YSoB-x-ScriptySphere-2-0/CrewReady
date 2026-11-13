@@ -16,4 +16,9 @@ describe('pickVoice', () => {
     expect(pickVoice([], 'en')).toBeUndefined();
   });
   it('accepts underscore language tags', () => expect(pickVoice([v('en_US')], 'en')).toBeDefined());
+  it('prioritizes cute female voices for Twinkle over default deep male voices', () => {
+    const maleDefault = { lang: 'en-US', default: true, name: 'Microsoft David Desktop - English (United States)' };
+    const femaleVoice = { lang: 'en-US', default: false, name: 'Microsoft Zira Desktop - English (United States)' };
+    expect(pickVoice([maleDefault, femaleVoice], 'en')).toBe(femaleVoice);
+  });
 });

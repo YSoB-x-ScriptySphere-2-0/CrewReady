@@ -1,11 +1,12 @@
-// Twinkle AI Space Chat Teaser & Interactive Preview (Task 4)
+// Twinkle AI Space Chat Teaser & Interactive Preview
 // Introduces the upcoming fine-tuned Space AI Model that answers children's cosmic curiosity.
 import { useState } from 'react';
 import { 
   X, 
   Bot, 
   HelpCircle,
-  Radio
+  Radio,
+  Sparkles
 } from 'lucide-react';
 import { useI18n } from '../content/i18n';
 
@@ -14,42 +15,42 @@ interface SampleQA {
   qBn: string;
   aEn: string;
   aBn: string;
-  genAlphaEn: string;
-  genAlphaBn: string;
+  funFactEn: string;
+  funFactBn: string;
 }
 
 const SAMPLE_QUESTIONS: SampleQA[] = [
   {
     qEn: 'Can we grow watermelons on Mars?',
     qBn: 'মঙ্গলে কি তরমুজ চাষ করা যাবে?',
-    aEn: 'Yes, in pressurized hydroponic greenhouse domes! Real NASA tests grew lettuce and tomatoes in water and LED light.',
+    aEn: 'Yes, in pressurized hydroponic greenhouse domes! Real NASA tests on the ISS already proved plants can grow using recycled water and LED light recipes.',
     aBn: 'হ্যাঁ, বিশেষ কাঁচের ঘরে পানিতে ও বাতির আলোতে চাষ সম্ভব! নাসা ইতিমধ্যে লেটুস ও টমেটো সফলভাবে ফলিয়েছে।',
-    genAlphaEn: 'No cap, space watermelon would be the ultimate hydration flex!',
-    genAlphaBn: 'নো ক্যাপ! মঙ্গলে তরমুজ ফলালে পানির তেষ্টা মেটানোর সেরা উপায় হবে!',
+    funFactEn: 'Fun Fact: Astronauts on the Space Station have already grown and eaten fresh red romaine lettuce and space-grown chili peppers!',
+    funFactBn: 'মজার তথ্য: মহাকাশ স্টেশনের নভোচারীরা ইতিমধ্যে মহাকাশে উৎপাদিত তাজা লাল লেটুস ও মরিচ সফলভাবে চাষ করে খেয়েছেন!',
   },
   {
     qEn: 'Why is Mars red?',
     qBn: 'মঙ্গল গ্রহ লাল দেখায় কেন?',
-    aEn: 'Because Mars soil is full of iron oxide, which is rusty iron! When sunlight hits rust, it glows red and orange.',
+    aEn: 'Because Mars soil is full of iron oxide, which is the same as rusty iron! When sunlight hits the rusted surface dust, it glows red and orange.',
     aBn: 'কারণ মঙ্গলের লাল মাটিতে প্রচুর আয়রন অক্সাইড বা মরিচা আছে! সূর্যের আলোয় এই মরিচা লালচে-কমলা দেখায়।',
-    genAlphaEn: 'Mars has that permanent rusty aesthetic, 100% natural rizz!',
-    genAlphaBn: 'মঙ্গলের মাটিতে মরিচা থাকার কারণেই এর লাল রঙের এমন আকর্ষণীয় রূপ!',
+    funFactEn: 'Fun Fact: Billions of years ago, Mars had water that reacted with iron minerals, creating the rust we still see today!',
+    funFactBn: 'মজার তথ্য: কোটি কোটি বছর আগে মঙ্গলে প্রচুর পানি ছিল, যা লোহার খনিজের সাথে বিক্রিয়া করে এই সুবিশাল মরিচার আস্তরণ তৈরি করেছে!',
   },
   {
     qEn: 'How do astronauts drink water in space?',
     qBn: 'মহাকাশচারীরা ওজনহীনতায় পানি পান করে কীভাবে?',
-    aEn: 'Water floats in floating round bubbles without gravity! Astronauts drink from sealed pouches using special straws.',
+    aEn: 'Without gravity pulling down, water floats as round, dancing bubbles! Astronauts drink from sealed pouches using special one-way valve straws.',
     aBn: 'ওজনহীনতায় পানি গোল বলের মতো শূন্যে ভাসে! তাই মহাকাশচারীরা স্ট্র লাগানো সিল করা পাউচ দিয়ে পানি পান করে।',
-    genAlphaEn: 'Floating water bubbles are peak space physics, so satisfying!',
-    genAlphaBn: 'বাতাসে ভাসমান পানির বুদবুদ দেখা সত্যিই দারুণ এক অভিজ্ঞতা!',
+    funFactEn: 'Fun Fact: Surface tension holds floating water together into crystal-clear spheres in microgravity!',
+    funFactBn: 'মজার তথ্য: মাধ্যাকর্ষণ না থাকায় তরলের নিজস্ব পৃষ্ঠটান পানিকে শূন্যে নিখুঁত গোলকের মতো ধরে রাখে!',
   },
   {
     qEn: 'How loud is a rocket launch?',
     qBn: 'রকেট ওড়ার সময় কত বিকট শব্দ হয়?',
-    aEn: 'Around 200 decibels! Sound waves are so strong that launch pads use giant water torrents to absorb the noise vibrations.',
+    aEn: 'Over 200 decibels! Sound waves are so powerful they could damage the launchpad, which is why NASA pumps thousands of gallons of water underneath during liftoff.',
     aBn: 'প্রায় ২০০ ডেসিবেল! এই শব্দ এতো শক্তিশালী যে প্যাড বাঁচাতে রকেটের নিচে লক্ষ লক্ষ লিটার পানি ঢালা হয়।',
-    genAlphaEn: 'That acoustic boom is max volume, bass-boosted to the max!',
-    genAlphaBn: 'শব্দটি এতোই প্রচণ্ড যে কান বাঁচাতে বিশেষ সুরক্ষা নিতে হয়!',
+    funFactEn: 'Fun Fact: NASA sound-suppression water systems dump 450,000 gallons of water in just about a minute!',
+    funFactBn: 'মজার তথ্য: শব্দতরঙ্গের তীব্র ধাক্কা কমাতে নাসার সাউন্ড সাপ্রেশন সিস্টেমে মাত্র এক মিনিটে প্রায় সাড়ে চার লাখ গ্যালন পানি ঢালা হয়!',
   },
 ];
 
@@ -76,19 +77,19 @@ export function TwinkleChatTeaser({ onClose }: TwinkleChatTeaserProps) {
       <div className="relative flex max-w-lg w-full max-h-[90vh] overflow-y-auto flex-col rounded-2xl border-3 border-go bg-panel p-4 sm:p-5 shadow-2xl anim-pop-in">
         {/* Top Header */}
         <div className="flex items-center justify-between border-b border-line/60 pb-3">
-          <div className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-go/20 text-go border border-go">
-              <Bot size={20} />
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-go/20 text-go border border-go shadow-sm shrink-0">
+              <Bot size={22} />
             </span>
             <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-display text-[10px] font-black tracking-wider text-amber-300 uppercase">
-                  {lang === 'bn' ? 'শীঘ্রই আসছে' : 'COMING SOON'}
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <span className="rounded-full bg-amber-400/20 border border-amber-400/40 px-2 py-0.5 font-display text-[9px] sm:text-[10px] font-black tracking-wider text-amber-300 uppercase">
+                  {lang === 'bn' ? 'পরবর্তী আপডেটে আসছে' : 'Coming in the next update'}
                 </span>
                 <span className="inline-flex h-2 w-2 rounded-full bg-good animate-ping" />
               </div>
               <h2 className="font-display text-base sm:text-lg font-black text-white leading-tight">
-                {lang === 'bn' ? 'টুইঙ্কেল এআই স্পেস চ্যাট' : 'Twinkle Space AI Model'}
+                {lang === 'bn' ? 'টুইঙ্কেল এআই স্পেস চ্যাট' : 'Twinkle Space AI Chat'}
               </h2>
             </div>
           </div>
@@ -103,12 +104,20 @@ export function TwinkleChatTeaser({ onClose }: TwinkleChatTeaserProps) {
           </button>
         </div>
 
-        {/* Feature Teaser Intro */}
-        <div className="mt-2.5 rounded-xl border border-line bg-space-deep p-2.5 text-xs text-text/90 leading-relaxed">
-          <p className="font-display font-bold">
+        {/* Feature Teaser Intro with User Requested Tagline */}
+        <div className="mt-2.5 rounded-xl border border-cyan-400/30 bg-[#0E1B45]/90 p-3 text-xs text-text/95 leading-relaxed">
+          <div className="flex items-center gap-1.5 text-cyan-300 font-display font-extrabold text-xs sm:text-sm mb-1">
+            <Sparkles size={14} className="text-amber-300" />
+            <span>
+              {lang === 'bn'
+                ? 'মহাকাশ নিয়ে যা খুশি প্রশ্ন করো, মেটাও তোমার কৌতূহল!'
+                : 'Ask anything about space, meet your curiosity!'}
+            </span>
+          </div>
+          <p className="font-sans text-[11px] sm:text-xs text-muted leading-relaxed">
             {lang === 'bn'
-              ? 'মহাকাশ, ব্ল্যাকহোল কিংবা ভিনগ্রহ নিয়ে তোমার মাথায় হাজারো প্রশ্ন? আমরা তৈরি করছি বিশেষায়িত এআই স্পেস মডেল! শীঘ্রই তুমি টুইঙ্কেলের সাথে সরাসরি কথা বলে নাসার আসল বৈজ্ঞানিক তথ্য জানতে পারবে।'
-              : 'Ever wondered about black holes, aliens, or Mars rovers? We are training a specialized AI space model! Soon you will be able to chat with Twinkle in real-time with verified NASA science!'}
+              ? 'মহাকাশ, ব্ল্যাকহোল, গ্রহ-নক্ষত্র কিংবা মঙ্গল অভিযান নিয়ে তোমার সব প্রশ্নের উত্তর দিতে আমরা নাসার আসল বৈজ্ঞানিক ডেটাসেটে টুইঙ্কেলকে প্রস্তুত করছি। পরবর্তী আপডেটে তুমি সরাসরি কথা বলতে পারবে!'
+              : 'Ever wondered about black holes, Mars colonies, or how rockets work? Ask anything about space and meet your curiosity! Twinkle AI is being fine-tuned with NASA and NOAA science data for our next major update.'}
           </p>
         </div>
 
@@ -147,7 +156,7 @@ export function TwinkleChatTeaser({ onClose }: TwinkleChatTeaserProps) {
               className="h-6 w-6 object-contain"
             />
             <span className="font-display text-xs font-black text-cyan-300">
-              Twinkle AI:
+              Twinkle:
             </span>
           </div>
 
@@ -155,9 +164,10 @@ export function TwinkleChatTeaser({ onClose }: TwinkleChatTeaserProps) {
             {lang === 'bn' ? activeQA.aBn : activeQA.aEn}
           </p>
 
-          <p className="mt-2 font-display text-xs font-extrabold text-amber-300 italic">
-            "{lang === 'bn' ? activeQA.genAlphaBn : activeQA.genAlphaEn}"
-          </p>
+          <div className="mt-2.5 rounded-lg border border-amber-400/30 bg-amber-500/10 p-2 text-xs text-amber-200">
+            <span className="font-display font-extrabold text-amber-300">💡 {lang === 'bn' ? 'টুইঙ্কেলের মহাকাশ তথ্য:' : "Twinkle's Cosmic Fact:"} </span>
+            <span className="font-sans font-medium">{lang === 'bn' ? activeQA.funFactBn : activeQA.funFactEn}</span>
+          </div>
         </div>
 
         {/* Footer */}
@@ -172,7 +182,7 @@ export function TwinkleChatTeaser({ onClose }: TwinkleChatTeaserProps) {
             onClick={onClose}
             className="rounded-lg bg-go px-3 py-1 font-display text-xs font-black text-go-text hover:brightness-105 transition cursor-pointer"
           >
-            {lang === 'bn' ? 'বুঝতে পেরেছি' : 'Got It!'}
+            {lang === 'bn' ? 'দারুণ!' : 'Awesome!'}
           </button>
         </div>
       </div>

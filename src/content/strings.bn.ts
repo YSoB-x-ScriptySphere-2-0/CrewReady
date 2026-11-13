@@ -35,6 +35,7 @@ export const stringsBn: Record<string, string> = {
   'btn.startOver': 'নতুন করে শুরু',
   'btn.flyAgain': 'আবার ওড়ো',
   'btn.tryAgain': 'আবার চেষ্টা করো',
+  'btn.home': 'হোম',
   'btn.start': 'শুরু করো',
   'btn.water': 'পানি দাও',
 

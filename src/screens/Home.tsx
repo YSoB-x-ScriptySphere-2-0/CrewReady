@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Map as MapIcon, Play, RotateCcw, Rocket, Sparkles, Volume2, Square, Bot, HelpCircle } from 'lucide-react';
 import { Dock } from '../components/Dock';
 import { StarCounter, StardustCounter } from '../components/Hud';
@@ -160,6 +160,8 @@ function SpaceWeatherCard({ kp, badge, fetchedAt }: { kp: number; badge: 'NASA L
   );
 }
 
+const TOUR_SEEN_KEY = 'crewready_tour_seen';
+
 export function Home() {
   const { startMission, levelIndex, go, game } = useGame();
   const lang = useI18n((s) => s.lang);
@@ -172,6 +174,24 @@ export function Home() {
   const [explainIndex, setExplainIndex] = useState(0);
   const [speaking, setSpeaking] = useState(false);
   const canSpeak = useCanSpeak();
+
+  // Auto-launch Twinkle Tour on the user's very first visit to the Home Screen
+  useEffect(() => {
+    if (typeof localStorage !== 'undefined') {
+      const hasSeen = localStorage.getItem(TOUR_SEEN_KEY);
+      if (!hasSeen) {
+        setShowTour(true);
+        localStorage.setItem(TOUR_SEEN_KEY, 'true');
+      }
+    }
+  }, []);
+
+  const closeTour = () => {
+    setShowTour(false);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(TOUR_SEEN_KEY, 'true');
+    }
+  };
 
   const welcomeText = inProgress ? t('home.welcomeBack') : t('home.ready');
 
@@ -306,15 +326,29 @@ export function Home() {
               </button>
             </div>
 
-            {/* Interactive Feature Pills: AI Chat & Explain Cards */}
-            <div className="grid grid-cols-2 gap-2 mt-0.5">
+            {/* Interactive Feature Cards: AI Chat & Explain Cards */}
+            <div className="flex flex-col gap-2 mt-0.5">
               <button
                 type="button"
                 onClick={() => setShowAiChat(true)}
-                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-2xl border border-cyan-400/40 bg-[#0E1B45]/90 hover:bg-[#142357] text-cyan-300 shadow-md active:scale-95 transition cursor-pointer"
+                className="flex items-center justify-between px-3 py-2.5 rounded-2xl border border-cyan-400/40 bg-[#0E1B45]/90 hover:bg-[#142357] text-left shadow-md active:scale-[0.98] transition cursor-pointer"
               >
-                <Bot size={16} className="text-go animate-pulse" />
-                <span className="font-display text-xs font-black truncate">{lang === 'bn' ? 'টুইঙ্কেল এআই চ্যাট' : 'Twinkle AI Chat'}</span>
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <Bot size={20} className="text-go animate-pulse shrink-0" />
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="font-display text-xs font-black text-white">
+                        {lang === 'bn' ? 'টুইঙ্কেল এআই চ্যাট' : 'Twinkle AI Chat'}
+                      </span>
+                      <span className="rounded-full bg-amber-400/20 border border-amber-400/40 px-1.5 py-0.2 text-[9px] font-black text-amber-300 uppercase">
+                        {lang === 'bn' ? 'পরবর্তী আপডেটে আসছে' : 'Coming in next update'}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-cyan-200/80 truncate">
+                      {lang === 'bn' ? 'মহাকাশ নিয়ে যা খুশি প্রশ্ন করো, মেটাও তোমার কৌতূহল' : 'Ask anything about space, meet your curiosity'}
+                    </p>
+                  </div>
+                </div>
               </button>
 
               <button
@@ -452,10 +486,22 @@ export function Home() {
                 <button
                   type="button"
                   onClick={() => setShowAiChat(true)}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl border border-cyan-400/40 bg-[#0E1B45]/90 hover:bg-[#142357] text-cyan-300 shadow-md active:scale-95 transition cursor-pointer"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-2xl border border-cyan-400/40 bg-[#0E1B45]/90 hover:bg-[#142357] text-left text-cyan-300 shadow-md active:scale-95 transition cursor-pointer"
                 >
-                  <Bot size={16} className="text-go animate-pulse" />
-                  <span className="font-display text-xs sm:text-sm font-black">{lang === 'bn' ? 'টুইঙ্কেল এআই চ্যাট' : 'Twinkle AI Chat'}</span>
+                  <Bot size={18} className="text-go animate-pulse shrink-0" />
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="font-display text-xs sm:text-sm font-black text-white">
+                        {lang === 'bn' ? 'টুইঙ্কেল এআই চ্যাট' : 'Twinkle AI Chat'}
+                      </span>
+                      <span className="rounded-full bg-amber-400/20 border border-amber-400/40 px-1.5 py-0.2 text-[9px] font-black text-amber-300 uppercase">
+                        {lang === 'bn' ? 'পরবর্তী আপডেটে আসছে' : 'Coming in next update'}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-cyan-200/80 max-w-[240px] truncate">
+                      {lang === 'bn' ? 'মহাকাশ নিয়ে যা খুশি প্রশ্ন করো, মেটাও তোমার কৌতূহল' : 'Ask anything about space, meet your curiosity'}
+                    </p>
+                  </div>
                 </button>
 
                 <button
@@ -527,7 +573,7 @@ export function Home() {
       )}
 
       {/* Twinkle Tour Guide Modal */}
-      {showTour && <TwinkleTourGuide onClose={() => setShowTour(false)} />}
+      {showTour && <TwinkleTourGuide onClose={closeTour} />}
 
       {/* Twinkle Space AI Chat Teaser */}
       {showAiChat && <TwinkleChatTeaser onClose={() => setShowAiChat(false)} />}

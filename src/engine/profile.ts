@@ -102,6 +102,7 @@ export function resetAllGameData(): void {
       localStorage.removeItem('crewready_fly_best_distance');
       localStorage.removeItem('crewready_fly_total_stardust');
       localStorage.removeItem('crewready_cargo_upgrades');
+      localStorage.removeItem('crewready_fly_runs');
     }
   } catch {
     // Ignore

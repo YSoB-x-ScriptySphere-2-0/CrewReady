@@ -301,7 +301,7 @@ export function TwinkleTourGuide({ onClose, initialStepIndex = 0 }: TwinkleTourG
           </div>
         </div>
 
-        {/* Bottom Actions: Previous, Skip, Next / Start */}
+        {/* Bottom Actions: Previous, Next / Start */}
         <div className="mt-4 flex items-center justify-between gap-3 border-t border-line/60 pt-3">
           <button
             onClick={() => setIndex((i) => Math.max(0, i - 1))}
@@ -310,13 +310,6 @@ export function TwinkleTourGuide({ onClose, initialStepIndex = 0 }: TwinkleTourG
           >
             <ArrowLeft size={14} />
             <span>Previous</span>
-          </button>
-
-          <button
-            onClick={onClose}
-            className="text-xs text-muted hover:text-text underline-offset-4 hover:underline cursor-pointer"
-          >
-            Skip to Intro
           </button>
 
           {isLast ? (

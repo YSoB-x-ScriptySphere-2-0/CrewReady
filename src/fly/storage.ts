@@ -2,11 +2,68 @@
 
 import { useWallet } from '../store/wallet';
 
-const BEST_DIST_KEY = 'crewready_fly_best_distance';
+export const BEST_DIST_KEY = 'crewready_fly_best_distance';
+export const FLY_RUNS_KEY = 'crewready_fly_runs';
+export const FLY_BOARD_SIZE = 5;
 
 export interface FlyStats {
   bestDistance: number;
   totalStardust: number;
+}
+
+export interface FlyRunEntry {
+  distance: number;
+  stardust: number;
+  at: string;
+}
+
+export function getFlyLeaderboard(): FlyRunEntry[] {
+  try {
+    if (typeof localStorage === 'undefined') return [];
+    const raw = localStorage.getItem(FLY_RUNS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+    // Fallback: If best distance exists but no run list was recorded yet
+    const distStr = localStorage.getItem(BEST_DIST_KEY);
+    const bestDist = distStr ? Math.max(0, parseInt(distStr, 10) || 0) : 0;
+    if (bestDist > 0) {
+      return [{ distance: bestDist, stardust: 0, at: new Date().toISOString() }];
+    }
+    return [];
+  } catch {
+    return [];
+  }
+}
+
+export function recordFlyRun(entry: FlyRunEntry): FlyRunEntry[] {
+  let current: FlyRunEntry[] = [];
+  try {
+    if (typeof localStorage !== 'undefined') {
+      const raw = localStorage.getItem(FLY_RUNS_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) current = parsed;
+      }
+    }
+  } catch {
+    current = [];
+  }
+
+  const updated = [...current, entry]
+    .sort((a, b) => b.distance - a.distance || b.stardust - a.stardust || a.at.localeCompare(b.at))
+    .slice(0, FLY_BOARD_SIZE);
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(FLY_RUNS_KEY, JSON.stringify(updated));
+    }
+  } catch {
+    // Ignore storage quota
+  }
+  return updated;
 }
 
 export function getFlyStats(): FlyStats {
@@ -39,6 +96,14 @@ export function recordRunEnd(distance: number, earnedStardust: number): { isNewB
     }
   } catch {
     // Ignore storage quota
+  }
+
+  if (roundedDist > 0) {
+    recordFlyRun({
+      distance: roundedDist,
+      stardust: Math.floor(earnedStardust),
+      at: new Date().toISOString(),
+    });
   }
 
   return {

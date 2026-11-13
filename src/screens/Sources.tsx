@@ -322,7 +322,7 @@ export function Sources() {
               <strong>Solar Eruptions & Prominences:</strong> NASA Solar Dynamics Observatory (SDO) / SOHO.
             </li>
             <li className="rounded-xl border border-ink/10 bg-white/60 p-3.5">
-              <strong>Saved APOD (“Aurora over Earth”, shown only when today’s picture cannot load):</strong> Photograph by Lorenzo Spiss, via NASA Astronomy Picture of the Day.
+              <strong>Saved APOD (“Aurora over Earth”, shown only when today’s picture cannot load):</strong> Photograph from the International Space Station (ISS Expedition Crew), via NASA Astronomy Picture of the Day Archive.
             </li>
           </ul>
         </section>

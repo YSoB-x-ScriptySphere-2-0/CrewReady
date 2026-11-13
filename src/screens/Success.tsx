@@ -315,6 +315,10 @@ export function Success() {
               <img
                 src={apod.data.url}
                 alt={apod.data.title ?? 'NASA picture of the day'}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = `${import.meta.env.BASE_URL}art/aurora-over-earth.jpg`;
+                }}
                 className="h-[3.25rem] w-[4.5rem] shrink-0 rounded-[0.5rem] border-2 border-line bg-space-deep object-cover"
                 loading="lazy"
               />

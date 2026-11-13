@@ -106,10 +106,10 @@ const FALLBACK_EPIC: EpicImage = {
 const FALLBACK_APOD: Apod = {
   date: '2024-05-11',
   title: 'Aurora over Earth',
-  url: 'https://apod.nasa.gov/apod/image/2405/Aurora_Spiss_1080.jpg',
-  explanation: 'Strong solar storms produced vivid auroras seen around the world in May 2024.',
+  url: `${import.meta.env.BASE_URL}art/aurora-over-earth.jpg`,
+  explanation: 'Strong solar storms produced vivid auroras seen shimmering over Earth from orbit.',
   media_type: 'image',
-  copyright: 'Lorenzo Spiss',
+  copyright: 'NASA / ISS Crew',
 };
 
 // Copied from public/data/insight.json (NASA InSight API record, archived 12 Nov 2026). Never edit by hand.

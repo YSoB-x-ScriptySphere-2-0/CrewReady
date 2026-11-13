@@ -34,6 +34,7 @@ export const stringsEn: Record<string, string> = {
   'btn.startOver': 'Start Over',
   'btn.flyAgain': 'Fly Again',
   'btn.tryAgain': 'Try Again',
+  'btn.home': 'Home',
   'btn.start': 'Start',
   'btn.water': 'Water',
 

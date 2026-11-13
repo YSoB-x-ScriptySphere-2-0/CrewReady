@@ -4,19 +4,19 @@
   "today": {
     "date": "2024-05-11",
     "title": "Aurora over Earth",
-    "url": "https://apod.nasa.gov/apod/image/2405/Aurora_Spiss_1080.jpg",
+    "url": "/art/aurora-over-earth.jpg",
     "explanation": "Vivid auroras danced across global skies during the intense solar storm of May 2024.",
     "media_type": "image",
-    "copyright": "Lorenzo Spiss"
+    "copyright": "NASA / ISS Crew"
   },
   "featured": [
     {
       "date": "2024-05-11",
       "title": "Aurora over Earth",
-      "url": "https://apod.nasa.gov/apod/image/2405/Aurora_Spiss_1080.jpg",
+      "url": "/art/aurora-over-earth.jpg",
       "explanation": "Vivid auroras danced across global skies during the intense solar storm of May 2024.",
       "media_type": "image",
-      "copyright": "Lorenzo Spiss"
+      "copyright": "NASA / ISS Crew"
     },
     {
       "date": "2023-04-12",

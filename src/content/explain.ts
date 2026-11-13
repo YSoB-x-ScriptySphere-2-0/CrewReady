@@ -46,8 +46,8 @@ export const EXPLAIN_ENTRIES: ExplainEntry[] = [
     icon: Sunrise,
     source: 'NASA Mars Facts',
     genAlphaComment: {
-      en: 'No cap, you get 40 extra minutes to sleep on Mars!',
-      bn: 'নো ক্যাপ! মঙ্গলে ঘুমানোর জন্য প্রতিদিন ৪০ মিনিট বেশি পাওয়া যাবে!',
+      en: 'A Martian day (Sol) gives you about 40 extra minutes compared to Earth!',
+      bn: 'মঙ্গলের দিন পৃথিবীর চেয়ে প্রায় ৪০ মিনিট দীর্ঘ হয়!',
     },
   },
   {
@@ -68,8 +68,8 @@ export const EXPLAIN_ENTRIES: ExplainEntry[] = [
     icon: SolarPanel,
     source: 'NASA Opportunity & InSight missions',
     genAlphaComment: {
-      en: 'Keep those panels clean or our power is cooked!',
-      bn: 'প্যানেল সাফ না রাখলে ব্যাটারি শেষ হয়ে যাবে দোস্ত!',
+      en: 'Keep those solar panels spotless to power up every station module!',
+      bn: 'প্যানেল পরিষ্কার রাখলে স্টেশনের প্রতিটি মডিউলে পুরো শক্তি পাওয়া যাবে!',
     },
   },
   {
@@ -90,8 +90,8 @@ export const EXPLAIN_ENTRIES: ExplainEntry[] = [
     icon: Radiation,
     source: 'NASA Orion storm-shelter pages',
     genAlphaComment: {
-      en: 'Water shield has +1000 aura against cosmic radiation!',
-      bn: 'পানি দিয়ে তৈরি ঢাল মহাকাশের ক্ষতিকর রশ্মি সহজেই আটকে দেয়!',
+      en: 'Water shields are remarkably effective at blocking high-energy cosmic rays!',
+      bn: 'পানি দিয়ে তৈরি ঢাল মহাকাশের ক্ষতিকর রশ্মি অত্যন্ত কার্যকরভাবে আটকে দেয়!',
     },
   },
   {
@@ -112,8 +112,8 @@ export const EXPLAIN_ENTRIES: ExplainEntry[] = [
     icon: FlaskConical,
     source: 'NASA MOXIE release',
     genAlphaComment: {
-      en: 'MOXIE is the true GOAT making fresh air from thin Martian gas!',
-      bn: 'মক্সি যন্ত্র আসলেই গ্রেট, মঙ্গলের পাতলা বাতাস থেকে তাজা অক্সিজেন বানায়!',
+      en: 'MOXIE is a true breakthrough—making breathable oxygen right from thin Martian air!',
+      bn: 'মক্সি যন্ত্র এক অপার বিস্ময়—মঙ্গলের পাতলা বাতাস থেকে মানুষের জন্য তাজা অক্সিজেন তৈরি করে!',
     },
   },
   {
@@ -134,8 +134,8 @@ export const EXPLAIN_ENTRIES: ExplainEntry[] = [
     icon: Recycle,
     source: 'NASA ISS life support',
     genAlphaComment: {
-      en: 'Zero waste mindset, that is an absolute W move!',
-      bn: 'এক ফোঁটা পানিও অপচয় নয়, এটাই আসল বুদ্ধিমানের কাজ!',
+      en: 'Filtering 98% of water lets a crew journey millions of miles safely!',
+      bn: '৯৮% পানি ফিল্টার করে মহাকাশচারীরা নিরাপদে কোটি মাইল পথ পাড়ি দিতে পারেন!',
     },
   },
   {
@@ -156,8 +156,8 @@ export const EXPLAIN_ENTRIES: ExplainEntry[] = [
     icon: Sprout,
     source: 'NASA Veggie pages OSD-745',
     genAlphaComment: {
-      en: 'Space lettuce is crisp, fresh, and gives +100 health vibes!',
-      bn: 'মহাকাশের লেটুস খেলে শক্তি ও মন দুটোই দারুণ থাকে!',
+      en: 'Fresh green plants boost crew nutrition and bring a little piece of Earth to space!',
+      bn: 'তাজা শাকসবজি মহাকাশচারীদের প্রয়োজনীয় পুষ্টি দেয় এবং মনোবল চাঙা রাখে!',
     },
   },
   {
@@ -178,8 +178,8 @@ export const EXPLAIN_ENTRIES: ExplainEntry[] = [
     icon: Rocket,
     source: 'NASA Mars Mission Logistics',
     genAlphaComment: {
-      en: 'Miss the launch window and you wait over 2 years, bet!',
-      bn: 'সময় মিস করলে দুই বছরেরও বেশি অপেক্ষা করতে হবে!',
+      en: 'Earth and Mars align every 26 months, creating the shortest and fastest path!',
+      bn: 'প্রতি ২৬ মাসে পৃথিবী ও মঙ্গল সবচেয়ে কাছে আসে, যা যাওয়ার সবচেয়ে দ্রুত পথ!',
     },
   },
   {
@@ -200,8 +200,8 @@ export const EXPLAIN_ENTRIES: ExplainEntry[] = [
     icon: Gauge,
     source: 'NOAA Space Weather Prediction Center',
     genAlphaComment: {
-      en: 'Kp 9 is maximum danger mode, shields locked in!',
-      bn: 'কেপি ৯ মানে মহা বিপদ, সাথে সাথে ঢাল শক্ত করে নাও!',
+      en: 'A Kp 9 reading signals an intense geomagnetic storm—maximum shielding required!',
+      bn: 'কেপি ৯ মানে অত্যন্ত শক্তিশালী সৌর ঝড়—সর্বোচ্চ সুরক্ষা নেওয়া জরুরি!',
     },
   },
 ];
@@ -209,20 +209,20 @@ export const EXPLAIN_ENTRIES: ExplainEntry[] = [
 export const getExplainEntry = (id: string): ExplainEntry | undefined =>
   EXPLAIN_ENTRIES.find((e) => e.id === id);
 
-// Gen Alpha Dialogue Generator for Twinkle
+// Inspiring Space Dialogue Generator for Twinkle
 export const TWINKLE_GEN_ALPHA = {
   victory: [
-    { en: 'Aura +1000! You totally cooked that decision, cadet!', bn: 'অরা +১০০০! তুমি পুরো বস লেভেলের সিদ্ধান্ত নিয়েছ!' },
-    { en: 'Massive W move! Mars colony is thriving!', bn: 'মার্ভেলাস ডব্লিউ চাল! আমাদের মঙ্গল কলোনি এখন নিরাপদ!' },
-    { en: 'No cap, you are the most locked-in astronaut alive!', bn: 'নো ক্যাপ! তোমার চেয়ে চৌকস মহাকাশচারী আর নেই!' },
+    { en: 'Outstanding work! That was a stellar decision, Cadet!', bn: 'অসাধারণ কাজ! সত্যিই এক চমৎকার সিদ্ধান্ত, ক্যাডেট!' },
+    { en: 'Fantastic flying! Our Mars crew is safe and sound!', bn: 'দুর্দান্ত সাফল্য! আমাদের মঙ্গল ক্রুরা এখন পুরোপুরি নিরাপদ!' },
+    { en: 'You have true astronaut instinct! Mission control salutes you!', bn: 'তোমার মধ্যে রয়েছে সত্যিকারের নভোচারীর মেধা! মিশন কন্ট্রোল গর্বিত!' },
   ],
   danger: [
-    { en: 'Hold up, our oxygen is looking kinda cooked! Lock in!', bn: 'থামো দোস্ত, অক্সিজেন কমে যাচ্ছে! দ্রুত সমাধান খোঁজো!' },
-    { en: 'The Sun is throwing hands! Raise shields now!', bn: 'সূর্য তো রেগে আগুন! এখনই ঢাল চালু করো!' },
-    { en: 'Not the vibe! Dust is burying our solar panels!', bn: 'ভালো ঠেকছে না! ধুলোয় তো সৌর প্যানেল ঢেকে যাচ্ছে!' },
+    { en: 'Caution cadet! Oxygen levels are dipping—let us act quickly!', bn: 'সাবধান ক্যাডেট! অক্সিজেন কমে যাচ্ছে—চলো দ্রুত ব্যবস্থা নিই!' },
+    { en: 'Solar flare detected! Divert all available power to shields!', bn: 'সৌর ঝড়ের সংকেত! দ্রুত সব শক্তি সুরক্ষামূলক ঢালে দাও!' },
+    { en: 'Dust alert! The Martian storm is blocking sunlight from the panels!', bn: 'ধুলোঝড়ের সংকেত! ধুলোয় সৌর প্যানেলে রোদ পৌঁছানো বাধা পাচ্ছে!' },
   ],
   hint: [
-    { en: 'Psst cadet! Remember water blocks both thirst AND radiation!', bn: 'শোনো ক্যাডেট! পানি কিন্তু তেষ্টা ও ক্ষতিকর রশ্মি দুটোই আটকায়!' },
-    { en: 'Let him cook! Clean panels mean maximum power for the base!', bn: 'ধৈর্য ধরো! পরিষ্কার প্যানেল মানেই পুরো ব্যাটারি চার্জ!' },
+    { en: 'Commander tip: Water doubles as hydration and a shield against radiation!', bn: 'কমান্ডার টিপ: পানি যেমন তৃষ্ণা মেটায়, তেমনই ক্ষতিকর রশ্মিও প্রতিহত করে!' },
+    { en: 'Pro tip: Spotless panels mean uninterrupted power for life support!', bn: 'টিপ: পরিষ্কার প্যানেল মানেই লাইফ সাপোর্টের জন্য নিরবচ্ছিন্ন বিদ্যুৎ!' },
   ],
 };

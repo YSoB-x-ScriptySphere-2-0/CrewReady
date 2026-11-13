@@ -68,11 +68,13 @@ describe('Profile logic (S3)', () => {
     localStorage.setItem('crewready_profile_settings', JSON.stringify({ callsign: 'Test' }));
     localStorage.setItem('crewready_v1_mission', 'data');
     localStorage.setItem('crewready_fly_best_distance', '1000');
+    localStorage.setItem('crewready_fly_runs', '[{"distance":1000,"stardust":50,"at":"2026-11-13"}]');
 
     resetAllGameData();
 
     expect(localStorage.getItem('crewready_profile_settings')).toBeNull();
     expect(localStorage.getItem('crewready_v1_mission')).toBeNull();
     expect(localStorage.getItem('crewready_fly_best_distance')).toBeNull();
+    expect(localStorage.getItem('crewready_fly_runs')).toBeNull();
   });
 });

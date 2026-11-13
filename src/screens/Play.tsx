@@ -39,8 +39,8 @@ function explainStep(step: Level['steps'][number], lang: string): string {
         : 'You pick one option. Every option raises or lowers your four meters (Power, Air & Water, Food, Shield). If any meter hits zero, the mission is in danger.';
     case 'crates':
       return bn
-        ? 'প্রতিটি ক্রেট একটি মিটারে রাখো। যে মিটার সবচেয়ে কম, সেটি আগে ভরলে মহাকাশযান বেশি দিন টিকবে।'
-        : 'Place each crate into a meter bin. Filling the meter that is lowest first keeps your spaceship alive for longer.';
+        ? 'প্রতিটি ক্রেট একটি মিটারে রাখো। মিটারগুলোর ভারসাম্য বজায় রাখলে মহাকাশযান বেশি দিন নিরাপদে টিকবে।'
+        : 'Place each crate into a meter bin. Keeping your meters balanced and boosting low systems keeps your spaceship alive longer.';
     case 'stow':
       return bn
         ? 'সীমিত জায়গা, তাই কিছু জিনিস হাতের কাছে আর বাকিগুলো গভীরে রাখতে হবে। জরুরি জিনিস হাতের কাছে রাখলে দ্রুত পাওয়া যায়।'
@@ -75,7 +75,9 @@ function Hint({
   const lang = useI18n((s) => s.lang);
   const dust = useWallet((s) => s.stardust);
   const bn = lang === 'bn';
-  const lowest = METERS.reduce((a, b) => (game.meters[b] < game.meters[a] ? b : a));
+  const minVal = Math.min(...METERS.map((m) => game.meters[m]));
+  const lowestMeters = METERS.filter((m) => game.meters[m] === minVal);
+  const allEqual = lowestMeters.length === METERS.length;
   const costs = step.kind === 'choice' ? optionCosts(step as ChoiceStep, game, level) : [];
   const canAfford = dust >= HINT_COST;
   return (
@@ -99,9 +101,28 @@ function Hint({
           <div className="mt-[0.5rem] border-t-2 border-line pt-[0.5rem]">
             <p className="font-display text-[0.75rem] font-black tracking-wider text-go uppercase">{bn ? 'ইঙ্গিত' : 'Hint'}</p>
             <p className="text-[0.9375rem] leading-snug">{tMission(step.hint)}</p>
-            <p className="mt-[0.25rem] flex flex-wrap items-center gap-[0.375rem] font-display text-[1rem] font-extrabold">
-              {bn ? 'সবচেয়ে কম:' : 'Lowest:'} <MeterBadge meter={lowest} size={24} /> {METER_NAMES[lowest]} ({game.meters[lowest]}).
-            </p>
+            {allEqual ? (
+              <p className="mt-[0.25rem] flex flex-wrap items-center gap-[0.375rem] font-display text-[0.9375rem] font-extrabold text-cyan-300">
+                {bn
+                  ? `সবগুলো মিটার সমান (${minVal})। কোনোটি যেন পিছিয়ে না পড়ে সেভাবে সমানভাবে ব্যালান্স করো!`
+                  : `All 4 meters are equal (${minVal}). Balance them evenly so no system falls behind!`}
+              </p>
+            ) : lowestMeters.length > 1 ? (
+              <div className="mt-[0.25rem] flex flex-wrap items-center gap-[0.375rem] font-display text-[0.9375rem] font-extrabold">
+                <span className="text-amber-300">{bn ? 'একই সাথে সবচেয়ে কম:' : 'Tied lowest:'}</span>
+                {lowestMeters.map((m) => (
+                  <span key={m} className="inline-flex items-center gap-1">
+                    <MeterBadge meter={m} size={22} />
+                    <span>{METER_NAMES[m]}</span>
+                  </span>
+                ))}
+                <span>({minVal}).</span>
+              </div>
+            ) : (
+              <p className="mt-[0.25rem] flex flex-wrap items-center gap-[0.375rem] font-display text-[1rem] font-extrabold">
+                {bn ? 'সবচেয়ে কম:' : 'Lowest:'} <MeterBadge meter={lowestMeters[0]} size={24} /> {METER_NAMES[lowestMeters[0]]} ({minVal}).
+              </p>
+            )}
             {costs.length ? (
               <ul className="mt-[0.5rem] space-y-[0.375rem]" aria-label="What each choice costs">
                 {costs.map(({ option, changes }) => {

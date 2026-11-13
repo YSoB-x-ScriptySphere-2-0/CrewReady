@@ -552,10 +552,10 @@ export function CinematicIntro3D({ onComplete }: CinematicIntro3DProps) {
                 alt="Twinkle"
                 className="h-8 w-8 object-contain shrink-0"
               />
-              <p className="font-display text-xs font-extrabold text-amber-300 leading-tight">
+              <p className="font-display text-xs font-extrabold text-cyan-300 leading-tight">
                 {lang === 'bn' 
-                  ? 'টুইঙ্কেল: "নো ক্যাপ ক্যাডেট, তুমি ফুললি লকড ইন! অরা +১০০০! চলো বিশ্ব বাঁচাতে রকেটে উঠি!"'
-                  : 'Twinkle: "No cap cadet, you are locked in! Aura +1000! Let\'s cook and save the world!"'}
+                  ? 'টুইঙ্কেল: "সব সেন্সর প্রস্তুত, ক্যাডেট! রকেট তৈরি, চলো আমরা মহাকাশ অভিযানে যাই!"'
+                  : 'Twinkle: "All systems green, Cadet! Flight suit calibrated! Let\'s blast off and explore!"'}
               </p>
             </div>
 

@@ -99,6 +99,11 @@ export async function runLayoutAudit(page: Page): Promise<AuditResult> {
         const bB = visibleBtns[j];
         if (bA.contains(bB) || bB.contains(bA)) continue;
 
+        // Ignore buttons on different layer contexts (e.g. modal overlay vs background)
+        const modalA = bA.closest('[role="dialog"], .fixed');
+        const modalB = bB.closest('[role="dialog"], .fixed');
+        if (modalA !== modalB) continue;
+
         const rA = bA.getBoundingClientRect();
         const rB = bB.getBoundingClientRect();
         // Check if both have positive size
