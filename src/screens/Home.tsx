@@ -246,7 +246,7 @@ export function Home() {
           </div>
 
           {/* Flexible Middle Spacer showing kids in observatory */}
-          <div className="min-h-[14rem] flex-1" />
+          <div className="min-h-[2rem] sm:min-h-[4rem] flex-1" />
 
           {/* Action Buttons Section */}
           <div className="flex flex-col gap-2.5">

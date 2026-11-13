@@ -78,19 +78,19 @@ export function MeterPill({ meter, value, look }: { meter: Meter; value: number;
         aria-valuemin={0}
         aria-valuemax={100}
         aria-label={`${METER_NAMES[meter]}${low ? ', low' : ''}`}
-        className={`flex items-center gap-[0.375rem] rounded-full border-2 border-line py-[0.125rem] pr-[0.625rem] pl-[0.125rem] shadow-[0_0.15rem_0_var(--color-lip)] ${flash} ${motion}`}
+        className={`flex items-center gap-[0.25rem] sm:gap-[0.375rem] rounded-full border-2 border-line py-[0.125rem] pr-[0.375rem] sm:pr-[0.625rem] pl-[0.125rem] shadow-[0_0.15rem_0_var(--color-lip)] ${flash} ${motion}`}
       >
-        <MeterBadge meter={meter} size={30} />
+        <MeterBadge meter={meter} size={24} />
         <div className="min-w-0 flex-1">
-          <div className="flex items-center justify-between gap-1">
-            <span className="font-display text-[1.125rem] leading-none font-extrabold tabular-nums">{shown}</span>
+          <div className="flex items-center justify-between gap-0.5 sm:gap-1">
+            <span className="font-display text-[0.875rem] sm:text-[1.125rem] leading-none font-extrabold tabular-nums">{shown}</span>
             {low ? (
-              <span className="rounded-full bg-danger px-1.5 font-display text-[0.8125rem] leading-tight font-extrabold tracking-wider text-white">
+              <span className="rounded-full bg-danger px-1 font-display text-[0.625rem] sm:text-[0.75rem] leading-tight font-extrabold tracking-wider text-white">
                 LOW
               </span>
             ) : null}
           </div>
-          <div className="mt-[0.125rem] h-[0.5rem] overflow-hidden rounded-full border border-line bg-space-deep" aria-hidden>
+          <div className="mt-[0.125rem] h-[0.375rem] sm:h-[0.5rem] overflow-hidden rounded-full border border-line bg-space-deep" aria-hidden>
             <div className="h-full rounded-r-full transition-[width] duration-500 ease-out" style={{ width: `${Math.max(0, Math.min(100, value))}%`, background: METER_COLOR[meter] }} />
           </div>
         </div>
@@ -173,15 +173,16 @@ export function Hud({
 }) {
   const lang = useI18n((s) => s.lang);
   return (
-    <header className="sticky top-0 z-30 border-b-2 border-line bg-space-deep/90 px-[0.75rem] pt-[0.25rem] pb-[0.5rem] text-text" aria-label="Outpost meters">
-      <div className="flex flex-nowrap items-center gap-[0.5rem]">
+    <header className="sticky top-0 z-30 border-b-2 border-line bg-space-deep/95 px-2 sm:px-3 pt-1.5 pb-2 text-text backdrop-blur-md" aria-label="Outpost meters">
+      {/* Desktop / wide view: single sleek flex row */}
+      <div className="hidden lg:flex flex-nowrap items-center gap-2">
         <div className="flex min-w-0 shrink-0 items-center gap-2">{lead}</div>
-        <div className="grid min-w-0 flex-1 grid-cols-4 gap-[0.5rem]">
+        <div className="grid min-w-0 flex-1 grid-cols-4 gap-2">
           {METERS.map((m) => (
             <MeterPill key={m} meter={m} value={meters[m]} look={look?.[m]} />
           ))}
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 shrink-0">
           <StarCounter n={stars} />
           <StardustCounter />
         </div>
@@ -192,11 +193,39 @@ export function Hud({
             onClick={onOpenSettings}
             title={lang === 'bn' ? 'মিশন সেটিংস' : 'Mission Settings'}
             aria-label="Settings"
-            className="group relative grid h-[2.75rem] w-[2.75rem] cursor-pointer place-items-center rounded-full border border-white/20 bg-panel/80 text-text shadow-sm backdrop-blur-md transition hover:border-go/50 hover:bg-panel active:scale-95"
+            className="group relative grid h-10 w-10 shrink-0 cursor-pointer place-items-center rounded-full border border-white/20 bg-panel/80 text-text shadow-sm backdrop-blur-md transition hover:border-go/50 hover:bg-panel active:scale-95"
           >
             <Settings size={18} strokeWidth={2.4} className="text-muted/70 group-hover:text-go" />
           </button>
         )}
+      </div>
+
+      {/* Mobile / Tablet / High-zoom (< lg): 2-tier adaptive stack */}
+      <div className="flex lg:hidden flex-col gap-1.5">
+        <div className="flex items-center justify-between gap-1.5 flex-wrap">
+          <div className="flex min-w-0 items-center gap-1.5 flex-wrap">{lead}</div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <StarCounter n={stars} />
+            <StardustCounter />
+            <MusicToggle compact />
+            {onOpenSettings && (
+              <button
+                type="button"
+                onClick={onOpenSettings}
+                title={lang === 'bn' ? 'মিশন সেটিংস' : 'Mission Settings'}
+                aria-label="Settings"
+                className="grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-full border border-white/20 bg-panel/80 text-text shadow-sm transition active:scale-95"
+              >
+                <Settings size={16} strokeWidth={2.4} className="text-muted/80" />
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="grid grid-cols-4 gap-1 sm:gap-2">
+          {METERS.map((m) => (
+            <MeterPill key={m} meter={m} value={meters[m]} look={look?.[m]} />
+          ))}
+        </div>
       </div>
     </header>
   );

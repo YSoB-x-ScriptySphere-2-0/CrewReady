@@ -57,19 +57,35 @@
 }
 
 @layer base {
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+html {
+  font-size: 16px;
+  overflow-x: hidden;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
 html,
 body,
 #root {
   min-height: 100%;
+  width: 100%;
 }
 body {
   margin: 0;
   background: var(--color-space-deep);
   color: var(--color-text);
   font-family: var(--font-sans);
-  font-size: 1.125rem; /* rem follows the stage height (Stage.tsx) */
+  font-size: 1.125rem;
   line-height: 1.5;
-  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+[lang="bn"] {
+  line-height: 1.6;
+}
+img, svg, canvas {
+  max-width: 100%;
 }
 h1,
 h2,
@@ -289,11 +305,10 @@ button:disabled {
 .anim-pop-in { animation: kit-pop-in 250ms cubic-bezier(0.34, 1.56, 0.64, 1) 1 both; }
 
 @keyframes kit-bubble {
-  0% { transform: scale(0.4); opacity: 0; }
-  70% { transform: scale(1.03); opacity: 1; }
+  0% { transform: scale(0.6); opacity: 0; }
   100% { transform: none; opacity: 1; }
 }
-.anim-bubble { transform-origin: 0% 100%; animation: kit-bubble 250ms cubic-bezier(0.34, 1.56, 0.64, 1) 80ms 1 both; }
+.anim-bubble { transform-origin: 0% 100%; animation: kit-bubble 200ms ease-out 40ms 1 both; }
 
 /* Hands-on steps (A7). A hopping copy flies first; the thing it lands as pops in just after. */
 .anim-land { animation: kit-pop-in 250ms cubic-bezier(0.34, 1.56, 0.64, 1) 260ms 1 both; }

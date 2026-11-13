@@ -11,6 +11,7 @@ import { Fly } from './screens/Fly';
 import { Resources } from './screens/Resources';
 import { Profile } from './screens/Profile';
 import { Training } from './screens/Training';
+import { Arcade } from './screens/Arcade';
 import { Welcome } from './screens/Welcome';
 import { useGame } from './store/game';
 import { useSpace } from './store/space';
@@ -37,6 +38,15 @@ function Screens() {
   const [showCinematicIntro, setShowCinematicIntro] = useState(false);
   const { screen, seenIntro, go } = useGame();
   const hash = useHash();
+
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      (window as unknown as { __dismissWelcome?: () => void }).__dismissWelcome = () => setWelcomeDismissed(true);
+      (window as unknown as { __showTour?: (v: boolean) => void }).__showTour = (v: boolean) => setShowTour(v);
+      (window as unknown as { __showCinematic?: (v: boolean) => void }).__showCinematic = (v: boolean) => setShowCinematicIntro(v);
+    }
+  }, []);
+
   // Real NASA data starts loading as soon as the app opens, so the storm size is known by PLAY.
   useEffect(() => void useSpace.getState().load(), []);
 
@@ -125,6 +135,7 @@ function Screens() {
   if (screen === 'resources') return <Resources />;
   if (screen === 'profile') return <Profile />;
   if (screen === 'training') return <Training />;
+  if (screen === 'arcade') return <Arcade />;
   return <Home />;
 }
 

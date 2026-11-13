@@ -22,9 +22,10 @@ export type Screen =
   | 'resources'
   | 'profile'
   | 'training'
+  | 'arcade'
   | 'sources';
 /** Screens that exist so far. Buttons that lead elsewhere show as locked until their step is built. */
-export const BUILT_SCREENS: ReadonlySet<Screen> = new Set<Screen>(['hook', 'story', 'home', 'map', 'level', 'play', 'replay', 'success', 'sources', 'fly', 'resources', 'profile', 'training']);
+export const BUILT_SCREENS: ReadonlySet<Screen> = new Set<Screen>(['hook', 'story', 'home', 'map', 'level', 'play', 'replay', 'success', 'sources', 'fly', 'resources', 'profile', 'training', 'arcade']);
 const DUST_CASES = [5, 15, 25];
 
 interface Store {

@@ -12,6 +12,7 @@ import { ExplainEntry } from '../content/explain';
 import { useI18n } from '../content/i18n';
 import { useWallet } from '../store/wallet';
 import { speak, stopSpeaking } from './speech';
+import { SourceLinks } from './Panel';
 
 interface ExplainCardProps {
   entry: ExplainEntry;
@@ -53,7 +54,7 @@ export function ExplainCard({ entry, onClose }: ExplainCardProps) {
       aria-modal="true"
       className="fixed inset-0 z-50 flex items-center justify-center bg-space-deep/90 p-3 sm:p-5 select-none"
     >
-      <div className="relative flex max-w-md w-full flex-col overflow-hidden rounded-2xl border-3 border-go bg-panel p-4 sm:p-5 shadow-2xl anim-pop-in">
+      <div className="relative flex max-w-md w-full max-h-[90vh] overflow-y-auto flex-col rounded-2xl border-3 border-go bg-panel p-4 sm:p-5 shadow-2xl anim-pop-in">
         {/* Top Header */}
         <div className="flex items-center justify-between border-b border-line/60 pb-3">
           <div className="flex items-center gap-2">
@@ -127,8 +128,8 @@ export function ExplainCard({ entry, onClose }: ExplainCardProps) {
 
         {/* Footer: Read-to-me & Source */}
         <div className="mt-3 flex items-center justify-between border-t border-line/60 pt-2.5">
-          <span className="font-display text-[10px] text-muted truncate max-w-[12rem]">
-            Source: {entry.source}
+          <span className="font-display text-[11px] text-muted max-w-[14rem]">
+            <SourceLinks text={entry.source} />
           </span>
 
           <button

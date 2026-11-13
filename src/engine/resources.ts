@@ -1,6 +1,7 @@
 // Pure resources and cargo upgrade logic — BUILD_SEQUENCE.md S4 / plan.md §7 row 4
 import type { GameState, Meter } from './types';
 import { getFlyStats } from '../fly/storage';
+import { useWallet } from '../store/wallet';
 
 export type MeterKey = Meter;
 
@@ -114,14 +115,7 @@ export function buyCargoUpgrade(
     if (!ok) return { success: false, reason: `Need ${check.cost} ✦` };
   } else {
     // Fallback direct storage deduction
-    try {
-      if (typeof localStorage !== 'undefined') {
-        const newDust = Math.max(0, flyStats.totalStardust - check.cost);
-        localStorage.setItem('crewready_fly_total_stardust', newDust.toString());
-      }
-    } catch {
-      return { success: false, reason: 'Storage error' };
-    }
+    if (!useWallet.getState().spend(check.cost)) return { success: false, reason: `Need ${check.cost} ✦` };
   }
 
   // Apply upgrade
@@ -149,14 +143,7 @@ export function refundAllCargo(
     if (onAddStardust) {
       onAddStardust(totalSpent);
     } else {
-      try {
-        if (typeof localStorage !== 'undefined') {
-          const stats = getFlyStats();
-          localStorage.setItem('crewready_fly_total_stardust', (stats.totalStardust + totalSpent).toString());
-        }
-      } catch {
-        // Ignore quota issues
-      }
+      useWallet.getState().earn('refund', totalSpent);
     }
   }
 

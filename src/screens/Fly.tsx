@@ -28,6 +28,13 @@ import {
 import { getFlyStats, recordRunEnd, type FlyStats } from '../fly/storage';
 import { renderFly } from '../fly/renderer';
 import type { FlyCommand, FlyConfig, FlyState, PowerKind } from '../fly/types';
+import {
+  emergencyDistance,
+  emergencyForIndex,
+  EMERGENCY_STARDUST,
+  type Emergency,
+} from '../fly/emergencies';
+import { EmergencyCard } from '../fly/EmergencyCard';
 import { t } from '../content/i18n';
 
 export function Fly() {
@@ -40,7 +47,18 @@ export function Fly() {
   const [stats, setStats] = useState<FlyStats>(() => getFlyStats());
   const [hasStarted, setHasStarted] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
-  const [runSummary, setRunSummary] = useState<{ distance: number; earned: number; isNewBest: boolean } | null>(null);
+  const [runSummary, setRunSummary] = useState<{
+    distance: number;
+    earned: number;
+    isNewBest: boolean;
+    drills: number;
+    drillsRight: number;
+  } | null>(null);
+
+  // Emergency drills: pause the run, ask what astronauts do, reward the right call
+  const [emergency, setEmergency] = useState<Emergency | null>(null);
+  const drillIndexRef = useRef(0);
+  const drillsRightRef = useRef(0);
 
   // HUD state updated reactively from loop (B2 item 1)
   const [hud, setHud] = useState<{
@@ -93,6 +111,9 @@ export function Fly() {
   const handleStart = () => {
     stateRef.current = createInitialState(config, Date.now());
     commandsRef.current = [];
+    drillIndexRef.current = 0;
+    drillsRightRef.current = 0;
+    setEmergency(null);
     setIsGameOver(false);
     setRunSummary(null);
     setHasStarted(true);
@@ -103,7 +124,7 @@ export function Fly() {
 
   // 3. Main Delta-Time Loop (pauses when hidden)
   useEffect(() => {
-    if (!hasStarted || isGameOver) return;
+    if (!hasStarted || isGameOver || emergency) return;
 
     let animId: number;
     let isHidden = false;
@@ -167,8 +188,16 @@ export function Fly() {
           distance: Math.floor(nextState.distance),
           earned: nextState.stardust,
           isNewBest: res.isNewBest,
+          drills: drillIndexRef.current,
+          drillsRight: drillsRightRef.current,
         });
         setStats(res.stats);
+        return;
+      }
+
+      // Sudden emergency drill: freeze the run until the player answers
+      if (nextState.distance >= emergencyDistance(drillIndexRef.current)) {
+        setEmergency(emergencyForIndex(drillIndexRef.current));
         return;
       }
 
@@ -189,7 +218,23 @@ export function Fly() {
       cancelAnimationFrame(animId);
       document.removeEventListener('visibilitychange', onVisibilityChange);
     };
-  }, [hasStarted, isGameOver, config]);
+  }, [hasStarted, isGameOver, config, emergency]);
+
+  const finishEmergency = (correct: boolean) => {
+    drillIndexRef.current += 1;
+    if (correct) {
+      drillsRightRef.current += 1;
+      const s = stateRef.current;
+      const hull = Math.min(3, s.hull + 1);
+      const stardust = s.stardust + EMERGENCY_STARDUST;
+      // short grace period so the player is not hit the instant flying resumes
+      stateRef.current = { ...s, hull, stardust, stumbleTimer: Math.max(s.stumbleTimer, 1.2) };
+      lastHudRef.current = { ...lastHudRef.current, hull: -1 }; // force HUD refresh
+    } else {
+      stateRef.current = { ...stateRef.current, stumbleTimer: Math.max(stateRef.current.stumbleTimer, 1.2) };
+    }
+    setEmergency(null);
+  };
 
   // 4. Resize canvas to container
   useEffect(() => {
@@ -523,6 +568,15 @@ export function Fly() {
             </div>
           </div>
 
+          {/* Emergency drills heads-up */}
+          <div className="mb-4 -mt-1 w-full max-w-xl rounded-2xl border-2 border-danger/60 bg-panel/85 p-3 text-left shadow-md backdrop-blur-md">
+            <div className="flex items-center gap-1.5 font-display text-xs font-extrabold uppercase tracking-wider text-danger">
+              <AlertTriangle size={15} />
+              <span>{t('fly.em.briefTitle')}</span>
+            </div>
+            <p className="mt-1 text-[0.8125rem] leading-snug text-muted">{t('fly.em.briefDesc')}</p>
+          </div>
+
           {/* Launch Action */}
           <div className="flex flex-col items-center gap-3">
             <button
@@ -548,6 +602,9 @@ export function Fly() {
           </div>
         </div>
       )}
+
+      {/* Emergency drill overlay */}
+      {emergency && !isGameOver && <EmergencyCard emergency={emergency} onDone={finishEmergency} />}
 
       {/* 2. End Screen Overlay (Run Over) */}
       {isGameOver && runSummary && (
@@ -581,6 +638,12 @@ export function Fly() {
               <span>·</span>
               <span>{t('fly.bank')}: {stats.totalStardust} ✦</span>
             </div>
+
+            {runSummary.drills > 0 && (
+              <p className="mb-4 -mt-3 text-xs font-bold text-go">
+                {t('fly.em.handled')}: {runSummary.drillsRight}/{runSummary.drills}
+              </p>
+            )}
 
             <div className="flex flex-col gap-2.5">
               <button

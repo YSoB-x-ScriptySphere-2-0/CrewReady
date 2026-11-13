@@ -2,9 +2,8 @@
 // Single source of truth for Stardust (✦) and Science Stars (⭐).
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import { getFlyStats } from '../fly/storage';
 
-export type StardustSource = 'fly' | 'bonus' | 'level_clear' | 'explain_card';
+export type StardustSource = 'fly' | 'bonus' | 'arcade' | 'level_clear' | 'explain_card' | 'refund';
 
 export interface WalletState {
   stardust: number;
@@ -105,10 +104,10 @@ export const useWallet = create<WalletState>()(
         if (!state) return;
         // Migrate legacy Fly storage if wallet has 0 stardust
         try {
-          const flyStats = getFlyStats();
-          if (state.stardust === 0 && flyStats.totalStardust > 0) {
-            state.stardust = flyStats.totalStardust;
-            state.lifetimeStardust = flyStats.totalStardust;
+          const legacy = typeof localStorage !== 'undefined' ? parseInt(localStorage.getItem(FLY_STARDUST_KEY) ?? '0', 10) || 0 : 0;
+          if (state.stardust === 0 && legacy > 0) {
+            state.stardust = legacy;
+            state.lifetimeStardust = legacy;
           }
         } catch {
           // ignore

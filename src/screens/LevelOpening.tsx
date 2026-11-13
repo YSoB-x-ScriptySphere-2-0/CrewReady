@@ -222,13 +222,13 @@ export function LevelOpening() {
           ) : null}
         </div>
 
-        <div className="flex items-center gap-[0.5rem]">
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 pt-1">
           <SourceStrip text={level.source} className="min-w-0 flex-1" />
           <GameButton
             variant="go"
             icon={PlayIcon}
             onClick={beginLevel}
-            className="!min-h-[3rem] !px-4 sm:!px-7 !text-lg sm:!text-[1.375rem]"
+            className="!min-h-[3rem] !px-4 sm:!px-7 !text-base sm:!text-[1.375rem] shrink-0"
           >
             {t('btn.go')}
           </GameButton>

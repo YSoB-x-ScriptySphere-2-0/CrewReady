@@ -157,7 +157,7 @@ export function Scene({
   return (
     <div
       data-scene={place}
-      className={`relative isolate flex ${bare ? 'overflow-hidden' : 'overflow-x-clip'} ${fill ? (bare ? 'h-full' : 'min-h-full') : ''} ${dark ? 'on-sky text-paper' : 'text-ink'} ${className}`}
+      className={`relative isolate flex ${bare ? 'overflow-x-hidden overflow-y-auto' : 'overflow-x-clip'} ${fill ? 'min-h-full' : ''} ${dark ? 'on-sky text-paper' : 'text-ink'} ${className}`}
       style={{ background: SKY[place] }}
     >
       <svg aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[45%] w-full" viewBox="0 0 800 220" preserveAspectRatio="xMidYMin slice">
@@ -172,7 +172,7 @@ export function Scene({
       >
         <GroundArt place={place} />
       </svg>
-      {rail ? <div className="hidden md:flex z-30 h-full shrink-0 self-start">{rail}</div> : null}
+      {rail ? <div className="hidden md:flex z-30 min-h-full shrink-0 self-stretch sticky top-0">{rail}</div> : null}
       {rail ? <div className="md:hidden">{rail}</div> : null}
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         {top}

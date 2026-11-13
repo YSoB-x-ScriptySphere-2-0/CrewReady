@@ -1,7 +1,7 @@
 // Navigation outside levels:
 // Desktop (md:): a sleek rail down the left edge (Screenshot 3).
 // Mobile (< md): a floating bottom pill navigation bar (Screenshot 1).
-import { BookOpen, GraduationCap, Lock, Map as MapIcon, Rocket, UserRound, type LucideIcon } from 'lucide-react';
+import { BookOpen, Gamepad2, Lock, Map as MapIcon, Rocket, UserRound, type LucideIcon } from 'lucide-react';
 import { BUILT_SCREENS, useGame, type Screen } from '../store/game';
 import { usePress } from './motion';
 
@@ -9,7 +9,7 @@ const ITEMS: { label: string; icon: LucideIcon; screen: Screen; alsoActive?: Scr
   { label: 'Missions', icon: MapIcon, screen: 'map', alsoActive: ['home'] },
   { label: 'Fly', icon: Rocket, screen: 'fly' },
   { label: 'Resources', icon: BookOpen, screen: 'resources' },
-  { label: 'Training', icon: GraduationCap, screen: 'training' },
+  { label: 'Arcade', icon: Gamepad2, screen: 'arcade' },
   { label: 'Me', icon: UserRound, screen: 'profile' },
 ];
 
@@ -78,7 +78,7 @@ export function Dock() {
                 onClick={() => go(target)}
                 disabled={!open}
                 aria-label={label}
-                className={`relative grid h-12 w-12 place-items-center rounded-2xl transition-all cursor-pointer ${
+                className={`relative grid h-10 w-10 sm:h-12 sm:w-12 place-items-center rounded-xl sm:rounded-2xl transition-all cursor-pointer ${
                   isHere
                     ? 'bg-[#103E54] text-[#22D7E6] border border-[#22D7E6] shadow-[0_0_12px_rgba(34,215,230,0.5)]'
                     : 'text-white/70 hover:text-white active:scale-95'

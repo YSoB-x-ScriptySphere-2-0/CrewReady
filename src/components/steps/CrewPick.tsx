@@ -72,8 +72,8 @@ export function CrewPick({ step, game, onDone }: { step: CrewStep; game: GameSta
   const cost = METERS.filter((m) => typeof step.costPerPerson[m] === 'number').map((m) => ({ meter: m, amount: (step.costPerPerson[m] as number) * sel.length }));
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-[0.5rem]">
-      <div className="grid min-h-0 flex-1 grid-cols-5 gap-[0.375rem]">
+    <div className="flex h-full min-h-0 flex-col gap-2">
+      <div className="grid min-h-0 flex-1 grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 overflow-y-auto sm:overflow-visible pb-1">
         {step.members.map((m) => (
           <CrewCard key={m.id} m={m} picked={sel.includes(m.id)} full={full} nudge={nudge} onClick={() => toggle(m.id)} />
         ))}

@@ -25,12 +25,12 @@ export function AlarmBanner({
   return (
     <div ref={ref} role="alert" className="anim-slam relative w-full border-y-2 border-line bg-danger text-white shadow-[0_0.3rem_0_var(--color-lip)]">
       <div className="hazard h-[0.5rem]" aria-hidden />
-      <div className="flex items-center justify-center gap-[0.75rem] px-[1rem] py-[0.25rem]">
-        <span className="grid h-[2.25rem] w-[2.25rem] shrink-0 place-items-center rounded-full bg-space-deep text-white" aria-hidden>
-          <Icon size={22} strokeWidth={2.75} />
+      <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 px-3 py-1 text-center">
+        <span className="grid h-8 w-8 sm:h-9 sm:w-9 shrink-0 place-items-center rounded-full bg-space-deep text-white" aria-hidden>
+          <Icon size={18} strokeWidth={2.75} />
         </span>
-        <p className="min-w-0 font-display text-[1.625rem] leading-none font-extrabold tracking-wide uppercase">{title}</p>
-        {sub ? <p className="min-w-0 font-display text-[1.125rem] leading-tight font-bold">· {sub}</p> : null}
+        <p className="font-display text-base sm:text-xl md:text-2xl leading-tight font-extrabold tracking-wide uppercase break-words">{title}</p>
+        {sub ? <p className="font-display text-xs sm:text-sm md:text-base leading-tight font-bold break-words text-white/90">· {sub}</p> : null}
       </div>
       <div className="hazard h-[0.5rem]" aria-hidden />
     </div>

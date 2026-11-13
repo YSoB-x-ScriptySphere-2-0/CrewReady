@@ -50,8 +50,8 @@ export function Power({ step, game, level, onDone, slot }: { step: SlidersStep; 
         </div>
       </LeftSlot>
 
-      <div className="flex h-full min-h-0 flex-col gap-[0.5rem]">
-        <div className="grid min-h-0 flex-1 grid-cols-3 gap-[0.5rem]">
+      <div className="flex h-full min-h-0 flex-col gap-2">
+        <div className="grid min-h-0 flex-1 grid-cols-1 sm:grid-cols-3 gap-2 overflow-y-auto sm:overflow-visible pb-1">
           {step.systems.map((sys, i) => {
             const missing = step.want - alloc[i];
             const full = missing === 0;

@@ -348,7 +348,7 @@ export function Success() {
             ))}
           </div>
 
-          <div className="flex shrink-0 items-center gap-[0.5rem]">
+          <div className="flex shrink-0 flex-wrap sm:flex-nowrap items-center gap-2 pt-1">
             {leaderboard.length ? (
               <span ref={boardBtn} className="shrink-0">
                 <GameButton variant="small" onClick={() => setBoard(true)} className="!min-h-[2.75rem] !px-3 !text-sm leading-snug break-words">

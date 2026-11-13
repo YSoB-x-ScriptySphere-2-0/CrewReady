@@ -50,10 +50,10 @@ describe('Sources screen (S1)', () => {
 
   it('contains valid external links with secure target and rel attributes', () => {
     const html = renderToString(<Sources />);
-    expect(html).toContain('href="https://kauai.ccmc.gsfc.nasa.gov/DONKI/"');
+    expect(html).toContain('href="https://ccmc.gsfc.nasa.gov/tools/DONKI/"');
     expect(html).toContain('href="https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json"');
     expect(html).toContain('href="https://epic.gsfc.nasa.gov/"');
-    expect(html).toContain('href="https://apod.nasa.gov/apod/"');
+    expect(html).toContain('href="https://science.nasa.gov/apod/"');
     expect(html).toContain('target="_blank"');
     expect(html).toContain('rel="noopener noreferrer"');
   });

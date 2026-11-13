@@ -150,6 +150,43 @@ export const stringsEn: Record<string, string> = {
   'fly.newRecord': '★ New Record Distance! ★',
   'fly.telemetry': 'Orbital Run Telemetry',
 
+  // Fly emergency drills (based on NASA crew procedures)
+  'fly.em.badge': 'EMERGENCY DRILL',
+  'fly.em.ask': 'What should the crew do?',
+  'fly.em.right': 'Great call, astronaut!',
+  'fly.em.wrong': 'Not quite — here is what NASA crews do:',
+  'fly.em.reward': '+10 ✦ and 1 hull repaired',
+  'fly.em.noReward': 'Remember this for next time!',
+  'fly.em.continue': 'Back to flying',
+  'fly.em.handled': 'Emergencies handled',
+  'fly.em.briefTitle': 'Emergency Drills',
+  'fly.em.briefDesc': 'Sudden space emergencies will pause your flight. Pick the right action to earn bonus stardust and fix your hull!',
+  'fly.em.fact': 'NASA fact',
+
+  'fly.em.solar.title': 'Solar Storm!',
+  'fly.em.solar.alert': 'The Sun just threw out a big flare. Radiation is rising outside the ship!',
+  'fly.em.solar.o0': 'Float to the big window and watch the flare',
+  'fly.em.solar.o1': 'Go to the most shielded room and wait it out',
+  'fly.em.solar.o2': 'Go outside to check the antenna',
+  'fly.em.solar.why': 'Crews hide in the best-shielded part of the ship until Mission Control says the storm has passed.',
+  'fly.em.solar.fact': 'NASA watches the Sun every day, so astronauts usually get warning before a solar storm arrives.',
+
+  'fly.em.leak.title': 'Air Leak!',
+  'fly.em.leak.alert': 'Cabin pressure is dropping slowly. Air is escaping somewhere!',
+  'fly.em.leak.o0': 'Find the leaking module and close its hatch',
+  'fly.em.leak.o1': 'Open every hatch so the air spreads out',
+  'fly.em.leak.o2': 'Ignore it, the hole is tiny',
+  'fly.em.leak.why': 'Closing the hatch seals the leaky module off, so the rest of the station keeps its air while the crew finds and patches the hole.',
+  'fly.em.leak.fact': 'The International Space Station has had tiny leaks before, and crews fixed them by tracking pressure and sealing hatches.',
+
+  'fly.em.fire.title': 'Smoke Alarm!',
+  'fly.em.fire.alert': 'The alarm is ringing and there is smoke coming from a panel!',
+  'fly.em.fire.o0': 'Splash water on the panel',
+  'fly.em.fire.o1': 'Open a hatch to blow the smoke away',
+  'fly.em.fire.o2': 'Put on masks, switch off the power, and use the extinguisher',
+  'fly.em.fire.why': 'Cutting power starves the fire, masks protect the crew from smoke, and the extinguisher puts it out. Water is a bad idea near electronics.',
+  'fly.em.fire.fact': 'Spacecraft carry special extinguishers and masks, and fire alarms ring across the whole station.',
+
   // Profile
   'profile.title': 'Astronaut Profile & Quarters',
   'profile.rank': 'Cadet Rank',

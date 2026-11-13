@@ -23,11 +23,11 @@ function useStageGeometry(): StageGeometry {
     };
   }, []);
 
-  // Everything is sized in rem. Use natural scaling for both portrait mobile and landscape desktop.
+  // Allow natural CSS reflow and standard browser zoom without forcing an artificial root font size.
   useLayoutEffect(() => {
-    document.documentElement.style.fontSize = `${g.rootPx}px`;
+    document.documentElement.style.fontSize = '';
     setStageTurned(false); // Native responsive layout without forced rotation
-  }, [g.rootPx]);
+  }, []);
   return g;
 }
 
@@ -42,7 +42,7 @@ export function Stage({ children }: { children: ReactNode }) {
           ['--stage-h' as string]: '100%',
         }}
       >
-        <div className="h-full w-full overflow-x-hidden overflow-y-auto flex flex-col">{children}</div>
+        <div className="min-h-full w-full overflow-x-hidden overflow-y-auto flex flex-col">{children}</div>
       </div>
     </div>
   );

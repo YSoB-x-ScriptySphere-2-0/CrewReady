@@ -203,7 +203,7 @@ export function TwinkleTourGuide({ onClose, initialStepIndex = 0 }: TwinkleTourG
       aria-label="Twinkle's Tour Guide"
       className="fixed inset-0 z-50 flex items-center justify-center bg-space-deep/90 p-3 sm:p-5 text-text backdrop-blur-md select-none overflow-y-auto"
     >
-      <div className="relative flex w-full max-w-2xl flex-col rounded-3xl border-2 border-line bg-panel p-4 sm:p-6 shadow-2xl">
+      <div className="relative flex w-full max-w-2xl max-h-[92vh] overflow-y-auto flex-col rounded-3xl border-2 border-line bg-panel p-4 sm:p-6 shadow-2xl">
         {/* Top Header Strip: Twinkle Tag, Step Counter, Music & Close */}
         <div className="flex items-center justify-between gap-2 border-b border-line/60 pb-3">
           <div className="flex items-center gap-2">

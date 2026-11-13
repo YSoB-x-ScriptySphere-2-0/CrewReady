@@ -2,7 +2,7 @@
 // Also the Mission Intel card (real NASA data, styled like a collectable card), badges, source lines
 // and the level task list. BUILD_SEQUENCE.md §4.3, §4.6.
 import type { ReactNode } from 'react';
-import { Check, type LucideIcon } from 'lucide-react';
+import { Check, ExternalLink, type LucideIcon } from 'lucide-react';
 import { BUILT_SCREENS, useGame } from '../store/game';
 
 export type RibbonTone = 'ink' | 'go' | 'danger' | 'space' | 'good';
@@ -64,6 +64,7 @@ export function Panel({
 // ---------- badges and sources ----------
 
 import { Words } from './Words';
+import { linksForSource } from '../content/sourceLinks';
 
 export type BadgeKind = 'NASA LIVE' | 'NASA ARCHIVE' | 'GAME ESTIMATE' | 'FICTION';
 const BADGE_LOOK: Record<BadgeKind, string> = {
@@ -87,7 +88,7 @@ export function Badge({ kind }: { kind: BadgeKind }) {
 export function SourceLine({ text, bare }: { text: string; /** No divider: for a line on its own strip. */ bare?: boolean }) {
   const go = useGame((s) => s.go);
   const line = `Source: ${text}`;
-  const look = bare ? 'block truncate text-[0.8125rem] leading-snug text-muted' : 'mt-4 block w-full border-t-2 border-line pt-2 text-sm text-muted';
+  const look = bare ? 'inline-flex items-center min-h-[1.75rem] truncate text-[0.8125rem] leading-snug text-muted' : 'mt-4 inline-flex items-center min-h-[1.75rem] w-full border-t-2 border-line pt-2 text-sm text-muted';
   return BUILT_SCREENS.has('sources') ? (
     <button onClick={() => go('sources')} className={`${look} text-left font-sans underline-offset-4 hover:underline`}>
       {line}
@@ -97,11 +98,37 @@ export function SourceLine({ text, bare }: { text: string; /** No divider: for a
   );
 }
 
+/** Every citation part as a real link to a verified NASA / NOAA page (opens in a new tab). */
+export function SourceLinks({ text, className = '' }: { text: string; className?: string }) {
+  const links = linksForSource(text);
+  return (
+    <span className={`inline-flex flex-wrap items-center gap-x-2 gap-y-0.5 ${className}`}>
+      <span>Source:</span>
+      {links.length ? (
+        links.map((l) => (
+          <a
+            key={l.url}
+            href={l.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-0.5 font-bold text-orbit underline underline-offset-2 hover:text-go"
+          >
+            {l.label}
+            <ExternalLink size={11} aria-hidden />
+          </a>
+        ))
+      ) : (
+        <span>{text}</span>
+      )}
+    </span>
+  );
+}
+
 /** A source line on its own small dark strip, for facts shown straight on a scene. */
 export function SourceStrip({ text, className = '' }: { text: string; className?: string }) {
   return (
-    <div className={`truncate rounded-full border-2 border-line bg-panel/85 px-[0.75rem] py-[0.125rem] text-text ${className}`}>
-      <SourceLine text={text} bare />
+    <div className={`rounded-xl border-2 border-line bg-panel/85 px-[0.75rem] py-[0.125rem] text-[0.8125rem] leading-snug text-muted ${className}`}>
+      <SourceLinks text={text} />
     </div>
   );
 }

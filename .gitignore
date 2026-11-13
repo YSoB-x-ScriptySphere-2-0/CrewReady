@@ -28,3 +28,8 @@ nasa guidelines/
 .netlify
 
 *.tsbuildinfo
+
+# Test artifacts
+playwright-report/
+test-results/
+screenshots/

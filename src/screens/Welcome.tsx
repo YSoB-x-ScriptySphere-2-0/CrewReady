@@ -112,42 +112,43 @@ export function Welcome({ onStart, onOpenTour }: WelcomeProps) {
             : t('welcome.loading.twinkle');
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-space-deep text-text select-none">
-      {/* 16:9 Widescreen Welcome Scene with smooth crossfade: right 72% */}
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-[72%]" aria-hidden="true">
+    <div className="relative min-h-full w-full overflow-y-auto overflow-x-hidden bg-space-deep text-text select-none flex flex-col justify-between p-3 sm:p-6 md:p-8">
+      {/* Background Welcome Art with smooth crossfade */}
+      <div className="pointer-events-none absolute inset-0 md:left-auto md:right-0 md:w-[68%]" aria-hidden="true">
         {WELCOME_ART.map((src, i) => (
           <img
             key={src}
             src={src}
             alt=""
-            className={`absolute inset-0 h-full w-full object-cover object-right ${fade}`}
+            className={`absolute inset-0 h-full w-full object-cover object-center md:object-right ${fade}`}
             style={{ opacity: i === 0 ? 1 - crossfade : crossfade }}
           />
         ))}
-        {/* Soft fade into backdrop on left edge and top */}
-        <div className="absolute inset-y-0 left-0 w-[25%] bg-gradient-to-r from-space-deep via-space-deep/60 to-transparent" />
-        <div className="absolute inset-x-0 top-0 h-[15%] bg-gradient-to-b from-space-deep/60 to-transparent" />
+        {/* Soft fade into backdrop */}
+        <div className="absolute inset-0 bg-space-deep/80 md:bg-transparent" />
+        <div className="hidden md:block absolute inset-y-0 left-0 w-[35%] bg-gradient-to-r from-space-deep via-space-deep/80 to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-[20%] bg-gradient-to-b from-space-deep/70 to-transparent" />
       </div>
 
       {/* Top strip: brand on the left, music & language switch on the right */}
-      <header className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-[1.5rem] pt-[0.75rem]">
-        <div className="flex items-center gap-[0.5rem]">
-          <div className="grid h-[2.5rem] w-[2.5rem] place-items-center rounded-full border border-go/40 bg-go/20 text-go">
-            <OrbitIcon size={22} strokeWidth={2.2} />
+      <header className="relative z-20 flex items-center justify-between gap-2 pb-4">
+        <div className="flex items-center gap-2">
+          <div className="grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-full border border-go/40 bg-go/20 text-go shrink-0">
+            <OrbitIcon size={20} strokeWidth={2.2} />
           </div>
-          <span className="font-display text-[0.75rem] font-bold tracking-[0.22em] text-go uppercase">{t('app.tagline')}</span>
+          <span className="font-display text-xs sm:text-sm font-bold tracking-[0.2em] text-go uppercase">{t('app.tagline')}</span>
         </div>
 
-        <div className="flex items-center gap-[0.5rem]">
-          <MusicToggle />
-          <div role="group" aria-label="Language" className="flex items-center rounded-full border border-text/20 bg-panel/80 p-[0.25rem]">
+        <div className="flex items-center gap-2">
+          <MusicToggle compact />
+          <div role="group" aria-label="Language" className="flex items-center rounded-full border border-text/20 bg-panel/90 p-1">
             {(['en', 'bn'] as const).map((l) => (
               <button
                 key={l}
                 onClick={() => setLang(l)}
                 aria-pressed={lang === l}
-                className={`min-h-[2.75rem] min-w-[2.75rem] cursor-pointer rounded-full px-[0.875rem] font-display text-[0.9375rem] font-extrabold ${
-                  lang === l ? 'bg-go text-go-text' : 'text-text/70 hover:text-text'
+                className={`min-h-[2.25rem] min-w-[2.25rem] cursor-pointer rounded-full px-3 font-display text-xs sm:text-sm font-extrabold transition ${
+                  lang === l ? 'bg-go text-go-text shadow-sm' : 'text-text/70 hover:text-text'
                 }`}
               >
                 {l === 'en' ? 'EN' : 'বাংলা'}
@@ -158,20 +159,24 @@ export function Welcome({ onStart, onOpenTour }: WelcomeProps) {
       </header>
 
       {/* Left zone: title, Play (or the bar), How to Play, Twinkle's Tour */}
-      <main className="absolute inset-y-0 left-0 z-10 flex w-[42%] flex-col justify-center gap-[0.875rem] pt-[2.5rem] pl-[1.5rem]">
+      <main className="relative z-10 flex flex-col justify-center gap-3 sm:gap-4 my-auto max-w-lg md:w-[48%]">
         <div>
-          <h1 className="font-display text-[3.25rem] leading-none font-extrabold tracking-tight text-text drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]">{t('app.name')}</h1>
-          <p className="mt-[0.375rem] font-display text-[1.25rem] leading-tight font-semibold text-text/90">{t('app.subtitle')}</p>
+          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] leading-none font-extrabold tracking-tight text-text drop-shadow-[0_4px_16px_rgba(0,0,0,0.7)] break-words">
+            {t('app.name')}
+          </h1>
+          <p className="mt-1.5 font-display text-base sm:text-xl leading-snug font-semibold text-text/90 drop-shadow">
+            {t('app.subtitle')}
+          </p>
         </div>
 
-        <div className="flex w-full max-w-[17rem] flex-col gap-[0.625rem]">
+        <div className="flex w-full max-w-xs sm:max-w-sm flex-col gap-2.5">
           {ready ? (
             <button
               onClick={handlePlay}
               autoFocus
-              className="anim-pop group flex min-h-[3.25rem] sm:min-h-[3.5rem] w-full cursor-pointer items-center justify-center gap-[0.5rem] rounded-full bg-gradient-to-b from-[#48e3f0] to-go px-5 sm:px-7 py-2 font-display text-xl sm:text-2xl font-extrabold text-go-text leading-snug break-words text-center shadow-[0_0_1.25rem_rgba(34,215,230,0.45),0_0.35rem_0_var(--color-go-lip)] active:translate-y-[0.25rem] active:shadow-[0_0_1.25rem_rgba(34,215,230,0.45),0_0.1rem_0_var(--color-go-lip)]"
+              className="anim-pop group flex min-h-[3.25rem] sm:min-h-[3.5rem] w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-gradient-to-b from-[#48e3f0] to-go px-5 sm:px-7 py-2 font-display text-lg sm:text-2xl font-extrabold text-go-text leading-snug break-words text-center shadow-[0_0_1.25rem_rgba(34,215,230,0.45),0_0.35rem_0_var(--color-go-lip)] active:translate-y-[0.25rem] active:shadow-none"
             >
-              <Play size={22} strokeWidth={2.75} fill="currentColor" className="shrink-0" />
+              <Play size={20} strokeWidth={2.75} fill="currentColor" className="shrink-0" />
               <span className="py-0.5 leading-snug">{t('welcome.play')}</span>
             </button>
           ) : (
@@ -181,34 +186,34 @@ export function Welcome({ onStart, onOpenTour }: WelcomeProps) {
               aria-valuemax={100}
               aria-valuenow={progress}
               aria-label={loadingText}
-              className="relative flex h-[3.5rem] w-full items-center overflow-hidden rounded-full border-2 border-go/40 bg-panel/85 p-[0.375rem]"
+              className="relative flex h-[3.25rem] w-full items-center overflow-hidden rounded-full border-2 border-go/40 bg-panel/85 p-1"
             >
               <div className="h-full rounded-full bg-gradient-to-r from-[#0f8f9c] to-go" style={{ width: `${progress}%` }} />
-              <div className="absolute inset-0 flex items-center justify-between px-[1.125rem] font-display text-[0.875rem] font-extrabold text-text">
-                <span className="flex items-center gap-[0.5rem] truncate">
+              <div className="absolute inset-0 flex items-center justify-between px-3.5 font-display text-xs sm:text-sm font-extrabold text-text">
+                <span className="flex items-center gap-1.5 truncate">
                   <Sparkles size={16} className="shrink-0 text-go" />
                   <span className="truncate">{loadingText}</span>
                 </span>
-                <span className="ml-[0.5rem] tabular-nums text-go">{progress}%</span>
+                <span className="ml-2 tabular-nums text-go">{progress}%</span>
               </div>
             </div>
           )}
 
-          <div className="flex gap-[0.5rem] w-full">
+          <div className="flex gap-2 w-full">
             <button
               onClick={() => setShowHowToPlay(true)}
-              className="flex min-h-[2.5rem] sm:min-h-[2.75rem] flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-full border-2 border-text/30 bg-panel/70 px-2.5 py-1.5 font-display text-xs sm:text-sm font-bold text-text hover:border-text/50 hover:bg-panel/85 text-center leading-snug break-words"
+              className="flex min-h-[2.5rem] flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-full border-2 border-text/30 bg-panel/80 px-2.5 py-1.5 font-display text-xs sm:text-sm font-bold text-text hover:border-text/50 hover:bg-panel text-center leading-snug break-words"
             >
-              <BookOpen size={16} strokeWidth={2.2} className="text-go shrink-0" />
+              <BookOpen size={15} strokeWidth={2.2} className="text-go shrink-0" />
               <span className="py-0.5">{t('welcome.howToPlay')}</span>
             </button>
 
             {onOpenTour && (
               <button
                 onClick={onOpenTour}
-                className="flex min-h-[2.5rem] sm:min-h-[2.75rem] flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-full border-2 border-go/40 bg-panel/70 px-2.5 py-1.5 font-display text-xs sm:text-sm font-bold text-go hover:border-go hover:bg-panel/90 shadow-sm text-center leading-snug break-words"
+                className="flex min-h-[2.5rem] flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-full border-2 border-go/40 bg-panel/80 px-2.5 py-1.5 font-display text-xs sm:text-sm font-bold text-go hover:border-go hover:bg-panel shadow-sm text-center leading-snug break-words"
               >
-                <Sparkles size={15} strokeWidth={2.2} className="shrink-0" />
+                <Sparkles size={14} strokeWidth={2.2} className="shrink-0" />
                 <span className="py-0.5">{t('welcome.tour')}</span>
               </button>
             )}
@@ -216,7 +221,7 @@ export function Welcome({ onStart, onOpenTour }: WelcomeProps) {
         </div>
       </main>
 
-      <p className="absolute bottom-[0.625rem] left-[1.5rem] z-10 text-[0.75rem] font-semibold text-text/50">{t('welcome.credit')}</p>
+      <p className="relative z-10 pt-3 text-xs font-semibold text-text/60">{t('welcome.credit')}</p>
 
       {showHowToPlay ? <HowToPlay onClose={() => setShowHowToPlay(false)} /> : null}
     </div>

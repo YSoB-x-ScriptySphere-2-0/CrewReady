@@ -82,17 +82,17 @@ export function Replay() {
         <AlarmBanner title={t('replay.paused')} sub={t('replay.nobodyHurt')} />
       </div>
 
-      <div className="flex min-h-0 flex-1 gap-[0.75rem] px-[0.75rem] pt-[0.375rem] pb-[0.25rem]">
+      <div className="flex min-h-0 flex-1 flex-col md:flex-row gap-2 sm:gap-3 px-2 sm:px-3 pt-2 pb-2">
         {/* Left: Twinkle, worried, standing in the scene. */}
-        <div className="flex min-h-0 w-[18%] shrink-0 items-end justify-center">
+        <div className="flex min-h-0 w-full md:w-[18%] shrink-0 items-center md:items-end justify-center max-h-[6rem] md:max-h-none">
           <span className="anim-pop-in">
-            <Twinkle mood="worried" size={112} />
+            <Twinkle mood="worried" size={72} />
           </span>
         </div>
 
-        {/* Right: three panels side by side, then the source, Try again and Home. */}
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-[0.375rem]">
-          <div className="grid min-h-0 flex-1 grid-cols-3 grid-rows-[minmax(0,1fr)] gap-[0.375rem]">
+        {/* Right: three panels side by side on desktop, stacked on mobile */}
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+          <div className="grid min-h-0 flex-1 grid-cols-1 md:grid-cols-3 gap-2">
             <ReplayPanel title={t('replay.whatRanOut')} tone="danger">
               <CrackedMeter meter={lost.meter} />
             </ReplayPanel>
@@ -119,7 +119,7 @@ export function Replay() {
             </ReplayPanel>
           </div>
 
-          <div className="flex shrink-0 items-center gap-[0.5rem]">
+          <div className="flex shrink-0 flex-wrap sm:flex-nowrap items-center gap-2 pt-1">
             <SourceStrip text={level.source} className="min-w-0 flex-1" />
             <GameButton variant="go" icon={RotateCcw} onClick={retryLevel} className="!min-h-[2.75rem] !px-4 sm:!px-6 !text-base sm:!text-xl leading-snug break-words">
               {t('btn.tryAgain')}

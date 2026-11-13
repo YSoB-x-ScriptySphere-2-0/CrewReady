@@ -33,17 +33,17 @@ export function Crates({ step, game, onDone }: { step: CratesStep; game: GameSta
   };
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-[0.5rem]">
-      <div className="flex items-center gap-[0.5rem]">
+    <div className="flex min-h-0 flex-1 flex-col gap-2">
+      <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0">
         {/* The launch pad: crates still to pack. */}
-        <div ref={pad} className="flex min-h-[3rem] min-w-0 flex-1 flex-wrap items-center gap-[0.25rem] rounded-tile border-2 border-line bg-panel px-[0.5rem] py-[0.25rem]" aria-live="polite">
+        <div ref={pad} className="flex min-h-[3rem] min-w-0 flex-1 flex-wrap items-center gap-1 rounded-tile border-2 border-line bg-panel px-2.5 py-1" aria-live="polite">
           <span className="sr-only">{left ? `${left} crates left on the launch pad.` : 'All crates are packed.'}</span>
           {Array.from({ length: left }, (_, k) => (
             <span key={k} data-crate>
-              <Crate size={26} land={landed?.at === -1 && k === left - 1} />
+              <Crate size={24} land={landed?.at === -1 && k === left - 1} />
             </span>
           ))}
-          <span className="ml-auto rounded-full bg-space-deep px-[0.5rem] font-display text-[0.875rem] sm:text-[0.9375rem] leading-snug font-extrabold tabular-nums" aria-hidden>
+          <span className="ml-auto rounded-full bg-space-deep px-2 py-0.5 font-display text-xs sm:text-sm leading-snug font-extrabold tabular-nums" aria-hidden>
             {left
               ? (lang === 'bn' ? `${left}টি বাকি` : `${left} left`)
               : (lang === 'bn' ? 'প্যাড খালি!' : 'Pad empty!')}
@@ -54,7 +54,7 @@ export function Crates({ step, game, onDone }: { step: CratesStep; game: GameSta
           icon={DoorClosed}
           disabled={left !== 0}
           onClick={() => onDone(packCrates(game, step, counts))}
-          className="!min-h-[2.875rem] !px-3 sm:!px-4 !text-xs sm:!text-sm leading-snug break-words max-w-[13rem]"
+          className="!min-h-[2.875rem] !px-3 sm:!px-4 !text-xs sm:!text-sm leading-snug break-words shrink-0"
         >
           {left
             ? (lang === 'bn' ? `আরও ${left}টি দাও` : `Pack ${left} more`)
@@ -62,12 +62,12 @@ export function Crates({ step, game, onDone }: { step: CratesStep; game: GameSta
         </GameButton>
       </div>
 
-      <div className="grid min-h-0 flex-1 grid-cols-4 gap-[0.375rem]">
+      <div className="grid min-h-0 flex-1 grid-cols-2 md:grid-cols-4 gap-2 auto-rows-max sm:auto-rows-fr pb-1">
         {step.bins.map((b, i) => {
           const now = game.meters[b.meter];
           const after = Math.min(100, now + counts[i] * step.perCrate);
           return (
-            <div key={b.meter} className="flex min-h-0 flex-col rounded-tile border-2 border-line bg-panel text-text">
+            <div key={b.meter} className="flex flex-col rounded-tile border-2 border-line bg-panel text-text">
               <div className="flex items-center gap-[0.25rem] rounded-t-[0.875rem] px-[0.25rem] py-[0.25rem]" style={{ background: `color-mix(in srgb, ${METER_COLOR[b.meter]} 55%, #14204d)` }}>
                 <MeterBadge meter={b.meter} size={22} />
                 <span className="min-w-0 font-display text-[0.6875rem] sm:text-[0.75rem] leading-[1.15] font-extrabold break-words line-clamp-2">{tMission(b.label)}</span>

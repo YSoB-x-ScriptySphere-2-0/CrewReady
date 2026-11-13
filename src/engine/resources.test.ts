@@ -1,5 +1,6 @@
 // Unit tests for Resources & Cargo upgrades — BUILD_SEQUENCE.md S4
 import { describe, it, expect, beforeEach } from 'vitest';
+import { useWallet } from '../store/wallet';
 import {
   checkPurchase,
   countTotalSlots,
@@ -100,7 +101,8 @@ describe('Cargo Resources & Upgrades (S4)', () => {
   });
 
   it('buys upgrade, persists state and deducts stardust', () => {
-    localStorage.setItem('crewready_fly_total_stardust', '50');
+    useWallet.getState().resetWallet();
+    useWallet.getState().earn('fly', 50);
 
     let spent = 0;
     const res = buyCargoUpgrade('P', (amt) => {

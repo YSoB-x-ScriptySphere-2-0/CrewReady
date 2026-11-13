@@ -173,7 +173,7 @@ export function Decision({
         ) : waiting ? (
           <EarthClock />
         ) : (
-          <div className="flex h-full gap-[0.5rem] overflow-x-clip pb-[0.25rem]" role="group" aria-label="Your choices" onKeyDown={onKeyDown}>
+          <div className="grid grid-cols-1 sm:grid-cols-3 h-full min-h-0 gap-2 sm:gap-2.5 overflow-y-auto sm:overflow-visible pb-1" role="group" aria-label="Your choices" onKeyDown={onKeyDown}>
             {step.options.map((o, i) => (
               <ChoiceCard
                 key={o.label}
@@ -185,7 +185,7 @@ export function Decision({
                 state={stateOf(i)}
                 onClick={() => picked === null && setSel(i)}
                 innerRef={(el) => void (cards.current[i] = el)}
-                className="!min-h-0"
+                className="!min-h-0 w-full"
               >
                 {sel === i && picked === null ? (
                   <>

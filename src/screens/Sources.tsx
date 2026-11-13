@@ -30,7 +30,7 @@ const DATASETS: DatasetEntry[] = [
     whereUsed: 'Levels 2 and 6 (Solar storms), Home space-weather chip, Fly speed',
     badge: 'NASA LIVE',
     dateOrMode: 'Live query with May 2024 superstorm archive fallback',
-    url: 'https://kauai.ccmc.gsfc.nasa.gov/DONKI/',
+    url: 'https://ccmc.gsfc.nasa.gov/tools/DONKI/',
     description:
       'Coronal Mass Ejections (CME), Solar Energetic Particle (SEP) events, and Geomagnetic Storms (GST). When live space weather is calm, the game loads the extreme May 2024 solar storm.',
   },
@@ -70,7 +70,7 @@ const DATASETS: DatasetEntry[] = [
     whereUsed: 'Levels 3 & 4 (Martian daily temperature swings and weather)',
     badge: 'NASA ARCHIVE',
     dateOrMode: 'October 2020 (Sol 675 archive)',
-    url: 'https://mars.nasa.gov/insight/weather/',
+    url: 'https://science.nasa.gov/mission/insight/',
     description:
       'Real Martian atmospheric data recorded on Elysium Planitia. Sol 675 measured daily temperatures averaging −62.3 °C (from −96.9 °C to −15.9 °C).',
   },
@@ -80,7 +80,7 @@ const DATASETS: DatasetEntry[] = [
     whereUsed: 'Level 5 (Space Station greenhouse and lettuce farming)',
     badge: 'NASA ARCHIVE',
     dateOrMode: 'August 2015 (VEG-01B mission)',
-    url: 'https://osdr.nasa.gov/osdr/data/search?term=veggie&type=cgene',
+    url: 'https://osdr.nasa.gov/bio/repo/data/studies/OSD-745',
     description:
       'Microbiological and nutritional analysis of lettuce crops grown on the ISS. Checks of the space-grown lettuce for harmful germs and for nutrients.',
   },
@@ -90,7 +90,7 @@ const DATASETS: DatasetEntry[] = [
     whereUsed: 'Mission Success screen reward card',
     badge: 'NASA LIVE',
     dateOrMode: 'Daily curated astronomy photographs / Archive fallback',
-    url: 'https://apod.nasa.gov/apod/',
+    url: 'https://science.nasa.gov/apod/',
     description:
       'Features daily astronomical imagery. Falls back to verified solar storm and planetary aurora photography if the daily live feed is video or unavailable.',
   },

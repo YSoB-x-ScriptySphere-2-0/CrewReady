@@ -12,6 +12,7 @@ import {
   Plane,
 } from 'lucide-react';
 import { useGame } from '../store/game';
+import { useWallet } from '../store/wallet';
 import { getFlyStats, spendStardust } from '../fly/storage';
 import { t, useI18n } from '../content/i18n';
 import {
@@ -95,14 +96,7 @@ export function Resources() {
   const handleRefund = () => {
     refundAllCargo((refunded) => {
       // Stardust restored
-      const stats = getFlyStats();
-      try {
-        if (typeof localStorage !== 'undefined') {
-          localStorage.setItem('crewready_fly_total_stardust', (stats.totalStardust + refunded).toString());
-        }
-      } catch {
-        // Ignore quota issues
-      }
+      useWallet.getState().earn('refund', refunded);
     });
     setUpgrades(loadUpgrades());
     setStardust(getFlyStats().totalStardust);
@@ -126,7 +120,7 @@ export function Resources() {
   });
 
   return (
-    <div className="flex h-full w-full flex-col justify-between overflow-y-auto bg-space p-3 text-text sm:p-5 select-none font-sans">
+    <div className="flex min-h-full w-full flex-col bg-space p-3 text-text sm:p-5 select-none font-sans overflow-y-auto">
       {/* Top Header Strip */}
       <header className="flex flex-shrink-0 items-center justify-between gap-3 border-b-2 border-line/40 pb-3">
         <div className="flex items-center gap-2">
@@ -181,8 +175,8 @@ export function Resources() {
         </div>
 
         {/* Visual Slots Container */}
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1.5">
             {Array.from({ length: MAX_CARGO_SLOTS }).map((_, idx) => {
               const packed = cargoSlots[idx];
               if (packed) {
@@ -224,7 +218,7 @@ export function Resources() {
       </div>
 
       {/* 4 Systems Cards Grid */}
-      <div className="grid flex-grow grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 min-h-0">
+      <div className="my-2.5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
         {SYSTEMS.map((sys) => {
           const status = getSystemStatus(sys.key, upgrades);
           const check = checkPurchase(sys.key, upgrades, stardust);
@@ -301,7 +295,7 @@ export function Resources() {
       </div>
 
       {/* Bottom Action Footer */}
-      <footer className="mt-3 flex flex-shrink-0 items-center justify-between border-t-2 border-line/40 pt-3">
+      <footer className="mt-auto flex flex-shrink-0 items-center justify-between border-t-2 border-line/40 pt-3 pb-1">
         <span className="text-[11px] text-muted max-w-[60%] leading-tight">
           {lang === 'bn'
             ? 'প্যাক করা সমস্ত উপাদান পরবর্তী মিশনের শুরুতে স্বয়ংক্রিয়ভাবে যুক্ত হবে।'

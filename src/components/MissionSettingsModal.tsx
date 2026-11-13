@@ -17,8 +17,8 @@ export function MissionSettingsModal({
   if (!open) return null;
 
   return (
-    <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center bg-space-deep/90 p-4 backdrop-blur-md">
-      <div className="relative w-full max-w-md rounded-3xl border-2 border-line bg-panel p-5 sm:p-6 shadow-2xl text-text">
+    <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center bg-space-deep/90 p-3 sm:p-4 backdrop-blur-md">
+      <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl border-2 border-line bg-panel p-4 sm:p-6 shadow-2xl text-text">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-line/60 pb-3">
           <div className="flex items-center gap-2">
